@@ -75,7 +75,7 @@ class ApiPlug extends HttpPlug {
         $Plug = new self($uri);
 
         // include default & white-listed headers
-        self::SetDefaultHeaders($Plug->headers, !is_null($defaultHeaders) ? $defaultHeaders : self::$dreamDefaultHeaders);
+        self::SetDefaultHeaders($Plug->headers, $defaultHeaders !== null ? $defaultHeaders : self::$dreamDefaultHeaders);
 
         // set the default dream query params
         if($Plug->query) {
