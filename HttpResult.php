@@ -19,10 +19,10 @@
 namespace MindTouch\ApiClient;
 
 /**
- * Class Result - wraps API results with accessors
+ * Class HttpResult - wraps HTTP results with accessors
  * @package MindTouch\ApiClient
  */
-class Result extends XArray {
+class HttpResult extends XArray {
 
     /**
      * @param array $result
@@ -86,33 +86,6 @@ class Result extends XArray {
      * @return string
      */
     public function getUri($return = '') { return isset($this->array['uri']) ? $this->array['uri'] : $return; }
-
-    /**
-     * @return array|string|null
-     */
-    public function getError() {
-
-        // formatted API error
-        $error = $this->getVal('body/error/message');
-        if($error !== null) {
-            return $error;
-        }
-
-        // exception API error
-        $error = $this->getVal('body/exception/message');
-        if($error !== null) {
-            return $error;
-        }
-
-        // other API error
-        $error = $this->getVal('body');
-        if($error !== null) {
-            return $error;
-        }
-
-        // curl error
-        return (isset($this->array['error'])) ? $this->array['error'] : null;
-    }
 
     /**
      * If there was a connection problem or internal curl error this will be true

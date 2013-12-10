@@ -251,4 +251,15 @@ class ApiPlug extends HttpPlug {
         $Plug = $this->with('dream.in.verb', 'PUT');
         return $Plug->invokeXml(self::VERB_POST, $input);
     }
+
+    /**
+     * Format the invoke return
+     *
+     * @param array $request
+     * @param array $response
+     * @return ApiResult
+     */
+    protected function invokeComplete(&$request, &$response) {
+        return new ApiResult($this->getFormattedResponse($request, $response));
+    }
 }

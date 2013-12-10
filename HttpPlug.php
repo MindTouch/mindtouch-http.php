@@ -495,18 +495,10 @@ class HttpPlug {
      *
      * @param array $request
      * @param array $response
-     * @return Result
+     * @return HttpResult
      */
     protected function invokeComplete(&$request, &$response) {
-        $contentType = isset($response['type']) ? $response['type'] : '';
-
-        // check if we need to deserialize
-        if(strpos($contentType, '/php')) {
-            $response['body'] = unserialize($response['body']);
-        }
-        $response['request'] = $request;
-        $Result = new Result($response);
-        return $Result;
+        return new HttpResult($this->getFormattedResponse($request, $response));
     }
 
     /**
@@ -528,4 +520,20 @@ class HttpPlug {
      * @param string $httpMessage
      */
     protected function invokeResponse(&$curl, &$verb, &$content, &$contentType, &$contentFromFile, &$httpMessage) {}
+
+    /**
+     * @param array $request
+     * @param array $response
+     * @return array
+     */
+    protected function getFormattedResponse($request, $response) {
+        $contentType = isset($response['type']) ? $response['type'] : '';
+
+        // check if we need to deserialize
+        if(strpos($contentType, '/php')) {
+            $response['body'] = unserialize($response['body']);
+        }
+        $response['request'] = $request;
+        return $response;
+    }
 }
