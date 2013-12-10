@@ -18,6 +18,12 @@
  */
 namespace MindTouch\ApiClient;
 
+/**
+ * @TODO (andyv): remove fqdn return types once phpstorm fixes phpdoc type hinting
+ *
+ * @method \MindTouch\ApiClient\ApiPlug with
+ * @method \MindTouch\ApiClient\ApiPlug withHeader
+ */
 class ApiPlug extends HttpPlug {
 
     const HEADER_AUTHTOKEN = 'X-Authtoken';
