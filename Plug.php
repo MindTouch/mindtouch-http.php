@@ -670,7 +670,7 @@ class Plug {
     }
 
     /**
-     * @param object $curl
+     * @param resource $curl
      * @param string $verb
      * @param string $content
      * @param string $contentType
@@ -680,7 +680,7 @@ class Plug {
     protected function invokeRequest(&$curl, &$verb, &$content, &$contentType, &$contentFromFile, &$request) {}
 
     /**
-     * @param object $curl
+     * @param resource $curl
      * @param string $verb
      * @param string $content
      * @param string $contentType
