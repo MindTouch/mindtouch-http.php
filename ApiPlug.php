@@ -19,6 +19,9 @@
 namespace MindTouch\ApiClient;
 
 /**
+ * Class ApiPlug - builder for MindTouch API requests
+ * @package MindTouch\ApiClient
+ *
  * @TODO (andyv): remove fqdn return types once phpstorm fixes phpdoc type hinting
  *
  * @method \MindTouch\ApiClient\ApiPlug with

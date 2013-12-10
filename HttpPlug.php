@@ -18,6 +18,10 @@
  */
 namespace MindTouch\ApiClient;
 
+/**
+ * Class HttpPlug - builder for simple HTTP requests
+ * @package MindTouch\ApiClient
+ */
 class HttpPlug {
 
     const DEFAULT_HOST = 'localhost';
