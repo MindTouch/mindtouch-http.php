@@ -72,15 +72,10 @@ class Plug {
         'children,siblings'
     );
 
-    // used for calculating request profiling information
-    private $requestTimeStart;
-    private $requestTimeEnd;
-    private $requestVerb;
-
     /**
      * @var string
      */
-    private $hostname;
+    protected $hostname;
 
     /**
      * @note (guerrics): feel free to directly set this value
@@ -89,19 +84,19 @@ class Plug {
     public $timeout = 300;
 
     // URI components
-    private $scheme;
-    private $user;
-    private $password;
-    private $host;
-    private $port;
-    private $path;
-    private $query;
-    private $fragment;
+    protected $scheme;
+    protected $user;
+    protected $password;
+    protected $host;
+    protected $port;
+    protected $path;
+    protected  $query;
+    protected $fragment;
 
     /**
      * @var array $headers - stores the headers for the request
      */
-    private $headers = array();
+    protected $headers = array();
 
     /**
      * @param string $uri
@@ -656,32 +651,6 @@ class Plug {
     }
 
     /**
-     * @param object $curl
-     * @param string $verb
-     * @param string $content
-     * @param string $contentType
-     * @param bool $contentFromFile
-     * @param array $request
-     */
-    protected function invokeRequest(&$curl, &$verb, &$content, &$contentType, &$contentFromFile, &$request) {
-        $this->requestTimeStart = $this->getTime();
-        $this->requestTimeEnd = null;
-        $this->requestVerb = $verb;
-    }
-
-    /**
-     * @param object $curl
-     * @param string $verb
-     * @param string $content
-     * @param string $contentType
-     * @param bool $contentFromFile
-     * @param string $httpMessage
-     */
-    protected function invokeResponse(&$curl, &$verb, &$content, &$contentType, &$contentFromFile, &$httpMessage) {
-        $this->requestTimeEnd = $this->getTime();
-    }
-
-    /**
      * Format the invoke return
      *
      * @param array $request
@@ -701,10 +670,22 @@ class Plug {
     }
 
     /**
-     * @return float
+     * @param object $curl
+     * @param string $verb
+     * @param string $content
+     * @param string $contentType
+     * @param bool $contentFromFile
+     * @param array $request
      */
-    private function getTime() {
-        $st = explode(' ', microtime());
-        return (float)$st[0] + (float)$st[1];
-    }
+    protected function invokeRequest(&$curl, &$verb, &$content, &$contentType, &$contentFromFile, &$request) {}
+
+    /**
+     * @param object $curl
+     * @param string $verb
+     * @param string $content
+     * @param string $contentType
+     * @param bool $contentFromFile
+     * @param string $httpMessage
+     */
+    protected function invokeResponse(&$curl, &$verb, &$content, &$contentType, &$contentFromFile, &$httpMessage) {}
 }
