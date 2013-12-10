@@ -22,7 +22,103 @@ namespace MindTouch\ApiClient;
  * Class ApiResult - wraps MindTouch API results with accessors
  * @package MindTouch\ApiClient
  */
-class ApiResult extends HttpResult {
+class ApiResult extends XArray {
+
+    /**
+     * @param array $result
+     */
+    public function __construct(&$result) {
+        $this->array = $result;
+    }
+
+    /**
+     * Return the value of a Set-Cookie header by the cookie's name
+     *
+     * @param string $name
+     * @return string|null
+     */
+    public function getSetCookieHeader($name) {
+        $headers = $this->getHeaders('Set-Cookie');
+        if(!is_null($headers)) {
+            if(!is_array($headers)) {
+                $headers = array($headers);
+            }
+            foreach($headers as $header) {
+                if(strpos($header, $name) === 0) {
+                    return $header;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $name
+     * @param string|null $default
+     * @return array|null
+     */
+    public function getHeaders($name, $default = null) {
+        if(!isset($this->array['headers'][$name])) {
+            return $default;
+        }
+        $headers = $this->array['headers'][$name];
+        if(!is_array($headers)) {
+            $headers = array($headers);
+        }
+        return $headers;
+    }
+
+    /**
+     * @param string $name
+     * @param string|null $default
+     * @return string|null
+     */
+    public function getHeader($name, $default = null) { return $this->getVal('headers/' . $name, $default); }
+
+    /**
+     * @param int $return
+     * @return int
+     */
+    public function getStatus($return = 0) { return isset($this->array['status']) ? $this->array['status'] : $return; }
+
+    /**
+     * @param string $return
+     * @return string
+     */
+    public function getUri($return = '') { return isset($this->array['uri']) ? $this->array['uri'] : $return; }
+
+    /**
+     * If there was a connection problem or internal curl error this will be true
+     * @return bool
+     */
+    public function isCurlError() { return $this->array['errno'] > 0; }
+
+    /**
+     * @param int $status
+     * @return bool
+     */
+    public function is($status) { return $this->getStatus() === $status; }
+
+    /**
+     * @return bool
+     */
+    public function isSuccess() {
+        $status = $this->getStatus();
+        return ($status >= 200 && $status < 300);
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    public function getXml($key = '') {
+        if($key == '') {
+            return $this->toXml();
+        }
+        $val = $this->getVal($key, null);
+        $XArray = new XArray($val);
+        return $XArray->toXml();
+    }
 
     /**
      * @return array|string|null

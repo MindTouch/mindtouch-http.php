@@ -495,10 +495,10 @@ class HttpPlug {
      *
      * @param array $request
      * @param array $response
-     * @return HttpResult
+     * @return array
      */
     protected function invokeComplete(&$request, &$response) {
-        return new HttpResult($this->getFormattedResponse($request, $response));
+        return $this->getFormattedResponse($request, $response);
     }
 
     /**

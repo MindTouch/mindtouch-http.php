@@ -26,6 +26,15 @@ namespace MindTouch\ApiClient;
  *
  * @method \MindTouch\ApiClient\ApiPlug with
  * @method \MindTouch\ApiClient\ApiPlug withHeader
+ * @method \MindTouch\ApiClient\ApiPlug withCredentials
+ * @method \MindTouch\ApiClient\ApiResult get
+ * @method \MindTouch\ApiClient\ApiResult head
+ * @method \MindTouch\ApiClient\ApiResult post
+ * @method \MindTouch\ApiClient\ApiResult postFile
+ * @method \MindTouch\ApiClient\ApiResult postFields
+ * @method \MindTouch\ApiClient\ApiResult putFile
+ * @method \MindTouch\ApiClient\ApiResult putFields
+ * @method \MindTouch\ApiClient\ApiResult delete
  */
 class ApiPlug extends HttpPlug {
 
