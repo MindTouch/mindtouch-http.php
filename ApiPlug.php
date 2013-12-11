@@ -198,7 +198,7 @@ class ApiPlug extends HttpPlug {
      * @return ApiPlug
      */
     public function at( /* $path[] */) {
-        $result = new self($this);
+        $result = new $this->class($this);
         foreach(func_get_args() as $path) {
             $result->path .= '/';
             if(in_array($path, self::$rawUriSegments)) {
@@ -227,7 +227,7 @@ class ApiPlug extends HttpPlug {
      * @return ApiPlug
      */
     public function atRaw($path) {
-        $result = new self($this);
+        $result = new $this->class($this);
         $result->path .= '/' . $path;
         return $result;
     }
