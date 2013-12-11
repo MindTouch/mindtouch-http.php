@@ -37,33 +37,40 @@ class XArray {
      * @param string $key
      * @param mixed $value
      */
-    public function setVal($key, $value) {
+    public function setVal($key, $value = null) { $this->setValHelper($this->array, $key, $value); }
+
+    /**
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     */
+    private function setValHelper(&$array, $key, $value) {
         $keys = explode('/', $key);
         $count = count($keys);
         $i = 0;
         foreach($keys as $key) {
             $i++;
 
-            // last value
+            //last value
             if($i == $count) {
-                if(is_null($value)) {
-                    unset($this->array[$key]);
+                if($value === null) {
+                    unset($array[$key]);
                     return;
                 }
-                if(!isset($this->array[$key]) || is_string($this->array[$key])) {
-                    $this->array[$key] = $value;
+                if(!isset($array[$key]) || is_string($array[$key])) {
+                    $array[$key] = $value;
                 }
 
                 // if you're attempting to write a string value to a key that is an array, this operation will fail
             } else {
-                if(!isset($this->array[$key])) {
-                    $this->array[$key] = array();
+                if(!isset($array[$key])) {
+                    $array[$key] = array();
                 }
             }
-            if(is_string($this->array[$key])) {
+            if(is_string($array[$key])) {
                 return;
             }
-            $this->array = &$this->array[$key];
+            $array = &$array[$key];
         }
     }
 
