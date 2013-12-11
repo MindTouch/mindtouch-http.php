@@ -1,6 +1,6 @@
 <?php
 /*
- * MindTouch API Client
+ * MindTouch API PHP Client
  * Copyright (C) 2006-2013 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -267,7 +267,7 @@ class ApiPlug extends HttpPlug {
      * Performs a PUT request
      *
      * @param array $input - if array, gets encoded as xml
-     * @return array - request response
+     * @return ApiResult - request response
      */
     public function put($input = null) {
         $Plug = $this->with('dream.in.verb', 'PUT');

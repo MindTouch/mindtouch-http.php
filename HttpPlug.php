@@ -1,6 +1,6 @@
 <?php
 /*
- * MindTouch API Client
+ * MindTouch API PHP Client
  * Copyright (C) 2006-2013 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
