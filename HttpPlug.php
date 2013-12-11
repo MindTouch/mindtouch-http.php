@@ -60,7 +60,7 @@ class HttpPlug {
     protected $host;
     protected $port;
     protected $path;
-    protected  $query;
+    protected $query;
     protected $fragment;
 
     /**
@@ -69,10 +69,20 @@ class HttpPlug {
     protected $headers = array();
 
     /**
+     * @var
+     */
+    protected $class;
+
+    /**
      * @param string $uri
      * @return HttpPlug
      */
-    public static function newPlug($uri) { return new self($uri); }
+    public static function newPlug($uri) {
+        $class = __CLASS__;
+        $Plug = new $class($uri);
+        $Plug->class = $class;
+        return $Plug;
+    }
 
     /**
      * Helper method enables an array to have to multiple values per key. Creates
@@ -169,7 +179,7 @@ class HttpPlug {
      * @return HttpPlug
      */
     public function at( /* $path[] */) {
-        $Plug = new self($this);
+        $Plug = new $this->class($this);
         $args = func_get_args();
 
         // MT-7254 PHP Plug accepts trailing slashes
@@ -190,7 +200,7 @@ class HttpPlug {
      * @return HttpPlug
      */
     public function with($name, $value = null) {
-        $Plug = new self($this);
+        $Plug = new $this->class($this);
         if($Plug->query) {
             $Plug->query .= '&' . urlencode($name) . ($value !== null ? '=' . urlencode($value) : '');
         } else {
@@ -241,7 +251,7 @@ class HttpPlug {
      * @return HttpPlug
      */
     public function withHeader($name, $value, $append = false) {
-        $Plug = new self($this);
+        $Plug = new $this->class($this);
         self::setMultiValueArray($Plug->headers, $name, $value, $append);
         return $Plug;
     }
@@ -254,7 +264,7 @@ class HttpPlug {
      * @return HttpPlug
      */
     public function withCredentials($user, $password) {
-        $Plug = new self($this);
+        $Plug = new $this->class($this);
         $Plug->user = $user;
         $Plug->password = $password;
         return $Plug;
@@ -307,7 +317,7 @@ class HttpPlug {
      * @return array - request response
      */
     public function put($input = null) {
-        $contentLength = is_null($input) ? 0 : strlen($input);
+        $contentLength = $input === null ? 0 : strlen($input);
 
         // explicitly set content-length for put requests
         $Plug = $this->WithHeader(self::HEADER_CONTENT_LENGTH, $contentLength);

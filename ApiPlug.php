@@ -84,7 +84,9 @@ class ApiPlug extends HttpPlug {
         if(substr_compare($uri, '/', -1, 1) === 0) {
             $uri = substr($uri, 0, -1);
         }
-        $Plug = new self($uri);
+        $class = __CLASS__;
+        $Plug = new $class($uri);
+        $Plug->class = $class;
 
         // include default & white-listed headers
         self::SetDefaultHeaders($Plug->headers, $defaultHeaders !== null ? $defaultHeaders : self::$dreamDefaultHeaders);
