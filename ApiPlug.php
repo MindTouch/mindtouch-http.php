@@ -87,6 +87,37 @@ class ApiPlug extends HttpPlug {
         $class = __CLASS__;
         $Plug = new $class($uri);
         $Plug->class = $class;
+
+        // include default & white-listed headers
+        self::setDefaultHeaders($Plug->headers, $defaultHeaders !== null ? $defaultHeaders : self::$dreamDefaultHeaders);
+
+        // set the default dream query params
+        if($Plug->query) {
+            $Plug->query .= '&';
+        } else {
+            $Plug->query = '';
+        }
+        if(empty($hostname) && isset($_SERVER['HTTP_HOST'])) {
+            $hostname = $_SERVER['HTTP_HOST'];
+        }
+        if($format) {
+            $Plug->query .= 'dream.out.format=' . rawurlencode($format);
+        }
+
+        // if a hostname was previously set, reuse it, otherwise take the new one
+        $Plug->query .= '&dream.in.host=' . rawurlencode(!empty($hostname) ? $hostname : $Plug->hostname);
+
+        // @note hack hack, pass in scheme until dream.in.uri is available
+        // parse the scheme from the frontend request
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
+            $scheme = 'https';
+        } else {
+            $scheme = 'http';
+        }
+        $Plug->query .= '&dream.in.scheme=' . $scheme;
+        if(isset($_SERVER['REMOTE_ADDR'])) {
+            $Plug->query .= '&dream.in.origin=' . rawurlencode($_SERVER['REMOTE_ADDR']);
+        }
         return $Plug;
     }
 
@@ -157,46 +188,6 @@ class ApiPlug extends HttpPlug {
             }
         }
         return $flat;
-    }
-
-    /**
-     * @param ApiPlug $Plug
-     * @param string $format
-     * @param string $hostname
-     * @param array $defaultHeaders
-     */
-    protected static function initializeApiPlug(&$Plug, $format = null, $hostname = null, $defaultHeaders = null) {
-
-        // include default & white-listed headers
-        self::setDefaultHeaders($Plug->headers, $defaultHeaders !== null ? $defaultHeaders : self::$dreamDefaultHeaders);
-
-        // set the default dream query params
-        if($Plug->query) {
-            $Plug->query .= '&';
-        } else {
-            $Plug->query = '';
-        }
-        if(empty($hostname) && isset($_SERVER['HTTP_HOST'])) {
-            $hostname = $_SERVER['HTTP_HOST'];
-        }
-        if($format) {
-            $Plug->query .= 'dream.out.format=' . rawurlencode($format);
-        }
-
-        // if a hostname was previously set, reuse it, otherwise take the new one
-        $Plug->query .= '&dream.in.host=' . rawurlencode(!empty($hostname) ? $hostname : $Plug->hostname);
-
-        // @note hack hack, pass in scheme until dream.in.uri is available
-        // parse the scheme from the frontend request
-        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
-            $scheme = 'https';
-        } else {
-            $scheme = 'http';
-        }
-        $Plug->query .= '&dream.in.scheme=' . $scheme;
-        if(isset($_SERVER['REMOTE_ADDR'])) {
-            $Plug->query .= '&dream.in.origin=' . rawurlencode($_SERVER['REMOTE_ADDR']);
-        }
     }
 
     /**

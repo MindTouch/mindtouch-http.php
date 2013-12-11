@@ -163,6 +163,7 @@ class HttpPlug {
                 $this->fragment = $uri->fragment;
                 $this->timeout = $uri->timeout;
                 $this->headers = $uri->headers;
+                $this->class = $uri->class;
             }
         }
 
