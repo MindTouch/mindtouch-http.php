@@ -373,13 +373,17 @@ class HttpPlug {
      * @param string $content
      * @param string $contentType
      * @param bool $contentFromFile - if true, then $content is assumed to be a file path
+     * @param callable $preInvokeCallback
      * @return array - request response
      */
-    protected function invoke($verb, $content = null, $contentType = null, $contentFromFile = false) {
+    protected function invoke($verb, $content = null, $contentType = null, $contentFromFile = false, $preInvokeCallback = null) {
 
         // create the request info
         $request = array(
+            'verb' => $verb,
             'uri' => $this->getUri(),
+            'start' => 0,
+            'end' => 0,
 
             // grab unflattened headers
             'headers' => $this->headers
@@ -395,6 +399,15 @@ class HttpPlug {
             self::setMultiValueArray($request['headers'], self::HEADER_CONTENT_TYPE, $contentType);
         }
         $this->invokeApplyCredentials($request['headers']);
+
+        // if callback returns a response, assume curl is not needed
+        if($preInvokeCallback !== null) {
+            $response = $preInvokeCallback($verb, $request, $content, $contentFromFile);
+            if($response !== null) {
+                $request['headers'] = self::flattenPlugHeaders($request['headers']);
+                return $this->invokeComplete($request, $response);
+            }
+        }
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $request['uri']);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -447,9 +460,9 @@ class HttpPlug {
         curl_setopt($curl, CURLOPT_HEADER, true);
 
         // execute request
-        $this->invokeRequest($curl, $verb, $content, $contentType, $contentFromFile, $request);
+        $request['start'] = $this->getTime();
         $httpMessage = curl_exec($curl);
-        $this->invokeResponse($curl, $verb, $content, $contentType, $contentFromFile, $httpMessage);
+        $request['end'] = $this->getTime();
 
         // create the response info
         $response = array(
@@ -514,26 +527,6 @@ class HttpPlug {
     }
 
     /**
-     * @param resource $curl
-     * @param string $verb
-     * @param string $content
-     * @param string $contentType
-     * @param bool $contentFromFile
-     * @param array $request
-     */
-    protected function invokeRequest(&$curl, &$verb, &$content, &$contentType, &$contentFromFile, &$request) {}
-
-    /**
-     * @param resource $curl
-     * @param string $verb
-     * @param string $content
-     * @param string $contentType
-     * @param bool $contentFromFile
-     * @param string $httpMessage
-     */
-    protected function invokeResponse(&$curl, &$verb, &$content, &$contentType, &$contentFromFile, &$httpMessage) {}
-
-    /**
      * @param array $request
      * @param array $response
      * @return array
@@ -547,5 +540,13 @@ class HttpPlug {
         }
         $response['request'] = $request;
         return $response;
+    }
+
+    /**
+     * @return float
+     */
+    private function getTime() {
+        $st = explode(' ', microtime());
+        return (float)$st[0] + (float)$st[1];
     }
 }
