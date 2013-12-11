@@ -378,7 +378,8 @@ class HttpPlug {
     protected function invoke($verb, $content = null, $contentType = null, $contentFromFile = false) {
 
         // create the request info
-        $request = array('uri' => $this->GetUri(),
+        $request = array(
+            'uri' => $this->getUri(),
 
             // grab unflattened headers
             'headers' => $this->headers
