@@ -1,7 +1,7 @@
-mindtouch-api-php-client
+MindTouch-API-PHP-Client
 ========================
 
-mindtouch-api-php-client is a PHP library for interacting with the MindTouch REST API.
+MindTouch-API-PHP-Client is a PHP library for interacting with the MindTouch REST API.
 
 Usage
 -----
