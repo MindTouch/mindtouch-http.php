@@ -22,10 +22,22 @@ use Exception;
 
 class CannotLoadCurrentSiteException extends Exception {
 
+    private $Result;
+
     /**
      * @param ApiResult $Result
      */
     public function __construct($Result) {
-        parent::__construct('Cannot load current site, API returned: ' . $Result->getError());
+        $this->Result = $Result;
+        parent::__construct(
+            "\n" .
+            'Request: ' . $Result->getVal('request/uri') . "\n" .
+            'Error: ' . $Result->getError() . "\n"
+        );
     }
+
+    /**
+     * @return ApiResult
+     */
+    public function getResult() { return $this->Result; }
 }
