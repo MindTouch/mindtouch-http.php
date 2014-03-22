@@ -98,7 +98,7 @@ class XArray {
                 continue;
             }
             if(isset($array[$val]) && !is_array($array[$val])) {
-                if($array[$val] != null && $i == $count) {
+                if($array[$val] !== null && $i == $count) {
                     return $array[$val];
                 }
                 return $default;
