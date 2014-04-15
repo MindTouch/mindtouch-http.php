@@ -43,11 +43,6 @@ class HttpPlug {
     const HTTPSERVERERROR = 500;
 
     /**
-     * @var string
-     */
-    protected $hostname;
-
-    /**
      * @note (guerrics): feel free to directly set this value
      * @var int $timeout - sets the request timeout length
      */

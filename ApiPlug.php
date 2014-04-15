@@ -78,8 +78,8 @@ class ApiPlug extends HttpPlug {
      * @param array $defaultHeaders
      * @return ApiPlug
      */
-    public static function newPlug($uri, $format = self::DREAM_FORMAT_PHP, $hostname = null, $defaultHeaders = null) {
-        return self::newApiPlugHelper(__CLASS__, $uri, $format, $hostname, $defaultHeaders);
+    public static function newPlug($uri, $format = self::DREAM_FORMAT_PHP) {
+        return self::newApiPlugHelper(__CLASS__, $uri, $format);
     }
 
     /**
@@ -133,11 +133,9 @@ class ApiPlug extends HttpPlug {
      * @param string $class
      * @param string $uri
      * @param string $format
-     * @param string $hostname
-     * @param array $defaultHeaders
      * @return ApiPlug
      */
-    protected static function newApiPlugHelper($class, $uri, $format = null, $hostname = null, $defaultHeaders = null) {
+    protected static function newApiPlugHelper($class, $uri, $format = null) {
 
         // remove trailing slash from uri
         if(substr_compare($uri, '/', -1, 1) === 0) {
@@ -147,7 +145,7 @@ class ApiPlug extends HttpPlug {
         $Plug->class = $class;
 
         // include default & white-listed headers
-        self::setDefaultHeaders($Plug->headers, $defaultHeaders !== null ? $defaultHeaders : self::$dreamDefaultHeaders);
+        self::setDefaultHeaders($Plug->headers, self::$dreamDefaultHeaders);
 
         // set the default dream query params
         if($Plug->query) {
@@ -155,26 +153,8 @@ class ApiPlug extends HttpPlug {
         } else {
             $Plug->query = '';
         }
-        if(empty($hostname) && isset($_SERVER['HTTP_HOST'])) {
-            $hostname = $_SERVER['HTTP_HOST'];
-        }
         if($format) {
             $Plug->query .= 'dream.out.format=' . rawurlencode($format);
-        }
-
-        // if a hostname was previously set, reuse it, otherwise take the new one
-        $Plug->query .= '&dream.in.host=' . rawurlencode(!empty($hostname) ? $hostname : $Plug->hostname);
-
-        // @note hack hack, pass in scheme until dream.in.uri is available
-        // parse the scheme from the frontend request
-        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") {
-            $scheme = 'https';
-        } else {
-            $scheme = 'http';
-        }
-        $Plug->query .= '&dream.in.scheme=' . $scheme;
-        if(isset($_SERVER['REMOTE_ADDR'])) {
-            $Plug->query .= '&dream.in.origin=' . rawurlencode($_SERVER['REMOTE_ADDR']);
         }
         return $Plug;
     }
