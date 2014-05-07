@@ -10,12 +10,6 @@ composer.json:
 {
     "require": {
         "mindtouch/MindTouch-API-PHP-Client": "dev-master"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/MindTouch/MindTouch-API-PHP-Client"
-        }
-    ]
+    }
 }
 ```

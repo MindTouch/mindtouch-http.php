@@ -53,6 +53,7 @@ class ApiPlug extends HttpPlug {
 
     /**
      * Determines which headers should be forwarded with every request
+     *
      * @note maps HTTP header to PHP defines
      * @var array
      */

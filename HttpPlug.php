@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 namespace MindTouch\ApiClient;
+use MindTouch\ApiClient\test\MockPlug;
 
 /**
  * Class HttpPlug - builder for simple HTTP requests
@@ -125,41 +126,39 @@ class HttpPlug {
     }
 
     /**
-     * @param mixed $uri - of type string, array, or Plug object
+     * @param mixed $data - of type string, array, or Plug object
      */
-    protected function __construct($uri) {
+    protected function __construct($data) {
+        if(is_string($data)) {
 
-        // initialize from uri string
-        if(is_string($uri)) {
-            $uri = parse_url($uri);
+            // initialize from uri string
+            $data = parse_url($data);
         }
+        if(is_array($data)) {
 
-        // initialize from uri array
-        if(is_array($uri)) {
-            $this->scheme = isset($uri['scheme']) ? $uri['scheme'] : null;
-            $this->user = isset($uri['user']) ? $uri['user'] : null;
-            $this->password = isset($uri['pass']) ? $uri['pass'] : null;
-            $this->host = isset($uri['host']) ? $uri['host'] : null;
-            $this->port = isset($uri['port']) ? $uri['port'] : null;
-            $this->path = isset($uri['path']) ? $uri['path'] : null;
-            $this->query = isset($uri['query']) ? $uri['query'] : null;
-            $this->fragment = isset($uri['fragment']) ? $uri['fragment'] : null;
-        } else {
+            // initialize from uri array
+            $this->scheme = isset($data['scheme']) ? $data['scheme'] : null;
+            $this->user = isset($data['user']) ? $data['user'] : null;
+            $this->password = isset($data['pass']) ? $data['pass'] : null;
+            $this->host = isset($data['host']) ? $data['host'] : null;
+            $this->port = isset($data['port']) ? $data['port'] : null;
+            $this->path = isset($data['path']) ? $data['path'] : null;
+            $this->query = isset($data['query']) ? $data['query'] : null;
+            $this->fragment = isset($data['fragment']) ? $data['fragment'] : null;
+        } elseif(is_object($data)) {
 
-            // initialize from Plug object
-            if(is_object($uri)) {
-                $this->scheme = $uri->scheme;
-                $this->user = $uri->user;
-                $this->password = $uri->password;
-                $this->host = $uri->host;
-                $this->port = $uri->port;
-                $this->path = $uri->path;
-                $this->query = $uri->query;
-                $this->fragment = $uri->fragment;
-                $this->timeout = $uri->timeout;
-                $this->headers = $uri->headers;
-                $this->class = $uri->class;
-            }
+            // initialize from HttpPlug object
+            $this->scheme = $data->scheme;
+            $this->user = $data->user;
+            $this->password = $data->password;
+            $this->host = $data->host;
+            $this->port = $data->port;
+            $this->path = $data->path;
+            $this->query = $data->query;
+            $this->fragment = $data->fragment;
+            $this->timeout = $data->timeout;
+            $this->headers = $data->headers;
+            $this->class = $data->class;
         }
 
         // default host if not provided
@@ -197,7 +196,7 @@ class HttpPlug {
      */
     public function with($name, $value = null) {
         $Plug = new $this->class($this);
-        if($Plug->query) {
+        if($Plug->query !== null) {
             $Plug->query .= '&' . urlencode($name) . ($value !== null ? '=' . urlencode($value) : '');
         } else {
             $Plug->query = urlencode($name) . ($value !== null ? '=' . urlencode($value) : '');
@@ -271,18 +270,14 @@ class HttpPlug {
      *
      * @return array - request response
      */
-    public function get() {
-        return $this->invoke(self::VERB_GET);
-    }
+    public function get() { return $this->invoke(self::VERB_GET); }
 
     /**
      * Performs a HEAD request
      *
      * @return array
      */
-    public function head() {
-        return $this->invoke(self::VERB_HEAD);
-    }
+    public function head() { return $this->invoke(self::VERB_HEAD); }
 
     /**
      * Performs a POST request
@@ -291,20 +286,25 @@ class HttpPlug {
      * @return array - request response
      */
     public function post($input = null) {
-        if(is_array($input)) {
-            return $this->invokeXml(self::VERB_POST, $input);
-        } else {
-            return $this->invokeFields(self::VERB_POST, $input);
-        }
+        return is_array($input) ? $this->invokeXml(self::VERB_POST, $input) : $this->invokeFields(self::VERB_POST, $input);
     }
 
-    public function postFile($path, $mimeType = null) {
-        return $this->invoke(self::VERB_POST, $path, $mimeType, true);
-    }
+    /**
+     * Performs a POST request with a file payload
+     *
+     * @param string $path
+     * @param string|null $mimeType
+     * @return array
+     */
+    public function postFile($path, $mimeType = null) { return $this->invoke(self::VERB_POST, $path, $mimeType, true); }
 
-    public function postFields($formFields) {
-        return $this->invokeFields(self::VERB_POST, $formFields);
-    }
+    /**
+     * Performs a POST request with a form payload
+     *
+     * @param array $formFields
+     * @return array
+     */
+    public function postFields($formFields) { return $this->invokeFields(self::VERB_POST, $formFields); }
 
     /**
      * Performs a PUT request
@@ -320,13 +320,22 @@ class HttpPlug {
         return $Plug->invokeXml(self::VERB_PUT, $input);
     }
 
-    public function putFields($formFields) {
-        return $this->invokeFields(self::VERB_PUT, $formFields);
-    }
+    /**
+     * Performs a PUT request with a form payload
+     *
+     * @param array $formFields
+     * @return array
+     */
+    public function putFields($formFields) { return $this->invokeFields(self::VERB_PUT, $formFields); }
 
-    public function putFile($path, $mimeType = null) {
-        return $this->invoke(self::VERB_PUT, $path, $mimeType, true);
-    }
+    /**
+     * Performs a PUT request with a file payload
+     *
+     * @param string $path
+     * @param string|null $mimeType
+     * @return array
+     */
+    public function putFile($path, $mimeType = null) { return $this->invoke(self::VERB_PUT, $path, $mimeType, true); }
 
     /**
      * Performs a DELETE request
@@ -334,9 +343,7 @@ class HttpPlug {
      * @param array $input
      * @return array - request response
      */
-    public function delete($input = null) {
-        return $this->invokeXml(self::VERB_DELETE, $input);
-    }
+    public function delete($input = null) { return $this->invokeXml(self::VERB_DELETE, $input); }
 
     /**
      * @param string $verb
@@ -355,23 +362,20 @@ class HttpPlug {
     }
 
     /**
-     * @param $verb
-     * @param $formFields
+     * @param string $verb
+     * @param array $formFields
      * @return array - request response
      */
-    protected function invokeFields($verb, $formFields) {
-        return $this->invoke($verb, $formFields);
-    }
+    protected function invokeFields($verb, $formFields) { return $this->invoke($verb, $formFields); }
 
     /**
      * @param string $verb
      * @param string $content
      * @param string $contentType
      * @param bool $contentFromFile - if true, then $content is assumed to be a file path
-     * @param callable $preInvokeCallback
      * @return array - request response
      */
-    protected function invoke($verb, $content = null, $contentType = null, $contentFromFile = false, $preInvokeCallback = null) {
+    protected function invoke($verb, $content = null, $contentType = null, $contentFromFile = false) {
 
         // create the request info
         $request = array(
@@ -395,14 +399,16 @@ class HttpPlug {
         }
         $this->invokeApplyCredentials($request['headers']);
 
-        // if callback returns a response, assume curl is not needed
-        if($preInvokeCallback !== null) {
-            $response = $preInvokeCallback($verb, $request, $content, $contentFromFile);
+        // if MockPlug returns a response, curl is not needed
+        if(MockPlug::$registered) {
+            $response = MockPlug::getMockedPlugResponse($verb, $request['uri'], $request['headers']);
             if($response !== null) {
                 $request['headers'] = self::flattenPlugHeaders($request['headers']);
                 return $this->invokeComplete($request, $response);
             }
         }
+
+        // normal plug request
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $request['uri']);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -517,9 +523,7 @@ class HttpPlug {
      * @param array $response
      * @return array
      */
-    protected function invokeComplete(&$request, &$response) {
-        return $this->getFormattedResponse($request, $response);
-    }
+    protected function invokeComplete(&$request, &$response) { return $this->getFormattedResponse($request, $response); }
 
     /**
      * @param array $request
