@@ -157,7 +157,7 @@ class XArray {
 
                 // skip attributes
             } else {
-                $tag = $outer ? $outer : $key;
+                $encodedTag = htmlspecialchars($outer ? $outer : $key, ENT_QUOTES);
                 if(is_array($value) && (count($value) > 0) && isset($value[0])) {
 
                     // numeric array found => child nodes
@@ -171,17 +171,17 @@ class XArray {
                         $attrs = '';
                         foreach($value as $attr_key => $attr_value) {
                             if(strncmp($attr_key, '@', 1) == 0) {
-                                $attrs .= ' ' . substr($attr_key, 1) . '="' . htmlspecialchars($attr_value) . '"';
+                                $attrs .= ' ' . htmlspecialchars(substr($attr_key, 1), ENT_QUOTES) . '="' . htmlspecialchars($attr_value, ENT_QUOTES) . '"';
                             }
                         }
                         $XArray = new XArray($value);
-                        $result .= '<' . $tag . $attrs . '>' . $XArray->toXml() . '</' . $tag . '>';
+                        $result .= '<' . $encodedTag . $attrs . '>' . $XArray->toXml() . '</' . $encodedTag . '>';
                         unset($XArray);
                     } else {
-                        if($tag != '#text') {
-                            $result .= '<' . $tag . '>' . $value . '</' . $tag . '>';
+                        if($encodedTag != '#text') {
+                            $result .= '<' . $encodedTag . '>' . htmlspecialchars($value, ENT_QUOTES) . '</' . $encodedTag . '>';
                         } else {
-                            $result .= htmlspecialchars($value);
+                            $result .= htmlspecialchars($value, ENT_QUOTES);
                         }
                     }
                 }
