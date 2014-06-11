@@ -28,8 +28,6 @@
  */
 namespace MindTouch\ApiClient\test;
 
-use MindTouch\ApiClient\HttpPlug;
-
 /**
  * Class MockPlug
  *
@@ -83,13 +81,11 @@ class MockPlug {
     /**
      * Assert that call to URI has been made
      *
-     * @param string $requestVerb - GET, POST, PUT, etc
-     * @param string $requestUri
-     * @param array $requestHeaders - - [ ["header"] => "value" ]
+     * @param MockPlugRequestSettings $RequestSettings
      * @return bool
      */
-    public static function verify($requestVerb, $requestUri, $requestHeaders) {
-        return in_array(self::newMock($requestVerb, $requestUri, $requestHeaders), self::$calls);
+    public static function verify(MockPlugRequestSettings $RequestSettings) {
+        return in_array(self::newMock($RequestSettings), self::$calls);
     }
 
     /**
@@ -98,8 +94,8 @@ class MockPlug {
      * @return bool
      */
     public static function verifyAll() {
-        foreach(self::$mocks as $mock) {
-            if(!in_array($mock, self::$mocks)) {
+        foreach(self::$mocks as $id => $mock) {
+            if(!in_array($id, self::$calls)) {
                 return false;
             }
         }
@@ -116,27 +112,16 @@ class MockPlug {
     /**
      * New request and response to mock
      *
-     * @param string $requestVerb - GET, POST, PUT, etc
-     * @param string $requestUri
-     * @param array $requestHeaders - [ ["header"] => "value" ]
-     * @param mixed $responseBody
-     * @param array $responseHeaders - [ ["header"] => "value" ]
-     * @param int $responseStatus
+     * @param MockPlugRequestSettings $RequestSettings
+     * @param MockPlugResponseSettings $ResponseSettings
      */
-    public static function register(
-        $requestVerb,
-        $requestUri,
-        $requestHeaders,
-        $responseBody,
-        $responseHeaders = array(),
-        $responseStatus = HttpPlug::HTTPSUCCESS
-    ) {
-        $mock = static::newMock($requestVerb, $requestUri, $requestHeaders);
+    public static function register(MockPlugRequestSettings $RequestSettings, MockPlugResponseSettings $ResponseSettings) {
+        $mock = static::newMock($RequestSettings);
         self::$mocks[$mock] = array(
-            'verb' => $requestVerb,
-            'body' => $responseBody,
-            'headers' => $responseHeaders,
-            'status' => $responseStatus,
+            'verb' => $RequestSettings->verb,
+            'body' => $ResponseSettings->body,
+            'headers' => $ResponseSettings->headers,
+            'status' => $ResponseSettings->status,
             'type' => '',
             'errno' => '',
             'error' => ''
@@ -147,13 +132,11 @@ class MockPlug {
     /**
      * Get mocked response data in a format consumable by HttpPlug's invoke method
      *
-     * @param string $requestVerb - GET, POST, PUT, etc
-     * @param string $requestUri
-     * @param array $requestHeaders - - [ ["header"] => "value" ]
+     * @param MockPlugRequestSettings $RequestSettings
      * @return array - plug response data
      */
-    public static function getMockedPlugResponse($requestVerb, $requestUri, $requestHeaders) {
-        $mock = static::newMock($requestVerb, $requestUri, $requestHeaders);
+    public static function getResponse(MockPlugRequestSettings $RequestSettings) {
+        $mock = static::newMock($RequestSettings);
         self::$calls[] = $mock;
         return isset(self::$mocks[$mock]) ? self::$mocks[$mock] : null;
     }
@@ -167,24 +150,22 @@ class MockPlug {
     }
 
     /**
-     * @param string $requestVerb
-     * @param string $requestUri
-     * @param array $requestHeaders
+     * @param MockPlugRequestSettings $RequestSettings
      * @return string
      */
-    protected static function newMock($requestVerb, $requestUri, $requestHeaders) {
+    protected static function newMock(MockPlugRequestSettings $RequestSettings) {
         $params = array();
 
         // parse uri into components
-        $uriParts = parse_url($requestUri);
+        $uriParts = parse_url($RequestSettings->uri);
         parse_str($uriParts['query'], $params);
 
         // filter parameters & headers applied by dekiplug
         $params = array_diff_key($params, array_flip(self::$ignoreRequestQueryParams));
-        $requestHeaders = array_diff_key($requestHeaders, array_flip(self::$ignoreRequestHeaders));
+        $requestHeaders = array_diff_key($RequestSettings->headers, array_flip(self::$ignoreRequestHeaders));
 
         // build serialized mock string
-        $key = $requestVerb . '_' . $uriParts['scheme'] . '://' . $uriParts['host'];
+        $key = $RequestSettings->verb . '_' . $uriParts['scheme'] . '://' . $uriParts['host'];
         if(isset($uriParts['port'])) {
             $key .= ':' . $uriParts['port'];
         }
@@ -196,6 +177,6 @@ class MockPlug {
             $key .= '?' . http_build_query($params);
         }
         ksort($requestHeaders);
-        return md5(serialize($requestHeaders) . $key);
+        return md5(serialize($requestHeaders) . $key . $RequestSettings->body);
     }
 }

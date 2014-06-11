@@ -18,6 +18,7 @@
  */
 namespace MindTouch\ApiClient;
 use MindTouch\ApiClient\test\MockPlug;
+use MindTouch\ApiClient\test\MockPlugRequestSettings;
 
 /**
  * Class HttpPlug - builder for simple HTTP requests
@@ -401,7 +402,9 @@ class HttpPlug {
 
         // if MockPlug returns a response, curl is not needed
         if(MockPlug::$registered) {
-            $response = MockPlug::getMockedPlugResponse($verb, $request['uri'], $request['headers']);
+            $response = MockPlug::getResponse(
+                MockPlugRequestSettings::newMockPlugRequestSettings($verb, $request['uri'], $request['headers'], $content)
+            );
             if($response !== null) {
                 $request['headers'] = self::flattenPlugHeaders($request['headers']);
                 return $this->invokeComplete($request, $response);
