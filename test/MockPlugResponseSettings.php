@@ -42,12 +42,14 @@ class MockPlugResponseSettings {
      * @param string $status
      * @param array $headers
      * @param mixed $body
+     * @return MockPlugResponseSettings
      */
     public static function newMockPlugResponseSettings($status, array $headers, $body) {
         $Settings = new self();
         $Settings->status = $status;
         $Settings->headers = $headers;
         $Settings->body = $body;
+        return $Settings;
     }
 
     /**
