@@ -43,6 +43,7 @@ class MockPlugRequestSettings {
      * @param string $uri
      * @param array $headers
      * @param string|null $body
+     * @return MockPlugRequestSettings
      */
     public static function newMockPlugRequestSettings($verb, $uri, array $headers, $body = null) {
         $Settings = new self();
@@ -50,6 +51,7 @@ class MockPlugRequestSettings {
         $Settings->uri = $uri;
         $Settings->headers = $headers;
         $Settings->body = $body;
+        return $Settings;
     }
 
     /**
