@@ -39,9 +39,10 @@ use MindTouch\ApiClient\HttpPlug;
 class MockResponse {
 
     /**
-     * @param string $status
+     * @param int $status
      * @param array $headers
      * @param mixed $body
+     * @return MockPlugResponseSettings
      * @return MockResponse
      */
     public static function newMockResponse($status, array $headers, $body) {
