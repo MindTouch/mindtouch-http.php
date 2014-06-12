@@ -30,30 +30,39 @@ namespace MindTouch\ApiClient\test;
 use MindTouch\ApiClient\HttpPlug;
 
 /**
- * Class MockPlugSettings
+ * Class MockRequest
  *
- * Settings object for configuring a MockPlug mock response
+ * Object for configuring a MockPlug request to mock or verify
  *
  * @package MindTouch\ApiClient\test
  */
-class MockPlugResponseSettings {
+class MockRequest {
 
     /**
-     * @param string $status
+     * @param string $verb
+     * @param string $uri
      * @param array $headers
-     * @param mixed $body
+     * @param string|null $body
+     * @return MockRequest
      */
-    public static function newMockPlugResponseSettings($status, array $headers, $body) {
-        $Settings = new self();
-        $Settings->status = $status;
-        $Settings->headers = $headers;
-        $Settings->body = $body;
+    public static function newMockRequest($verb, $uri, array $headers, $body = null) {
+        $Request = new self();
+        $Request->verb = $verb;
+        $Request->uri = $uri;
+        $Request->headers = $headers;
+        $Request->body = $body;
+        return $Request;
     }
 
     /**
-     * @var int
+     * @var string
      */
-    public $status = HttpPlug::HTTPSUCCESS;
+    public $verb = HttpPlug::VERB_GET;
+
+    /**
+     * @var string
+     */
+    public $uri;
 
     /**
      * @var array - [ ["header"] => "value" ]
@@ -61,7 +70,9 @@ class MockPlugResponseSettings {
     public $headers = array();
 
     /**
-     * @var mixed
+     * body is only relevant for PUT or POST requests
+     *
+     * @var string
      */
     public $body;
 }

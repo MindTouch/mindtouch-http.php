@@ -54,13 +54,13 @@ class MockPlug {
 
     /**
      * @var array
-     * @structure [ [mock] => [response], [mock] => [response] ]
+     * @structure [ [id] => MockResponse, [id] => MockResponse ]
      */
-    private static $mocks = array();
+    private static $responses = array();
 
     /**
      * @var array
-     * @structure [ [0] => mock, [1] => mock, [2] => mock ]
+     * @structure [ [id] => MockRequest, [id] => MockRequest ]
      */
     private static $calls = array();
 
@@ -81,11 +81,11 @@ class MockPlug {
     /**
      * Assert that call to URI has been made
      *
-     * @param MockPlugRequestSettings $RequestSettings
+     * @param MockRequest $Request
      * @return bool
      */
-    public static function verify(MockPlugRequestSettings $RequestSettings) {
-        return in_array(self::newMock($RequestSettings), self::$calls);
+    public static function verify(MockRequest $Request) {
+        return isset(self::$calls[self::newMockId($Request)]);
     }
 
     /**
@@ -94,8 +94,8 @@ class MockPlug {
      * @return bool
      */
     public static function verifyAll() {
-        foreach(self::$mocks as $id => $mock) {
-            if(!in_array($id, self::$calls)) {
+        foreach(self::$responses as $id => $Response) {
+            if(!isset(self::$calls[$id])) {
                 return false;
             }
         }
@@ -112,60 +112,58 @@ class MockPlug {
     /**
      * New request and response to mock
      *
-     * @param MockPlugRequestSettings $RequestSettings
-     * @param MockPlugResponseSettings $ResponseSettings
+     * @param MockRequest $Request
+     * @param MockResponse $Response
      */
-    public static function register(MockPlugRequestSettings $RequestSettings, MockPlugResponseSettings $ResponseSettings) {
-        $mock = static::newMock($RequestSettings);
-        self::$mocks[$mock] = array(
-            'verb' => $RequestSettings->verb,
-            'body' => $ResponseSettings->body,
-            'headers' => $ResponseSettings->headers,
-            'status' => $ResponseSettings->status,
-            'type' => '',
-            'errno' => '',
-            'error' => ''
-        );
+    public static function register(MockRequest $Request, MockResponse $Response) {
+        self::$responses[self::newMockId($Request)] = $Response;
         self::$registered = true;
     }
 
     /**
-     * Get mocked response data in a format consumable by HttpPlug's invoke method
+     * Get mocked response data
      *
-     * @param MockPlugRequestSettings $RequestSettings
-     * @return array - plug response data
+     * @param MockRequest $Request
+     * @return MockResponse
      */
-    public static function getResponse(MockPlugRequestSettings $RequestSettings) {
-        $mock = static::newMock($RequestSettings);
-        self::$calls[] = $mock;
-        return isset(self::$mocks[$mock]) ? self::$mocks[$mock] : null;
+    public static function getResponse(MockRequest $Request) {
+        $id = self::newMockId($Request);
+        self::$calls[$id] = $Request;
+        return isset(self::$responses[$id]) ? $responses[$id] : null;
     }
+
+    /**
+     * Get collection of attempted http calls
+     *
+     * @return array
+     */
+    public static function getCalls() { return self::$calls; }
 
     /**
      * Reset MockPlug
      */
     public static function deregisterAll() {
-        self::$mocks = array();
+        self::$responses = array();
         self::$calls = array();
     }
 
     /**
-     * @param MockPlugRequestSettings $RequestSettings
+     * @param MockRequest $Request
      * @return string
      */
-    protected static function newMock(MockPlugRequestSettings $RequestSettings) {
+    protected static function newMockId(MockRequest $Request) {
         $params = array();
 
         // parse uri into components
-        $uriParts = parse_url($RequestSettings->uri);
+        $uriParts = parse_url($Request->uri);
         parse_str($uriParts['query'], $params);
 
         // filter parameters & headers applied by dekiplug
         $params = array_diff_key($params, array_flip(self::$ignoreRequestQueryParams));
-        $requestHeaders = array_diff_key($RequestSettings->headers, array_flip(self::$ignoreRequestHeaders));
+        $requestHeaders = array_diff_key($Request->headers, array_flip(self::$ignoreRequestHeaders));
 
         // build serialized mock string
-        $key = $RequestSettings->verb . '_' . $uriParts['scheme'] . '://' . $uriParts['host'];
+        $key = $Request->verb . '_' . $uriParts['scheme'] . '://' . $uriParts['host'];
         if(isset($uriParts['port'])) {
             $key .= ':' . $uriParts['port'];
         }
@@ -177,6 +175,6 @@ class MockPlug {
             $key .= '?' . http_build_query($params);
         }
         ksort($requestHeaders);
-        return md5(serialize($requestHeaders) . $key . $RequestSettings->body);
+        return md5(serialize($requestHeaders) . $key . $Request->body);
     }
 }
