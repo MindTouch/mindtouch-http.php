@@ -129,7 +129,7 @@ class MockPlug {
     public static function getResponse(MockRequest $Request) {
         $id = self::newMockId($Request);
         self::$calls[$id] = $Request;
-        return isset(self::$responses[$id]) ? $responses[$id] : null;
+        return isset(self::$responses[$id]) ? self::$responses[$id] : null;
     }
 
     /**
