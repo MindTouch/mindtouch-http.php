@@ -43,7 +43,6 @@ class MockRequest {
      * @param string $uri
      * @param array $headers
      * @param string|null $body
-     * @return MockPlugRequestSettings
      * @return MockRequest
      */
     public static function newMockRequest($verb, $uri, array $headers, $body = null) {

@@ -1,9 +1,12 @@
 MindTouch API PHP Client
 ========================
+[![Latest Stable Version](https://poser.pugx.org/mindtouch/mindtouch-api-php-client/version.svg)](https://packagist.org/packages/mindtouch/mindtouch-api-php-client) [![Latest Unstable Version](https://poser.pugx.org/mindtouch/mindtouch-api-php-client/v/unstable.svg)](https://packagist.org/packages/mindtouch/mindtouch-api-php-client) [![License](https://poser.pugx.org/mindtouch/mindtouch-api-php-client/license.svg)](https://packagist.org/packages/mindtouch/mindtouch-api-php-client)
 
 The MindTouch API PHP Client is a PHP library for interacting with the [MindTouch REST API](http://success.mindtouch.com/Documentation/Integration/API).
 
-[![Package version](http://img.shields.io/packagist/v/mindtouch/mindtouch-api-php-client.svg)](https://packagist.org/packages/mindtouch/mindtouch-api-php-client)
+Support
+-------
+This Library is provided for and supported by the open source community. Supported MindTouch site owners may file bug reports via [GitHub](https://github.com/MindTouch/MindTouch-API-PHP-Client/issues), but support plans do not cover the usage of this library.
 
 Installation
 ------------
