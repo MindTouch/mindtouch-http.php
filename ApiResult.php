@@ -148,8 +148,16 @@ class ApiResult extends XArray {
     }
 
     /**
+     * @return string
+     */
+    public function getException() {
+        $exception = $this->getVal('body/error/exception');
+        return $exception !== null ? $exception : null;
+    }
+
+    /**
      * @return bool
-     * @throws CannotLoadCurrentSiteException
+     * @throws ApiResultException
      */
     public function handleResponse() {
 
@@ -160,7 +168,7 @@ class ApiResult extends XArray {
 
         // 503: Service not Available usually means host has crashed
         if($this->getStatus() === 503) {
-            throw new CannotLoadCurrentSiteException($this);
+            throw new ApiResultException($this);
         }
 
         // 200-level is good

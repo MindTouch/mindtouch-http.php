@@ -20,9 +20,9 @@ namespace MindTouch\ApiClient;
 
 use Exception;
 
-class CannotLoadCurrentSiteException extends Exception {
+class ApiResultException extends Exception {
 
-    private $Result;
+    protected $Result;
 
     /**
      * @param ApiResult $Result
@@ -40,4 +40,9 @@ class CannotLoadCurrentSiteException extends Exception {
      * @return ApiResult
      */
     public function getResult() { return $this->Result; }
+
+    /**
+     * @return string
+     */
+    public function getType() { return $this->Result->getException(); }
 }
