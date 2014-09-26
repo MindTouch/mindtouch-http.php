@@ -535,7 +535,7 @@ class HttpPlug {
      * @param array $response
      * @return array
      */
-    protected function invokeComplete(&$request, &$response) { return $this->getFormattedResponse($request, $response); }
+    protected function invokeComplete($request, $response) { return $this->getFormattedResponse($request, $response); }
 
     /**
      * @param array $request
