@@ -262,7 +262,7 @@ class ApiPlug extends HttpPlug {
      * @param array $response
      * @return ApiResult
      */
-    protected function invokeComplete(&$request, &$response) {
+    protected function invokeComplete($request, $response) {
         $formattedResponse = $this->getFormattedResponse($request, $response);
         return new ApiResult($formattedResponse);
     }
