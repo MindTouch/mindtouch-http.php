@@ -30,9 +30,8 @@ class ApiResultException extends Exception {
     public function __construct($Result) {
         $this->Result = $Result;
         parent::__construct(
-            "\n" .
-            'Request: ' . $Result->getVal('request/uri') . "\n" .
-            'Error: ' . $Result->getError() . "\n"
+            $Result->getError() . "\n" .
+            'Request: ' . $Result->getVal('request/uri') . "\n"
         );
     }
 
