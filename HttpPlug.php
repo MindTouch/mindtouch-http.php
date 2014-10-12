@@ -411,7 +411,7 @@ class HttpPlug {
                     'body' => $Response->body,
                     'headers' => $Response->headers,
                     'status' => $Response->status,
-                    'type' => '',
+                    'type' => $Response->headers[self::HEADER_CONTENT_TYPE],
                     'errno' => '',
                     'error' => ''
                 );
