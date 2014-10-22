@@ -21,7 +21,6 @@ namespace MindTouch\ApiClient;
 use Exception;
 
 class ApiResultException extends Exception {
-
     protected $Result;
 
     /**
@@ -29,16 +28,23 @@ class ApiResultException extends Exception {
      */
     public function __construct($Result) {
         $this->Result = $Result;
-        parent::__construct(
-            $Result->getError() . "\n" .
-            'Request: ' . $Result->getVal('request/uri') . "\n"
-        );
+        parent::__construct($Result->getError());
     }
 
     /**
      * @return ApiResult
      */
     public function getResult() { return $this->Result; }
+
+    /**
+     * @return string
+     */
+    public function getRequestUri() { return $this->Result->getVal('request/uri'); }
+
+    /**
+     * @return string
+     */
+    public function getRequestVerb() { return $this->Result->getVal('request/verb'); }
 
     /**
      * @return string
