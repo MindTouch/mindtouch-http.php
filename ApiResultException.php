@@ -29,6 +29,11 @@ class ApiResultException extends Exception {
     public function __construct($Result) {
         $this->Result = $Result;
         $error = $Result->getError();
+        if(is_array($error)) {
+
+            // exception must be a string
+            $error = json_encode($error);
+        }
         parent::__construct($error != null ? $error : 'unknown');
     }
 
