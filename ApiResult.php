@@ -104,9 +104,16 @@ class ApiResult extends XArray {
      */
     public function isSuccess() {
         $status = $this->getStatus();
-        return ($status >= 200 && $status < 300);
+        return $status >= 200 && $status < 300;
     }
 
+    /**
+     * @return bool
+     */
+    public function isServerError() {
+        $status = $this->getStatus();
+        return $status >= 500 && $status < 600;
+    }
     /**
      * @param string $key
      * @return string
