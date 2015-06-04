@@ -42,6 +42,7 @@ class HttpPlug {
     const HTTPNOTFOUND = 404;
     const HTTPAUTHFAILED = 401;
     const HTTPFORBIDDEN = 403;
+    const HTTPCONFLICT = 409;
     const HTTPSERVERERROR = 500;
 
     /**
