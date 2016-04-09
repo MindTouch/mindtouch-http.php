@@ -18,8 +18,8 @@
  */
 namespace MindTouch\Http;
 
-use MindTouch\Http\test\MockPlug;
-use MindTouch\Http\test\MockRequest;
+use MindTouch\Http\Mock\MockPlug;
+use MindTouch\Http\Mock\MockRequest;
 use MindTouch\XArray\XArray;
 
 /**

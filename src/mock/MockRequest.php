@@ -16,37 +16,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\test;
+namespace MindTouch\Http\mock;
 
 use MindTouch\Http\HttpPlug;
 
 /**
- * Class MockResponse
+ * Class MockRequest
  *
- * Object for configuring a MockPlug mock response
+ * Object for configuring a MockPlug request to mock or verify
  *
  * @package MindTouch\Http\test
  */
-class MockResponse {
+class MockRequest {
 
     /**
-     * @param int $status
+     * @param string $verb
+     * @param string $uri
      * @param array $headers
-     * @param mixed $body
-     * @return MockResponse
+     * @param string|null $body
+     * @return MockRequest
      */
-    public static function newMockResponse($status, array $headers, $body) {
-        $Response = new self();
-        $Response->status = $status;
-        $Response->headers = $headers;
-        $Response->body = $body;
-        return $Response;
+    public static function newMockRequest($verb, $uri, array $headers, $body = null) {
+        $Request = new self();
+        $Request->verb = $verb;
+        $Request->uri = $uri;
+        $Request->headers = $headers;
+        $Request->body = $body;
+        return $Request;
     }
 
     /**
-     * @var int
+     * @var string
      */
-    public $status = HttpPlug::HTTPSUCCESS;
+    public $verb = HttpPlug::VERB_GET;
+
+    /**
+     * @var string
+     */
+    public $uri;
 
     /**
      * @var array - [ ["header"] => "value" ]
@@ -54,7 +61,9 @@ class MockResponse {
     public $headers = array();
 
     /**
-     * @var mixed
+     * body is only relevant for PUT or POST requests
+     *
+     * @var string
      */
     public $body;
 }

@@ -8,16 +8,6 @@
       "name": "James Andrew Vaughn",
       "email": "andyv@mindtouch.com",
       "role": "lead maintainer"
-    },
-    {
-      "name": "Guerric Sloan",
-      "email": "guerrics@mindtouch.com",
-      "role": "author"
-    },
-    {
-      "name": "Steve Bjorg",
-      "email": "steveb@mindtouch.com",
-      "role": "author"
     }
   ],
   "support": {
@@ -25,6 +15,7 @@
   },
   "require": {
     "php": ">=5.4.0",
+    "psr/http-message": "1.0",
     "mindtouch/xarray": "0.1.1"
   },
   "require-dev": {
@@ -34,6 +25,6 @@
     "psr-4": { "MindTouch\\Http\\": ["src/"] }
   },
   "autoload-dev": {
-    "psr-4": { "MindTouch\\Http\\test\\": ["test/"] }
+    "psr-4": { "MindTouch\\Http\\tests\\": ["tests/"] }
   }
 }

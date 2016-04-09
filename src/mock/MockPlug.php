@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\test;
+namespace MindTouch\Http\mock;
 
 /**
  * Class MockPlug

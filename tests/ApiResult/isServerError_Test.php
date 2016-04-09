@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\test\tests\ApiResult;
+namespace MindTouch\Http\tests\ApiResult;
 
 use MindTouch\Http\ApiResult;
 use PHPUnit_Framework_TestCase;
