@@ -1,6 +1,6 @@
 <phpunit bootstrap="_bootstrap.php" backupGlobals="false" processIsolation="false">
     <testsuite name="AllTests">
-        <directory>test/tests</directory>
+        <directory>tests</directory>
     </testsuite>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
