@@ -1,6 +1,5 @@
-mindtouch-http.php
-========================
-MindTouch HTTP is a PHP library for interacting with the [MindTouch REST API](http://success.mindtouch.com/Documentation/Integration/API).
+# MindTouch HTTP
+A PHP library for interacting with the [MindTouch REST API](http://success.mindtouch.com/Documentation/Integration/API).
 
 [![travis-ci.org](https://travis-ci.org/MindTouch/mindtouch-http.php.svg?branch=master)](https://travis-ci.org/MindTouch/mindtouch-http.php)
 [![codecov.io](https://codecov.io/github/MindTouch/mindtouch-http.php/coverage.svg?branch=master)](https://codecov.io/github/MindTouch/mindtouch-http.php?branch=master)
@@ -32,8 +31,7 @@ Or add mindtouch/mindtouch-http to your project's composer.json:
 
 Assuming you have setup Composer's autoloader, the library can be found in the MindTouch\Http\ namespace.
 
-Usage
------
+## Usage
 A quick example:
 
 ```php
@@ -47,6 +45,5 @@ if($Result->isSuccess()) {
 }
 ```
 
-Advanced Usage
---------------
+## Advanced Usage
 Read the [MindTouch HTTP documentation](https://github.com/mindtouch/mindtouch-http.php/wiki/Home) for more information.
