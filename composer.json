@@ -1,6 +1,6 @@
 {
   "name": "mindtouch/mindtouch-http",
-  "description": "MindTouch HTTP is a PHP library for interacting with the MindTouch REST API",
+  "description": "A PHP library for interacting with the MindTouch REST API",
   "type": "library",
   "license": "Apache-2.0",
   "authors" : [
