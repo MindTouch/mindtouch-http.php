@@ -1,7 +1,7 @@
 <?php
-/*
+/**
  * MindTouch API PHP Client
- * Copyright (C) 2006-2013 MindTouch, Inc.
+ * Copyright (C) 2006-2016 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,13 @@
  */
 namespace MindTouch\ApiClient;
 
+use MindTouch\XArray\XArray;
+
 /**
  * Class ApiResult - wraps MindTouch API results with accessors
  * @package MindTouch\ApiClient
  */
 class ApiResult extends XArray {
-
-    /**
-     * @param array $result
-     */
-    public function __construct(&$result) {
-        $this->array = $result;
-    }
 
     /**
      * Return the value of a Set-Cookie header by the cookie's name
@@ -41,7 +36,7 @@ class ApiResult extends XArray {
         $headers = $this->getHeaders('Set-Cookie');
         if(!is_null($headers)) {
             if(!is_array($headers)) {
-                $headers = array($headers);
+                $headers = [$headers];
             }
             foreach($headers as $header) {
                 if(strpos($header, $name) === 0) {
@@ -63,7 +58,7 @@ class ApiResult extends XArray {
         }
         $headers = $this->array['headers'][$name];
         if(!is_array($headers)) {
-            $headers = array($headers);
+            $headers = [$headers];
         }
         return $headers;
     }
