@@ -10,7 +10,7 @@ The MindTouch API PHP Client is a PHP library for interacting with the [MindTouc
 This library is provided for and supported by the open source community. Supported MindTouch site owners may file bug reports via [GitHub](https://github.com/MindTouch/MindTouch-API-PHP-Client/issues), but support plans do not cover the usage of this library.
 
 ## Requirements
-* PHP 5.3+
+* PHP 5.4+
 
 ## Installation
 Use [Composer](https://getcomposer.org/). There are two ways to add this library to your project.
