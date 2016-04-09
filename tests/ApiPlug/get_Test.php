@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\test\tests\ApiPlug;
+namespace MindTouch\Http\tests\ApiPlug;
 
 use MindTouch\Http\ApiPlug;
-use MindTouch\Http\test\MockPlug;
-use MindTouch\Http\test\MockRequest;
-use MindTouch\Http\test\MockResponse;
+use MindTouch\Http\Mock\MockPlug;
+use MindTouch\Http\Mock\MockRequest;
+use MindTouch\Http\Mock\MockResponse;
 use PHPUnit_Framework_TestCase;
 
 class get_Test extends PHPUnit_Framework_TestCase  {
