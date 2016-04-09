@@ -1,5 +1,6 @@
 {
   "name": "mindtouch/mindtouch-api-php-client",
+  "description": "The MindTouch API PHP Client is a PHP library for interacting with the MindTouch REST API",
   "type": "library",
   "license": "Apache-2.0",
   "authors" : [
@@ -19,20 +20,20 @@
       "role": "author"
     }
   ],
-  "minimum-stability": "dev",
   "support": {
     "issues": "https://github.com/mindtouch/mindtouch-api-php-client/issues"
   },
   "require": {
-    "php": ">=5.3.0"
+    "php": ">=5.4.0",
+    "mindtouch/xarray": "0.1.1"
   },
   "require-dev": {
     "phpunit/phpunit": "3.7.*@stable"
   },
   "autoload": {
-    "psr-0": { "MindTouch\\ApiClient\\": "" }
+    "psr-4": { "MindTouch\\ApiClient\\": ["src/"] }
   },
-  "target-dir": "MindTouch/ApiClient"
+  "autoload-dev": {
+    "psr-4": { "MindTouch\\ApiClient\\test\\": ["test/"] }
+  }
 }
-
-

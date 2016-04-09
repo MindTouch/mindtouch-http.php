@@ -1,7 +1,7 @@
 <?php
-/*
+/**
  * MindTouch API PHP Client
- * Copyright (C) 2006-2013 MindTouch, Inc.
+ * Copyright (C) 2006-2016 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 namespace MindTouch\ApiClient;
+
 use MindTouch\ApiClient\test\MockPlug;
 use MindTouch\ApiClient\test\MockRequest;
+use MindTouch\XArray\XArray;
 
 /**
  * Class HttpPlug - builder for simple HTTP requests
@@ -64,7 +66,7 @@ class HttpPlug {
     /**
      * @var array $headers - stores the headers for the request
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * @var
@@ -95,7 +97,7 @@ class HttpPlug {
         if($append && isset($multi[$key])) {
             if(!is_array($multi[$key])) {
                 $current = $multi[$key];
-                $multi[$key] = array();
+                $multi[$key] = [];
                 $multi[$key][] = $current;
             }
 
@@ -112,7 +114,7 @@ class HttpPlug {
      * @return array - string[] array of headers
      */
     protected static function flattenPlugHeaders(&$headers) {
-        $flat = array();
+        $flat = [];
         if(!empty($headers)) {
             foreach($headers as $name => $value) {
                 if(is_array($value)) {
@@ -318,7 +320,7 @@ class HttpPlug {
         $contentLength = $input === null ? 0 : strlen($input);
 
         // explicitly set content-length for put requests
-        $Plug = $this->WithHeader(self::HEADER_CONTENT_LENGTH, $contentLength);
+        $Plug = $this->withHeader(self::HEADER_CONTENT_LENGTH, $contentLength);
         return $Plug->invokeXml(self::VERB_PUT, $input);
     }
 
@@ -380,7 +382,7 @@ class HttpPlug {
     protected function invoke($verb, $content = null, $contentType = null, $contentFromFile = false) {
 
         // create the request info
-        $request = array(
+        $request = [
             'verb' => $verb,
             'uri' => $this->getUri(),
             'start' => 0,
@@ -388,7 +390,7 @@ class HttpPlug {
 
             // grab unflattened headers
             'headers' => $this->headers
-        );
+        ];
 
         // explicitly set content length for empty bodies
         if(is_null($content) || $content === false || (is_string($content) && strlen($content) == 0)) {
@@ -407,15 +409,17 @@ class HttpPlug {
                 MockRequest::newMockRequest($verb, $request['uri'], $request['headers'], $content)
             );
             if($Response !== null) {
-                $response = array(
+                $response = [
                     'verb' => $verb,
                     'body' => $Response->body,
                     'headers' => $Response->headers,
                     'status' => $Response->status,
-                    'type' => $Response->headers[self::HEADER_CONTENT_TYPE],
                     'errno' => '',
                     'error' => ''
-                );
+                ];
+                if(isset($Response->headers[self::HEADER_CONTENT_TYPE])) {
+                    $response['type'] = $Response->headers[self::HEADER_CONTENT_TYPE];
+                }
                 $request['headers'] = self::flattenPlugHeaders($request['headers']);
                 return $this->invokeComplete($request, $response);
             }
@@ -452,7 +456,7 @@ class HttpPlug {
                  */
                 if($contentFromFile && is_file($content)) {
                     curl_setopt($curl, CURLOPT_POST, true);
-                    $postFields = array('file' => '@' . $content,);
+                    $postFields = ['file' => '@' . $content,];
                     curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
                 } else {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
@@ -479,13 +483,13 @@ class HttpPlug {
         $request['end'] = $this->getTime();
 
         // create the response info
-        $response = array(
-            'headers' => array(),
+        $response = [
+            'headers' => [],
             'status' => curl_getinfo($curl, CURLINFO_HTTP_CODE),
             'type' => curl_getinfo($curl, CURLINFO_CONTENT_TYPE),
             'errno' => curl_errno($curl),
             'error' => curl_error($curl)
-        );
+        ];
         curl_close($curl);
 
         // header parsing

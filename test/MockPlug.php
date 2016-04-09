@@ -1,30 +1,20 @@
 <?php
-/*
- * MindTouch
- * Copyright (c) 2006-2012 MindTouch Inc.
- * http://mindtouch.com
+/**
+ * MindTouch API PHP Client
+ * Copyright (C) 2006-2016 MindTouch, Inc.
+ * www.mindtouch.com  oss@mindtouch.com
  *
- * This file and accompanying files are licensed under the
- * MindTouch Master Subscription Agreement (MSA).
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * At any time, you shall not, directly or indirectly: (i) sublicense,
- * resell, rent, lease, distribute, market, commercialize or otherwise
- * transfer rights or usage to: (a) the Software, (b) any modified version
- * or derivative work of the Software created by you or for you, or (c)
- * MindTouch Open Source (which includes all non-supported versions of
- * MindTouch-developed software), for any purpose including timesharing or
- * service bureau purposes; (ii) remove or alter any copyright, trademark
- * or proprietary notice in the Software; (iii) transfer, use or export the
- * Software in violation of any applicable laws or regulations of any
- * government or governmental agency; (iv) use or run on any of your
- * hardware, or have deployed for use, any production version of MindTouch
- * Open Source; (v) use any of the Support Services, Error corrections,
- * Updates or Upgrades, for the MindTouch Open Source software or for any
- * Server for which Support Services are not then purchased as provided
- * hereunder; or (vi) reverse engineer, decompile or modify any encrypted
- * or encoded portion of the Software.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * A complete copy of the MSA is available at http://www.mindtouch.com/msa
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 namespace MindTouch\ApiClient\test;
 
@@ -152,12 +142,14 @@ class MockPlug {
      * @return string
      */
     protected static function newMockId(MockRequest $Request) {
-        $params = array();
+        $params = [];
 
         // parse uri into components
         $uriParts = parse_url($Request->uri);
-        parse_str($uriParts['query'], $params);
-
+        if(isset($uriParts['query'])) {
+            parse_str($uriParts['query'], $params);
+        }
+     
         // filter parameters & headers applied by dekiplug
         $params = array_diff_key($params, array_flip(self::$ignoreRequestQueryParams));
         $requestHeaders = array_diff_key($Request->headers, array_flip(self::$ignoreRequestHeaders));

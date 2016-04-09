@@ -1,7 +1,7 @@
 <?php
-/*
+/**
  * MindTouch API PHP Client
- * Copyright (C) 2006-2013 MindTouch, Inc.
+ * Copyright (C) 2006-2016 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
