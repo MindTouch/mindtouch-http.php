@@ -1,6 +1,6 @@
 <?php
 /**
- * MindTouch API PHP Client
+ * MindTouch HTTP
  * Copyright (C) 2006-2016 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\ApiClient\test\tests\ApiPlug;
+namespace MindTouch\Http\test\tests\ApiPlug;
 
-use MindTouch\ApiClient\ApiPlug;
-use MindTouch\ApiClient\test\MockPlug;
-use MindTouch\ApiClient\test\MockRequest;
-use MindTouch\ApiClient\test\MockResponse;
+use MindTouch\Http\ApiPlug;
+use MindTouch\Http\test\MockPlug;
+use MindTouch\Http\test\MockRequest;
+use MindTouch\Http\test\MockResponse;
 use PHPUnit_Framework_TestCase;
 
 class get_Test extends PHPUnit_Framework_TestCase  {

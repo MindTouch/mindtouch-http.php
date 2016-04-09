@@ -1,6 +1,6 @@
 <?php
 /**
- * MindTouch API PHP Client
+ * MindTouch HTTP
  * Copyright (C) 2006-2016 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -16,14 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\ApiClient\test;
+namespace MindTouch\Http\test;
 
 /**
  * Class MockPlug
  *
  * A global HttpPlug interceptor for testing
  *
- * @package MindTouch\ApiClient\test
+ * @package MindTouch\Http\test
  */
 class MockPlug {
 

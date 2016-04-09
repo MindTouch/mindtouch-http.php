@@ -1,6 +1,6 @@
 <?php
 /**
- * MindTouch API PHP Client
+ * MindTouch HTTP
  * Copyright (C) 2006-2016 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -16,9 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\ApiClient\test\tests\ApiResult;
+namespace MindTouch\Http\test\tests\ApiResult;
 
-use MindTouch\ApiClient\ApiResult;
+use MindTouch\Http\ApiResult;
 use PHPUnit_Framework_TestCase;
 
 class isServerError_Test extends PHPUnit_Framework_TestCase  {
