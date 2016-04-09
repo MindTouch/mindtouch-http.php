@@ -1,6 +1,6 @@
 <?php
 /**
- * MindTouch API PHP Client
+ * MindTouch HTTP
  * Copyright (C) 2006-2016 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
@@ -16,25 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\ApiClient;
+namespace MindTouch\Http;
 
 /**
  * Class ApiPlug - builder for MindTouch API requests
- * @package MindTouch\ApiClient
+ * @package MindTouch\Http
  *
  * @TODO (andyv): remove fqdn return types once phpstorm fixes phpdoc type hinting
  *
- * @method \MindTouch\ApiClient\ApiPlug with
- * @method \MindTouch\ApiClient\ApiPlug withHeader
- * @method \MindTouch\ApiClient\ApiPlug withCredentials
- * @method \MindTouch\ApiClient\ApiResult get
- * @method \MindTouch\ApiClient\ApiResult head
- * @method \MindTouch\ApiClient\ApiResult post
- * @method \MindTouch\ApiClient\ApiResult postFile
- * @method \MindTouch\ApiClient\ApiResult postFields
- * @method \MindTouch\ApiClient\ApiResult putFile
- * @method \MindTouch\ApiClient\ApiResult putFields
- * @method \MindTouch\ApiClient\ApiResult delete
+ * @method \MindTouch\Http\ApiPlug with
+ * @method \MindTouch\Http\ApiPlug withHeader
+ * @method \MindTouch\Http\ApiPlug withCredentials
+ * @method \MindTouch\Http\ApiResult get
+ * @method \MindTouch\Http\ApiResult head
+ * @method \MindTouch\Http\ApiResult post
+ * @method \MindTouch\Http\ApiResult postFile
+ * @method \MindTouch\Http\ApiResult postFields
+ * @method \MindTouch\Http\ApiResult putFile
+ * @method \MindTouch\Http\ApiResult putFields
+ * @method \MindTouch\Http\ApiResult delete
  */
 class ApiPlug extends HttpPlug {
 
