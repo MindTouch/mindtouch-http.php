@@ -35,24 +35,24 @@ class MockPlug {
     /**
      * @var array
      */
-    private static $ignoreRequestQueryParams = array();
+    private static $ignoreRequestQueryParams = [];
 
     /**
      * @var array
      */
-    private static $ignoreRequestHeaders = array();
+    private static $ignoreRequestHeaders = [];
 
     /**
      * @var array
      * @structure [ [id] => MockResponse, [id] => MockResponse ]
      */
-    private static $responses = array();
+    private static $responses = [];
 
     /**
      * @var array
      * @structure [ [id] => MockRequest, [id] => MockRequest ]
      */
-    private static $calls = array();
+    private static $calls = [];
 
     /**
      * Ignore URI query param when matching requests to mocked responses
@@ -133,8 +133,8 @@ class MockPlug {
      * Reset MockPlug
      */
     public static function deregisterAll() {
-        self::$responses = array();
-        self::$calls = array();
+        self::$responses = [];
+        self::$calls = [];
     }
 
     /**

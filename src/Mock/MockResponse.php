@@ -51,7 +51,7 @@ class MockResponse {
     /**
      * @var array - [ ["header"] => "value" ]
      */
-    public $headers = array();
+    public $headers = [];
 
     /**
      * @var mixed

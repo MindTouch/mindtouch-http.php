@@ -58,7 +58,7 @@ class MockRequest {
     /**
      * @var array - [ ["header"] => "value" ]
      */
-    public $headers = array();
+    public $headers = [];
 
     /**
      * body is only relevant for PUT or POST requests
