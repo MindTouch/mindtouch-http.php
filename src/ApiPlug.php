@@ -24,17 +24,17 @@ namespace MindTouch\Http;
  *
  * @TODO (andyv): remove fqdn return types once phpstorm fixes phpdoc type hinting
  *
- * @method \MindTouch\Http\ApiPlug with
- * @method \MindTouch\Http\ApiPlug withHeader
- * @method \MindTouch\Http\ApiPlug withCredentials
- * @method \MindTouch\Http\ApiResult get
- * @method \MindTouch\Http\ApiResult head
- * @method \MindTouch\Http\ApiResult post
- * @method \MindTouch\Http\ApiResult postFile
- * @method \MindTouch\Http\ApiResult postFields
- * @method \MindTouch\Http\ApiResult putFile
- * @method \MindTouch\Http\ApiResult putFields
- * @method \MindTouch\Http\ApiResult delete
+ * @method \MindTouch\Http\ApiPlug with($name, $value = null)
+ * @method \MindTouch\Http\ApiPlug withHeader($name, $value, $append = false)
+ * @method \MindTouch\Http\ApiPlug withCredentials($user, $password)
+ * @method \MindTouch\Http\ApiResult get()
+ * @method \MindTouch\Http\ApiResult head()
+ * @method \MindTouch\Http\ApiResult post($input = null)
+ * @method \MindTouch\Http\ApiResult postFile($path, $mimeType = null)
+ * @method \MindTouch\Http\ApiResult postFields($formFields)
+ * @method \MindTouch\Http\ApiResult putFile($path, $mimeType = null)
+ * @method \MindTouch\Http\ApiResult putFields($formFields)
+ * @method \MindTouch\Http\ApiResult delete($input = null)
  */
 class ApiPlug extends HttpPlug {
 
