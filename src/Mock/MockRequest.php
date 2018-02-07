@@ -32,7 +32,7 @@ class MockRequest {
     /**
      * @param string $verb
      * @param string $uri
-     * @param array $headers
+     * @param string[] $headers
      * @param string|null $body
      * @return MockRequest
      */
@@ -53,10 +53,10 @@ class MockRequest {
     /**
      * @var string
      */
-    public $uri;
+    public $uri = '';
 
     /**
-     * @var array - [ ["header"] => "value" ]
+     * @var string[] - [ ["header"] => "value" ]
      */
     public $headers = [];
 
@@ -65,5 +65,5 @@ class MockRequest {
      *
      * @var string
      */
-    public $body;
+    public $body = '';
 }
