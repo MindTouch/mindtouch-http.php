@@ -12,7 +12,8 @@ This library is provided for and supported by the open source community. Support
 
 ## Requirements
 
-* PHP 5.5+
+* PHP 5.5 (dev-php55, v1.x)
+* PHP 7.2+ (dev, master, v2.x)
 
 ## Installation
 
@@ -34,7 +35,7 @@ Or add mindtouch/mindtouch-http to your project's composer.json:
 }
 ```
 
-"dev-master" is the master development branch. If you are using tis library in a production environment, it is advised that you use a stable release.
+"dev-master" is the master development branch. If you are using this library in a production environment, it is advised that you use a stable release.
 
 Assuming you have setup Composer's autoloader, the library can be found in the MindTouch\Http\ namespace.
 
