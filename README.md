@@ -12,7 +12,7 @@ This library is provided for and supported by the open source community. Support
 
 ## Requirements
 
-* PHP 5.5 (dev-php55, v1.x)
+* PHP 5.5, 5.6 (dev-php5, v1.x)
 * PHP 7.2+ (dev, master, v2.x)
 
 ## Installation
