@@ -1,7 +1,7 @@
 <?php
 /**
  * MindTouch HTTP
- * Copyright (C) 2006-2016 MindTouch, Inc.
+ * Copyright (C) 2006-2018 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,112 +18,29 @@
  */
 namespace MindTouch\Http;
 
-use MindTouch\XArray\XArray;
-
 /**
- * Class ApiResult - wraps MindTouch API results with accessors
+ * Class ApiResult - wraps http result with MindTouch API specific accessors
+ *
  * @package MindTouch\Http
  */
-class ApiResult extends XArray {
+class ApiResult extends HttpResult {
 
     /**
-     * Return the value of a Set-Cookie header by the cookie's name
+     * Return an instance with the specified body
      *
-     * @param string $name
+     * @param string|array $body
+     * @return static
+     */
+    public function withBody($body) {
+        $result = clone $this;
+        $result->array['body'] = $body;
+        return $result;
+    }
+
+    /**
+     * Return an error message, or an xml representation of the HTTP response body.
+     *
      * @return string|null
-     */
-    public function getSetCookieHeader($name) {
-        $headers = $this->getHeaders('Set-Cookie');
-        if(!is_null($headers)) {
-            if(!is_array($headers)) {
-                $headers = [$headers];
-            }
-            foreach($headers as $header) {
-                if(strpos($header, $name) === 0) {
-                    return $header;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param string $name
-     * @param string|null $default
-     * @return array|null
-     */
-    public function getHeaders($name, $default = null) {
-        if(!isset($this->array['headers'][$name])) {
-            return $default;
-        }
-        $headers = $this->array['headers'][$name];
-        if(!is_array($headers)) {
-            $headers = [$headers];
-        }
-        return $headers;
-    }
-
-    /**
-     * @param string $name
-     * @param string|null $default
-     * @return string|null
-     */
-    public function getHeader($name, $default = null) { return $this->getVal('headers/' . $name, $default); }
-
-    /**
-     * @param int $return
-     * @return int
-     */
-    public function getStatus($return = 0) { return isset($this->array['status']) ? $this->array['status'] : $return; }
-
-    /**
-     * @param string $return
-     * @return string
-     */
-    public function getUri($return = '') { return isset($this->array['uri']) ? $this->array['uri'] : $return; }
-
-    /**
-     * If there was a connection problem or internal curl error this will be true
-     * @return bool
-     */
-    public function isCurlError() { return $this->array['errno'] > 0; }
-
-    /**
-     * @param int $status
-     * @return bool
-     */
-    public function is($status) { return $this->getStatus() === $status; }
-
-    /**
-     * @return bool
-     */
-    public function isSuccess() {
-        $status = $this->getStatus();
-        return $status >= 200 && $status < 300;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isServerError() {
-        $status = $this->getStatus();
-        return $status >= 500 && $status < 600;
-    }
-    /**
-     * @param string $key
-     * @return string
-     */
-    public function getXml($key = '') {
-        if($key == '') {
-            return $this->toXml();
-        }
-        $val = $this->getVal($key, null);
-        $XArray = new XArray($val);
-        return $XArray->toXml();
-    }
-
-    /**
-     * @return array|string|null
      */
     public function getError() {
 
@@ -139,44 +56,30 @@ class ApiResult extends XArray {
             return $error;
         }
 
-        // other API error
-        $error = $this->getVal('body');
+        // curl error
+        $error = $this->getCurlError();
         if($error !== null) {
             return $error;
         }
 
-        // curl error
-        return (isset($this->array['error'])) ? $this->array['error'] : null;
+        // the error message must be in the body if nowhere else
+        $error = $this->getVal('body');
+        if($error !== null) {
+            if(is_array($error)) {
+                return $this->getXml('body');
+            }
+            return $error;
+        }
+        return null;
     }
 
     /**
-     * @return string
+     * Return the API exception type name.
+     *
+     * @return string|null
      */
     public function getException() {
         $exception = $this->getVal('body/error/exception');
         return $exception !== null ? $exception : null;
-    }
-
-    /**
-     * @return bool
-     * @throws ApiResultException
-     */
-    public function handleResponse() {
-
-        // a plug response was not returned
-        if(!is_array($this->array)) {
-            return false;
-        }
-
-        // 503: Service not Available usually means host has crashed
-        if($this->getStatus() === 503) {
-            throw new ApiResultException($this);
-        }
-
-        // 200-level is good
-        if($this->isSuccess()) {
-            return true;
-        }
-        return false;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * MindTouch HTTP
- * Copyright (C) 2006-2016 MindTouch, Inc.
+ * Copyright (C) 2006-2018 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,44 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http;
+namespace MindTouch\Http\Exception;
 
 use Exception;
+use MindTouch\Http\ApiResult;
+use MindTouch\Http\StringUtil;
 
+/**
+ * Class ApiResultException
+ *
+ * @package MindTouch\Http\Exception
+ */
 class ApiResultException extends Exception {
     protected $Result;
 
     /**
      * @param ApiResult $Result
      */
-    public function __construct($Result) {
+    public function __construct(ApiResult $Result) {
         $this->Result = $Result;
         $error = $Result->getError();
-        if(is_array($error)) {
-
-            // exception must be a string
-            $error = json_encode($error);
-        }
-        parent::__construct($error != null ? $error : 'unknown');
+        parent::__construct(!StringUtil::isNullOrEmpty($error) ? $error : 'unknown api error');
     }
 
     /**
+     * Retrieve the ApiResult instance.
+     *
      * @return ApiResult
      */
     public function getResult() { return $this->Result; }
-
-    /**
-     * @return string
-     */
-    public function getRequestUri() { return $this->Result->getVal('request/uri'); }
-
-    /**
-     * @return string
-     */
-    public function getRequestVerb() { return $this->Result->getVal('request/verb'); }
-
-    /**
-     * @return string
-     */
-    public function getType() { return $this->Result->getException(); }
 }

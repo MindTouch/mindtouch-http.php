@@ -1,7 +1,7 @@
 <?php
 /**
  * MindTouch HTTP
- * Copyright (C) 2006-2016 MindTouch, Inc.
+ * Copyright (C) 2006-2018 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,76 +18,39 @@
  */
 namespace MindTouch\Http;
 
+use Closure;
+use MindTouch\Http\Content\IContent;
+use MindTouch\Http\Exception\ApiResultException;
+use MindTouch\Http\Parser\SerializedPhpArrayParser;
+
 /**
- * Class ApiPlug - builder for MindTouch API requests
+ * Class ApiPlug - builder and invocation for MindTouch API requests
+ *
  * @package MindTouch\Http
- *
- * @TODO (andyv): remove fqdn return types once phpstorm fixes phpdoc type hinting
- *
- * @method \MindTouch\Http\ApiPlug with($name, $value = null)
- * @method \MindTouch\Http\ApiPlug withHeader($name, $value, $append = false)
- * @method \MindTouch\Http\ApiPlug withCredentials($user, $password)
- * @method \MindTouch\Http\ApiResult get()
- * @method \MindTouch\Http\ApiResult head()
- * @method \MindTouch\Http\ApiResult post($input = null)
- * @method \MindTouch\Http\ApiResult postFile($path, $mimeType = null)
- * @method \MindTouch\Http\ApiResult postFields($formFields)
- * @method \MindTouch\Http\ApiResult putFile($path, $mimeType = null)
- * @method \MindTouch\Http\ApiResult putFields($formFields)
- * @method \MindTouch\Http\ApiResult delete($input = null)
+ * @method ApiResult get()
+ * @method ApiResult head()
+ * @method ApiResult post(IContent|null $content = null)
+ * @method ApiResult delete()
+ * @method ApiResult invoke(string $method, IContent|null $content = null)
  */
 class ApiPlug extends HttpPlug {
-
-    const HEADER_AUTHTOKEN = 'X-Authtoken';
-    const HEADER_SESSION = 'X-Deki-Session';
-    const HEADER_DATA_STATS = 'X-Data-Stats';
-    const HEADER_DEKI_DB_CALLS = 'X-Deki-DB-Calls';
-    const HEADER_DEKI_SITE = 'X-Deki-Site';
-    const HEADER_DREAM_IN_AUTH = 'X-Dream-In-Auth';
-    const HEADER_API_KEY = 'X-ApiKey';
-
-    // dream.out.format
     const DREAM_FORMAT_PHP = 'php';
     const DREAM_FORMAT_JSON = 'json';
     const DREAM_FORMAT_XML = 'xml';
+    const HEADER_DEKI_TOKEN = 'X-Deki-Token';
 
     /**
-     * Determines which headers should be forwarded with every request
+     * Path segments that should not be url encoded
      *
-     * @note maps HTTP header to PHP defines
-     * @var array
+     * @var string[]
      */
-    public static $dreamDefaultHeaders = array(
-        'X-Forwarded-For' => 'HTTP_X_FORWARDED_FOR',
-        'X-Forwarded-Host' => 'HTTP_HOST',
-        'Referer' => 'HTTP_REFERER',
-        'User-Agent' => 'HTTP_USER_AGENT'
-    );
-
-    /**
-     * @var array
-     */
-    private static $rawUriSegments = array(
+    private static $rawUriPathSegments = [
         'files,subpages',
         'children,siblings'
-    );
+    ];
 
     /**
-     * @param string $uri
-     * @param string $format
-     * @param string $hostname
-     * @param array $defaultHeaders
-     * @return ApiPlug
-     */
-    public static function newPlug($uri, $format = self::DREAM_FORMAT_PHP) {
-        return self::newApiPlugHelper(__CLASS__, $uri, $format);
-    }
-
-    /**
-     * Dream specific urlencode method
-     * @see Bugfix#7500: Unable to save a new page with a dot (.) at the end of the title on IIS
-     *
-     * @param string $string - string to urlencode
+     * @param string $string - string to url encode
      * @param bool $doubleEncode - if true, the string will be urlencoded twice
      * @return string
      */
@@ -95,7 +58,7 @@ class ApiPlug extends HttpPlug {
 
         // encode trailing dots (. => %2E)
         for($i = strlen($string) - 1, $dots = 0; $i >= 0; $dots++, $i--) {
-            if(substr($string, $i, 1) != '.') {
+            if(substr($string, $i, 1) !== '.') {
                 break;
             }
         }
@@ -105,81 +68,27 @@ class ApiPlug extends HttpPlug {
         if($doubleEncode) {
             $string = urlencode($string);
         }
-
         return $string;
     }
 
     /**
-     * Method sets default headers and forwarded headers
-     *
-     * @param array $headers
-     * @param array $defaults
+     * @var IApiToken|null
      */
-    public static function setDefaultHeaders(&$headers, $defaults = array()) {
-        foreach($defaults as $header => $key) {
-            if(isset($_SERVER[$key])) {
-                self::setMultiValueArray($headers, $header, $_SERVER[$key]);
-            }
-        }
-
-        // append REMOTE_ADDR to X-Forwarded-For if it exists
-        if(isset($_SERVER['REMOTE_ADDR'])) {
-            self::setMultiValueArray($headers, 'X-Forwarded-For', isset($headers['X-Forwarded-For'])
-                ? $headers['X-Forwarded-For'] . ', ' . $_SERVER['REMOTE_ADDR']
-                : $_SERVER['REMOTE_ADDR']);
-        }
-    }
+    protected $token = null;
 
     /**
-     * @param string $class
-     * @param string $uri
+     * @var Closure|null
+     */
+    protected $postInvokeErrorHandler = null;
+
+    /**
+     * @param XUri $uri - target uri
      * @param string $format
-     * @return ApiPlug
      */
-    protected static function newApiPlugHelper($class, $uri, $format = null) {
-
-        // remove trailing slash from uri
-        if(substr_compare($uri, '/', -1, 1) === 0) {
-            $uri = substr($uri, 0, -1);
-        }
-        $Plug = new $class($uri);
-        $Plug->class = $class;
-
-        // include default & white-listed headers
-        self::setDefaultHeaders($Plug->headers, self::$dreamDefaultHeaders);
-
-        // set the default dream query params
-        if($Plug->query) {
-            $Plug->query .= '&';
-        } else {
-            $Plug->query = '';
-        }
-        if($format) {
-            $Plug->query .= 'dream.out.format=' . rawurlencode($format);
-        }
-        return $Plug;
-    }
-
-    /**
-     * Helper method to flatten a Plug header array
-     *
-     * @param array $headers
-     * @return array - string[] array of headers
-     */
-    protected static function flattenPlugHeaders(&$headers) {
-        $flat = array();
-        if(!empty($headers)) {
-            foreach($headers as $name => $value) {
-                if(is_array($value)) {
-                    foreach($value as $multi) {
-                        $flat[] = $name . ': ' . $multi;
-                    }
-                } else {
-                    $flat[] = $name . ': ' . $value;
-                }
-            }
-        }
-        return $flat;
+    public function __construct(XUri $uri, $format = self::DREAM_FORMAT_PHP) {
+        parent::__construct($uri);
+        $this->uri = $this->uri->withQueryParam('dream.out.format', $format);
+        $this->setHttpResultParser(new SerializedPhpArrayParser());
     }
 
     /**
@@ -187,83 +96,125 @@ class ApiPlug extends HttpPlug {
      * @see #AtRaw() for creating unencoded path components
      *
      * @param string ... $path - path components to add to the request
-     * @return ApiPlug
+     * @return static
      */
     public function at( /* $path[] */) {
-        $result = new $this->class($this);
-        foreach(func_get_args() as $path) {
-            $result->path .= '/';
-            if(in_array($path, self::$rawUriSegments)) {
-                $result->path .= $path;
-                continue;
-            }
+        $plug = clone $this;
+        $path = $plug->uri->getPath();
+        foreach(func_get_args() as $arg) {
+            if(!in_array($arg, self::$rawUriPathSegments)) {
 
-            // auto-double encode, check for '=' sign
-            if(strncmp($path, '=', 1) == 0) {
-                $result->path .= '=' . self::urlEncode(substr($path, 1), true);
-            } else {
-                $result->path .= self::urlEncode($path, true);
+                // auto-double encode, check for '=' sign
+                $arg = (strncmp($arg, '=', 1) === 0)
+                    ? '=' . self::urlEncode(substr($arg, 1), true)
+                    : self::urlEncode($arg, true);
             }
+            $path .= '/' . ltrim($arg, '/');
         }
-        return $result;
+        $plug->uri = $plug->uri->withPath($path);
+        return $plug;
     }
 
     /**
      * Appends a single path parameter to the plug, unencoded.
-     * @note Do not use this method unless you have to(you probably don't).
+     *
+     * @note Do not use this method unless you have to (you probably don't).
      * A real need occurs when initially creating the plug baseuri and an
      * unencoded "@api" is required.
      *
      * @see #At() for creating urlencoded paths
-     * @param string $path
-     * @return ApiPlug
+     * @param string $segment
+     * @return static
      */
-    public function atRaw($path) {
-        $result = new $this->class($this);
-        $result->path .= '/' . $path;
-        return $result;
+    public function atRaw($segment) {
+        $plug = clone $this;
+        $plug->uri = $plug->uri->at($segment);
+        return $plug;
     }
 
     /**
-     * Add an apikey to the request
+     * Return an instance with  a server API token to the request
      *
-     * @param string $apikey
-     * @return ApiPlug
+     * @link https://success.mindtouch.com/Support/Extend/API_Documentation/API_Tokens/Use_a_server_API_token_with_an_integration
+     * @param IApiToken $token
+     * @return static
      */
-    public function withApiKey($apikey) {
-        return $this->withHeader(self::HEADER_API_KEY, $apikey);
+    public function withApiToken(IApiToken $token) {
+        $plug = clone $this;
+        $plug->token = $token;
+        return $plug;
     }
 
     /**
-     * Add an authtoken to the request
+     * Return an instance with a post-invoke unsuccessful result handler
+     * Adding the handler supresses the default exception behavior if (bool)true is returned
+     * Only one error handler can be set, executing this method will return an instance with the handler replaced
      *
-     * @param string $authtoken
-     * @return ApiPlug
+     * @param Closure $handler - $handler(ApiResultException $exception) : bool
+     * @return self
      */
-    public function withAuthtoken($authtoken) {
-        return $this->withHeader(self::HEADER_AUTHTOKEN, $authtoken);
+    public function withResultErrorHandler(Closure $handler) {
+        $plug = clone $this;
+        $plug->postInvokeErrorHandler = $handler;
+        return $plug;
+    }
+
+    /**
+     * Return an instance with the post-invoke unsuccessful result handler removed
+     *
+     * @return self
+     */
+    public function withoutResultErrorHandler() {
+        $plug = clone $this;
+        $plug->postInvokeErrorHandler = null;
+        return $plug;
     }
 
     /**
      * Performs a PUT request
      *
-     * @param array $input - if array, gets encoded as xml
-     * @return ApiResult - request response
+     * @param IContent|null $content - optionally send a content body with the request
+     * @return ApiResult
      */
-    public function put($input = null) {
-        $Plug = $this->with('dream.in.verb', 'PUT');
-        return $Plug->invokeXml(self::VERB_POST, $input);
+    public function put($content = null) {
+        $plug = $this->with('dream.in.verb', 'PUT');
+        return $plug->invoke(self::METHOD_POST, $content);
     }
 
     /**
-     * Format the invoke return
-     *
-     * @param array $request
-     * @param array $response
-     * @return ApiResult
+     * @param IMutableHeaders $headers
      */
-    protected function invokeComplete($request, $response) {
-        $formattedResponse = $this->getFormattedResponse($request, $response);
-        return new ApiResult($formattedResponse);
+    protected function invokeApplyCredentials($headers) {
+        parent::invokeApplyCredentials($headers);
+        if($this->token !== null) {
+            $headers->setHeader(self::HEADER_DEKI_TOKEN, $this->token->toHash());
+        }
+    }
+
+    /**
+     * Return the formatted invocation result
+     *
+     * @param XUri $uri
+     * @param IHeaders $headers
+     * @param int $start
+     * @param int $end
+     * @param HttpResult $result
+     * @return ApiResult
+     * @throws ApiResultException
+     */
+    protected function invokeComplete(XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+        $result = parent::invokeComplete($uri, $headers, $start, $end, $result);
+        $result = new ApiResult($result->toArray());
+        if(!$result->isSuccess()) {
+            $e = new ApiResultException($result);
+            if($this->postInvokeErrorHandler !== null) {
+                $handler = $this->postInvokeErrorHandler;
+                if($handler($e) === true) {
+                    return $result;
+                }
+            }
+            throw $e;
+        }
+        return $result;
     }
 }

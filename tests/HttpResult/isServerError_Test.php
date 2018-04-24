@@ -1,7 +1,7 @@
 <?php
 /**
  * MindTouch HTTP
- * Copyright (C) 2006-2016 MindTouch, Inc.
+ * Copyright (C) 2006-2018 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\ApiResult;
+namespace MindTouch\Http\tests\HttpResult;
 
-use MindTouch\Http\ApiResult;
-use PHPUnit_Framework_TestCase;
+use MindTouch\Http\HttpResult;
+use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
-class isServerError_Test extends PHPUnit_Framework_TestCase  {
+class isServerError_Test extends MindTouchHttpUnitTestCase  {
 
     /**
      * @test
@@ -30,42 +30,38 @@ class isServerError_Test extends PHPUnit_Framework_TestCase  {
 
         // arrange
         $data = ['status' => 400];
-        $ApiResult = new ApiResult($data);
+        $result = new HttpResult($data);
 
         // act
-        $isServerError = $ApiResult->isServerError();
+        $isServerError = $result->isServerError();
 
         // assert
         $this->assertFalse($isServerError);
     }
 
     /**
-     * @test
+     * @return array
      */
-    public function HTTP_500_range_is_server_error_1() {
-
-        // arrange
-        $data = ['status' => 503];
-        $ApiResult = new ApiResult($data);
-
-        // act
-        $isServerError = $ApiResult->isServerError();
-
-        // assert
-        $this->assertTrue($isServerError);
+    public static function status_dataProvider() {
+        return [
+            [500],
+            [503]
+        ];
     }
 
     /**
+     * @dataProvider status_dataProvider
+     * @param int $status
      * @test
      */
-    public function HTTP_500_range_is_server_error_2() {
+    public function HTTP_500_range_is_server_error($status) {
 
         // arrange
-        $data = ['status' => 500];
-        $ApiResult = new ApiResult($data);
+        $data = ['status' => $status];
+        $result = new HttpResult($data);
 
         // act
-        $isServerError = $ApiResult->isServerError();
+        $isServerError = $result->isServerError();
 
         // assert
         $this->assertTrue($isServerError);

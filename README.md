@@ -9,7 +9,7 @@ A PHP library for interacting with the [MindTouch REST API](http://success.mindt
 This library is provided for and supported by the open source community. Supported MindTouch site owners may file bug reports via [GitHub](https://github.com/MindTouch/mindtouch-http.php/issues), but support plans do not cover the usage of this library.
 
 ## Requirements
-* PHP 5.4+
+* PHP 5.5+
 
 ## Installation
 Use [Composer](https://getcomposer.org/). There are two ways to add this library to your project.
