@@ -1,7 +1,7 @@
 <?php
 /**
  * MindTouch HTTP
- * Copyright (C) 2006-2016 MindTouch, Inc.
+ * Copyright (C) 2006-2018 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,10 @@
 namespace MindTouch\Http\tests\HttpPlug;
 
 use MindTouch\Http\HttpPlug;
-use PHPUnit_Framework_TestCase;
+use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\XUri;
 
-class with_Test extends PHPUnit_Framework_TestCase  {
+class with_Test extends MindTouchHttpUnitTestCase  {
 
     /**
      * @test
@@ -29,13 +30,13 @@ class with_Test extends PHPUnit_Framework_TestCase  {
     public function Add_single_param_to_hostname() {
 
         // arrange
-        $Plug = HttpPlug::newPlug('http://foo.com');
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com'));
 
         // act
-        $Plug = $Plug->with('a', 'b');
+        $plug = $plug->with('a', 'b');
 
         // assert
-        $this->assertEquals('http://foo.com/?a=b', $Plug->getUri());
+        $this->assertEquals('http://foo.com/?a=b', $plug->getUri());
     }
 
     /**
@@ -44,15 +45,15 @@ class with_Test extends PHPUnit_Framework_TestCase  {
     public function Add_multiple_params_to_hostname() {
 
         // arrange
-        $Plug = HttpPlug::newPlug('http://foo.com');
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com'));
 
         // act
-        $Plug = $Plug->with('a', 'b')->with('c', 'd');
+        $plug = $plug->with('a', 'b')->with('c', 'd');
 
         // assert
 
-        /** @var HttpPlug $Plug */
-        $this->assertEquals('http://foo.com/?a=b&c=d', $Plug->getUri());
+        /** @var HttpPlug $plug */
+        $this->assertEquals('http://foo.com/?a=b&c=d', $plug->getUri());
     }
 
     /**
@@ -61,13 +62,13 @@ class with_Test extends PHPUnit_Framework_TestCase  {
     public function Add_single_param_to_existing_path() {
 
         // arrange
-        $Plug = HttpPlug::newPlug('http://foo.com/qux');
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com/qux'));
 
         // act
-        $Plug = $Plug->with('a', 'b');
+        $plug = $plug->with('a', 'b');
 
         // assert
-        $this->assertEquals('http://foo.com/qux?a=b', $Plug->getUri());
+        $this->assertEquals('http://foo.com/qux?a=b', $plug->getUri());
     }
 
     /**
@@ -76,15 +77,15 @@ class with_Test extends PHPUnit_Framework_TestCase  {
     public function Add_multiple_params_to_existing_path() {
 
         // arrange
-        $Plug = HttpPlug::newPlug('http://foo.com/qux');
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com/qux'));
 
         // act
-        $Plug = $Plug->with('a', 'b')->with('c', 'd');
+        $plug = $plug->with('a', 'b')->with('c', 'd');
 
         // assert
 
-        /** @var HttpPlug $Plug */
-        $this->assertEquals('http://foo.com/qux?a=b&c=d', $Plug->getUri());
+        /** @var HttpPlug $plug */
+        $this->assertEquals('http://foo.com/qux?a=b&c=d', $plug->getUri());
     }
 
     /**
@@ -93,13 +94,13 @@ class with_Test extends PHPUnit_Framework_TestCase  {
     public function Add_single_param_to_existing_path_query() {
 
         // arrange
-        $Plug = HttpPlug::newPlug('http://foo.com/qux?a=b&c=d');
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com/qux?a=b&c=d'));
 
         // act
-        $Plug = $Plug->with('foo', 'bar');
+        $plug = $plug->with('foo', 'bar');
 
         // assert
-        $this->assertEquals('http://foo.com/qux?a=b&c=d&foo=bar', $Plug->getUri());
+        $this->assertEquals('http://foo.com/qux?a=b&c=d&foo=bar', $plug->getUri());
     }
 
     /**
@@ -108,15 +109,15 @@ class with_Test extends PHPUnit_Framework_TestCase  {
     public function Add_multiple_params_to_existing_path_query() {
 
         // arrange
-        $Plug = HttpPlug::newPlug('http://foo.com/qux?a=b&c=d');
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com/qux?a=b&c=d'));
 
         // act
-        $Plug = $Plug->with('foo', 'bar')->with('qux', 'fred');
+        $plug = $plug->with('foo', 'bar')->with('qux', 'fred');
 
         // assert
 
-        /** @var HttpPlug $Plug */
-        $this->assertEquals('http://foo.com/qux?a=b&c=d&foo=bar&qux=fred', $Plug->getUri());
+        /** @var HttpPlug $plug */
+        $this->assertEquals('http://foo.com/qux?a=b&c=d&foo=bar&qux=fred', $plug->getUri());
     }
 
     /**
@@ -125,13 +126,13 @@ class with_Test extends PHPUnit_Framework_TestCase  {
     public function Add_single_param_to_existing_query() {
 
         // arrange
-        $Plug = HttpPlug::newPlug('http://foo.com?a=b&c=d');
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com?a=b&c=d'));
 
         // act
-        $Plug = $Plug->with('foo', 'bar');
+        $plug = $plug->with('foo', 'bar');
 
         // assert
-        $this->assertEquals('http://foo.com/?a=b&c=d&foo=bar', $Plug->getUri());
+        $this->assertEquals('http://foo.com/?a=b&c=d&foo=bar', $plug->getUri());
     }
 
     /**
@@ -140,15 +141,13 @@ class with_Test extends PHPUnit_Framework_TestCase  {
     public function Add_multiple_params_to_existing_query() {
 
         // arrange
-        $Plug = HttpPlug::newPlug('http://foo.com?a=b&c=d');
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com?a=b&c=d'));
 
         // act
-        $Plug = $Plug->with('bar', 'qux')->with('fred', 'foo');
+        $plug = $plug->with('bar', 'qux')->with('fred', 'foo');
 
         // assert
-
-        /** @var HttpPlug $Plug */
-        $this->assertEquals('http://foo.com/?a=b&c=d&bar=qux&fred=foo', $Plug->getUri());
+        $this->assertEquals('http://foo.com/?a=b&c=d&bar=qux&fred=foo', $plug->getUri());
     }
 }
 

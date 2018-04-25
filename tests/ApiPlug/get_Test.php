@@ -1,7 +1,7 @@
 <?php
 /**
  * MindTouch HTTP
- * Copyright (C) 2006-2016 MindTouch, Inc.
+ * Copyright (C) 2006-2018 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,21 +19,12 @@
 namespace MindTouch\Http\tests\ApiPlug;
 
 use MindTouch\Http\ApiPlug;
+use MindTouch\Http\ApiResult;
 use MindTouch\Http\Mock\MockPlug;
-use MindTouch\Http\Mock\MockRequest;
-use MindTouch\Http\Mock\MockResponse;
-use PHPUnit_Framework_TestCase;
+use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\XUri;
 
-class get_Test extends PHPUnit_Framework_TestCase  {
-
-    public function setUp() {
-        MockPlug::ignoreRequestHeader(ApiPlug::HEADER_CONTENT_LENGTH);
-        MockPlug::ignoreRequestQueryParam('dream_out_format');
-    }
-
-    public function tearDown() {
-        MockPlug::deregisterAll();
-    }
+class get_Test extends MindTouchHttpUnitTestCase  {
 
     /**
      * @test
@@ -41,18 +32,17 @@ class get_Test extends PHPUnit_Framework_TestCase  {
     public function Can_invoke_get() {
 
         // arrange
-        $uri = 'http://example.com/@api/deki/pages/=foo';
+        $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
         MockPlug::register(
-            MockRequest::newMockRequest(ApiPlug::VERB_GET, $uri, []),
-            MockResponse::newMockResponse(ApiPlug::HTTPSUCCESS, [], ['page'])
+            $this->newDefaultMockRequestMatcher(ApiPlug::METHOD_GET, $uri),
+            (new ApiResult())->withStatus(ApiResult::HTTP_SUCCESS)
         );
-        $Plug = ApiPlug::newPlug($uri);
+        $plug = new ApiPlug($uri);
 
         // act
-        $Result = $Plug->get();
+        $result = $plug->get();
 
         // assert
-        $this->assertEquals(200, $Result->getStatus());
-        $this->assertEquals('page', $Result->getVal('body'));
+        $this->assertEquals(200, $result->getStatus());
     }
 }

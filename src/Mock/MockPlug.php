@@ -1,7 +1,7 @@
 <?php
 /**
  * MindTouch HTTP
- * Copyright (C) 2006-2016 MindTouch, Inc.
+ * Copyright (C) 2006-2018 MindTouch, Inc.
  * www.mindtouch.com  oss@mindtouch.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,39 +18,31 @@
  */
 namespace MindTouch\Http\Mock;
 
+use MindTouch\Http\HttpResult;
+
 /**
  * Class MockPlug
  *
  * A global HttpPlug interceptor for testing
  *
- * @package MindTouch\Http\test
+ * @package MindTouch\Http\Mock
  */
 class MockPlug {
 
     /**
      * @var bool
      */
-    public static $registered = false;
-
-    /**
-     * @var string[]
-     */
-    private static $ignoreRequestQueryParams = [];
-
-    /**
-     * @var string[]
-     */
-    private static $ignoreRequestHeaders = [];
+    public static $isRegistered = false;
 
     /**
      * @var object[]
-     * @structure [ [id] => { Request: MockRequest, Response: MockResponse, verify: bool }, ... ]
+     * @structure [ [id] => [ { MockRequestMatcher, HttpResult, bool }, ... ]
      */
     private static $mocks = [];
 
     /**
-     * @var MockRequest[]
-     * @structure [ [id] => MockRequest, ... ]
+     * @var MockRequestMatcher[]
+     * @structure [ [id] => MockRequestMatcher, ... ]
      */
     private static $calls = [];
 
@@ -61,26 +53,12 @@ class MockPlug {
     private static $matches = [];
 
     /**
-     * Ignore URI query param when matching requests to mocked responses
-     *
-     * @param string $param
-     */
-    public static function ignoreRequestQueryParam($param) { self::$ignoreRequestQueryParams[] = $param; }
-
-    /**
-     * Ignore HTTP Header name when matching requests to mocked responses
-     *
-     * @param string $header
-     */
-    public static function ignoreRequestHeader($header) { self::$ignoreRequestHeaders[] = $header; }
-
-    /**
      * Assert that call to URI has been made
      *
-     * @param MockRequest $Request
+     * @param MockRequestMatcher $request
      * @return bool
      */
-    public static function verify(MockRequest $Request) { return isset(self::$calls[self::newMockId($Request)]); }
+    public static function verify(MockRequestMatcher $request) { return isset(self::$calls[$request->getMatcherId()]); }
 
     /**
      * Assert that all registered URI's have been called
@@ -88,8 +66,8 @@ class MockPlug {
      * @return bool
      */
     public static function verifyAll() {
-        foreach(self::$mocks as $id => $Mock) {
-            if($Mock->verify && !isset(self::$calls[$id])) {
+        foreach(self::$mocks as $id => $mock) {
+            if($mock->verify && !isset(self::$calls[$id])) {
                 return false;
             }
         }
@@ -104,98 +82,96 @@ class MockPlug {
     public static function verifyCalled() { return !empty(self::$calls); }
 
     /**
-     * New request and response to mock
+     * New request and result to mock
      *
-     * @param MockRequest $Request
-     * @param MockResponse $Response
+     * @param MockRequestMatcher $request
+     * @param HttpResult $result
      * @param bool $verify - verify when all registered uri calls are checked
      */
-    public static function register(MockRequest $Request, MockResponse $Response, $verify = true) {
-        self::$mocks[self::newMockId($Request)] = (object) [
-            'Request' => $Request,
-            'Response' => $Response,
+    public static function register(MockRequestMatcher $request, HttpResult $result, $verify = true) {
+
+        // ensure content type header is set in the same manner as curl will set it
+        if($result->getVal('type') === null && $result->getHeaders()->hasHeader('Content-Type')) {
+            $result->setVal('type', $result->getHeaders()->getHeaderLine('Content-Type'));
+        }
+        self::$mocks[$request->getMatcherId()] = (object) [
+            'request' => $request,
+            'result' => $result,
             'verify' => $verify
         ];
-        self::$registered = true;
+        self::$isRegistered = true;
     }
 
     /**
      * Get mocked response data
      *
-     * @param MockRequest $Request
-     * @return MockResponse|null
+     * @param MockRequestMatcher $request
+     * @return HttpResult|null
      */
-    public static function getResponse(MockRequest $Request) {
-        $id = self::newMockId($Request);
-        $Response = isset(self::$mocks[$id]) ? self::$mocks[$id]->Response : null;
-        self::$calls[$id] = $Request;
-        if($Response !== null) {
+    public static function getHttpResult(MockRequestMatcher $request) {
+        $id = $request->getMatcherId();
+
+        // log the call
+        self::$calls[$id] = $request;
+
+        // match the mock
+        $result = isset(self::$mocks[$id]) ? self::$mocks[$id]->result : null;
+        if($result !== null) {
+
+            // log the match
             self::$matches[] = $id;
         }
-        return $Response;
+        return $result;
     }
 
     /**
      * Get collection of attempted http calls
      *
-     * @return MockRequest[]
+     * @return MockRequestMatcher[]
      */
     public static function getCalls() { return self::$calls; }
 
     /**
+     * Get a collection of registered mocks
+     *
+     * @return object[]
+     */
+    public static function getMocks() { return self::$mocks; }
+
+    /**
      * Get collection of attempted http calls with normalized data for reporting
      *
-     * @return MockRequest[]
+     * @return array
      */
-    public static function getNormalizedCalls() {
+    public static function getNormalizedCallData() {
         $calls = [];
-        foreach(self::$calls as $id => $MockRequest) {
-            $NewMockRequest = clone $MockRequest;
-            $NewMockRequest->uri = self::newNormalizedUri($MockRequest->uri);
-            $NewMockRequest->headers = self::newNormalizedHeaders($MockRequest->headers);
-
-            // magic property is used only for reporting
-            $NewMockRequest->matched = in_array($id, self::$matches);
-            $calls[$id] = $NewMockRequest;
+        foreach(self::$calls as $id => $request) {
+            $call = $request->toNormalizedArray();
+            $call['matched'] = in_array($id, self::$matches);
+            $calls[$id] = $call;
         }
         return $calls;
     }
 
     /**
-     * @structure [ ['MockRequest' => MockRequest, 'MockResponse' => MockResponse'], ... ]
-     * @return array
-     */
-    public static function getMocks() {
-        $mocks = [];
-        foreach(self::$mocks as $id => $Mock) {
-            $mocks[$id] = [
-                'MockRequest' => $Mock->Request,
-                'MockResponse' => $Mock->Response
-            ];
-        }
-        return $mocks;
-    }
-
-    /**
      * Get a collection of mocked http requests with normalized data for reporting
      *
-     * @structure [ ['MockRequest' => MockRequest, 'MockResponse' => MockResponse'], ... ]
      * @return array
      */
-    public static function getNormalizedMocks() {
+    public static function getNormalizedMockData() {
         $mocks = [];
-        foreach(self::$mocks as $id => $Mock) {
-            $MockRequest = clone $Mock->Request;
+        foreach(self::$mocks as $id => $mock) {
 
-            /** @var MockRequest $MockRequest */
-            $MockRequest->uri = self::newNormalizedUri($MockRequest->uri);
-            $MockRequest->headers = self::newNormalizedHeaders($MockRequest->headers);
+            /** @var MockRequestMatcher $request */
+            $request = $mock->request;
 
-            // magic property is used only for reporting
-            $MockRequest->optional = !$Mock->verify;
+            /** @var HttpResult $result */
+            $result = $mock->result;
             $mocks[$id] = [
-                'MockRequest' => $MockRequest,
-                'MockResponse' => $Mock->Response
+                'request' => array_merge($request->toNormalizedArray(), [
+                    'optional' => !$mock->verify
+                ]),
+                'result' => $result->toArray()
             ];
         }
         return $mocks;
@@ -207,56 +183,7 @@ class MockPlug {
     public static function deregisterAll() {
         self::$mocks = [];
         self::$calls = [];
-    }
-
-    /**
-     * @param MockRequest $Request
-     * @return string
-     */
-    protected static function newMockId(MockRequest $Request) {
-        $requestHeaders = self::newNormalizedHeaders($Request->headers);
-        $uri = self::newNormalizedUri($Request->uri);
-        return md5(serialize($requestHeaders) . "{$Request->verb}_{$uri}{$Request->body}");
-    }
-
-    /**
-     * @param string $uri
-     * @return string
-     */
-    private static function newNormalizedUri($uri) {
-        $params = [];
-
-        // parse uri into components
-        $uriParts = parse_url($uri);
-        if(isset($uriParts['query'])) {
-            parse_str($uriParts['query'], $params);
-        }
-
-        // filter parameters applied by Plug
-        $params = array_diff_key($params, array_flip(self::$ignoreRequestQueryParams));
-
-        // rebuild uri
-        $uri = $uriParts['scheme'] . '://' . $uriParts['host'];
-        if(isset($uriParts['port'])) {
-            $uri .= ':' . $uriParts['port'];
-        }
-        if(isset($uriParts['path'])) {
-            $uri .= $uriParts['path'];
-        }
-        asort($params);
-        if(!empty($params)) {
-            $uri .= '?' . http_build_query($params);
-        }
-        return $uri;
-    }
-
-    private static function newNormalizedHeaders(array $headers) {
-
-        // filter headers applied by Plug
-        $headers = array_diff_key($headers, array_flip(self::$ignoreRequestHeaders));
-
-        // rebuild headers
-        ksort($headers);
-        return $headers;
+        self::$matches = [];
+        self::$isRegistered = false;
     }
 }
