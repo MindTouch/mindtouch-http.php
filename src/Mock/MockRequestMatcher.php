@@ -118,6 +118,13 @@ class MockRequestMatcher {
     }
 
     /**
+     * Retrieve denormalized matcher uri
+     *
+     * @return XUri
+     */
+    public function getUri() { return $this->uri; }
+
+    /**
      * Retrieve id to match mock results to matcher
      *
      * @return string
