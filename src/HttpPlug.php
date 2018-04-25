@@ -474,7 +474,6 @@ class HttpPlug {
             $length = strlen($header);
             $header = trim($header);
             if(!StringUtil::isNullOrEmpty($header)) {
-                $responseHeaders->setRawHeader($header);
                 $rawResponseHeaders[] = $header;
             }
             if(StringUtil::startsWithInvariantCase($header, 'HTTP/1.1')) {
@@ -487,6 +486,13 @@ class HttpPlug {
                     $responseHeaders->addHeader(Headers::HEADER_SET_COOKIE, $setCookieValue);
                 }
                 return $length;
+            } else {
+                try {
+                    $responseHeaders->setRawHeader($header);
+                } catch(InvalidArgumentException $e) {
+
+                    // TODO (modethirteen, 20180424): add a handler for invalid http headers
+                }
             }
             return $length;
         });

@@ -225,6 +225,9 @@ class Headers implements IMutableHeaders {
      * @param bool $overwrite
      */
     protected function setRawHeaderHelper($header, $overwrite) {
+        if(strpos($header, ':') === false) {
+            throw new InvalidArgumentException('Invalid HTTP header: ' . $header);
+        }
         list($name, $value) = explode(':', $header, 2);
         $name = self::getFormattedHeaderName($name);
         $values = in_array($name, static::$multipleNameValuePairHeaders)

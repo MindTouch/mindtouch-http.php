@@ -114,6 +114,9 @@ class HttpResult extends XArray {
      */
     public function getHeaders() {
         $headers = new Headers();
+        if(empty($this->getVal('headers'))) {
+            return $headers;
+        }
         foreach($this->getVal('headers') as $name => $values) {
             foreach($values as $value) {
                 $headers->addHeader($name, $value);

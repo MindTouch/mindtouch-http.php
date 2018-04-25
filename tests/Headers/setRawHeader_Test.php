@@ -22,7 +22,7 @@ use InvalidArgumentException;
 use MindTouch\Http\Headers;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
-class addRawHeader_Test extends MindTouchHttpUnitTestCase {
+class setRawHeader_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
@@ -33,7 +33,7 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
         $headers = new Headers();
 
         // act
-        $headers->addRawHeader('X-Foo-bar: qux fred quxx');
+        $headers->setRawHeader('X-Foo-bar: qux fred quxx');
 
         // assert
         $this->assertArrayHasKeyValue('X-Foo-Bar', ['qux fred quxx'], $headers->toArray());
@@ -50,7 +50,7 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
         // act
         $exceptionThrown = false;
         try {
-            $headers->addRawHeader('HTTP/1.1 400 BAD REQUEST');
+            $headers->setRawHeader('HTTP/1.1 400 BAD REQUEST');
         } catch(InvalidArgumentException $e) {
             $exceptionThrown = true;
         }
@@ -68,7 +68,7 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
         $headers = new Headers();
 
         // act
-        $headers->addRawHeader('X-Foo-bar: qux, fred, quxx; foo');
+        $headers->setRawHeader('X-Foo-bar: qux, fred, quxx; foo');
 
         // assert
         $this->assertArrayHasKeyValue('X-Foo-Bar', ['qux', 'fred', 'quxx; foo'], $headers->toArray());
@@ -77,17 +77,17 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_add_header() {
+    public function Can_replace_header() {
 
         // arrange
         $headers = new Headers();
 
         // act
-        $headers->addRawHeader('X-Foo-bar: qux, fred, quxx; foo');
-        $headers->addRawHeader('X-Foo-bar: a, b');
+        $headers->setRawHeader('X-Foo-bar: qux, fred, quxx; foo');
+        $headers->setRawHeader('X-Foo-bar: a, b');
 
         // assert
-        $this->assertArrayHasKeyValue('X-Foo-Bar', ['qux', 'fred', 'quxx; foo', 'a', 'b'], $headers->toArray());
+        $this->assertArrayHasKeyValue('X-Foo-Bar', ['a', 'b'], $headers->toArray());
     }
 
     /**
@@ -99,7 +99,7 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
         $headers = new Headers();
 
         // act
-        $headers->addRawHeader('X-Foo-bar:');
+        $headers->setRawHeader('X-Foo-bar:');
 
         // assert
         $this->assertArrayHasKeyValue('X-Foo-Bar', [''], $headers->toArray());
@@ -114,9 +114,9 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
         $headers = new Headers();
 
         // act
-        $headers->addRawHeader('X-Foo-bar:');
-        $headers->addRawHeader('X-Foo-bar:');
-        $headers->addRawHeader('X-Foo-bar:');
+        $headers->setRawHeader('X-Foo-bar:');
+        $headers->setRawHeader('X-Foo-bar:');
+        $headers->setRawHeader('X-Foo-bar:');
 
         // assert
         $this->assertArrayHasKeyValue('X-Foo-Bar', [''], $headers->toArray());
@@ -131,8 +131,8 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
         $headers = new Headers();
 
         // act
-        $headers->addRawHeader('Content-Type: application/xml, application/json');
-        $headers->addRawHeader('Location: https://example.com/foo, http://bar.example.com');
+        $headers->setRawHeader('Content-Type: application/xml, application/json');
+        $headers->setRawHeader('Location: https://example.com/foo, http://bar.example.com');
 
         // assert
         $headers = $headers->toArray();
