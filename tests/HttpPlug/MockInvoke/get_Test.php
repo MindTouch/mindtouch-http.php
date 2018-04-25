@@ -45,7 +45,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_GET, $uri),
             (new HttpResult())
-                ->withStatus(HttpResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::JSON],
                     [Headers::HEADER_CONTENT_LENGTH, strlen($body)]
@@ -59,7 +59,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->withHttpResultParser($parser)->get();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $this->assertEquals(['foo' => ['bar', 'baz']], $result->getBody()->toArray());
     }
 
@@ -73,7 +73,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_GET, $uri),
             (new HttpResult())
-                ->withStatus(HttpResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::JSON],
                     [Headers::HEADER_CONTENT_LENGTH, 1000]
@@ -105,7 +105,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_GET, $uri),
             (new HttpResult())
-                ->withStatus(HttpResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::PHP],
                     [Headers::HEADER_CONTENT_LENGTH, strlen($body)]
@@ -119,7 +119,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->withHttpResultParser($parser)->get();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $this->assertEquals(['foo' => ['bar', 'baz']], $result->getBody()->toArray());
     }
 
@@ -133,7 +133,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_GET, $uri),
             (new HttpResult())
-                ->withStatus(HttpResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::PHP],
                     [Headers::HEADER_CONTENT_LENGTH, 1000]

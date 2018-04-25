@@ -26,16 +26,6 @@ use MindTouch\XArray\XArray;
  * @package MindTouch\Http
  */
 class HttpResult extends XArray {
-    const HTTP_SUCCESS = 200;
-    const HTTP_MOVED_PERMANENTLY = 301;
-    const HTTP_FOUND = 302;
-    const HTTP_TEMPORARY_REDIRECT = 307;
-    const HTTP_BADREQUEST = 400;
-    const HTTP_AUTHFAILED = 401;
-    const HTTP_FORBIDDEN = 403;
-    const HTTP_NOTFOUND = 404;
-    const HTTP_CONFLICT = 409;
-    const HTTP_SERVERERROR = 500;
 
     /**
      * Return an instance with the added request information

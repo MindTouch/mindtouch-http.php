@@ -42,7 +42,7 @@ class getNormalizedCallData_Test extends MindTouchHttpUnitTestCase  {
                     ['X-Foo', 'bar'],
                     ['X-Baz', 'qux']
                 ])),
-            (new HttpResult())->withStatus(HttpResult::HTTP_SUCCESS)
+            (new HttpResult())->withStatus(200)
         );
         (new HttpPlug($uri1))->get();
         $uri2 = XUri::tryParse('test://example.com/@api/deki/pages/=bar/contents');
@@ -53,13 +53,13 @@ class getNormalizedCallData_Test extends MindTouchHttpUnitTestCase  {
                     [Headers::HEADER_CONTENT_TYPE, ContentType::TEXT]
                 ]))
                 ->withBody('string'),
-            (new HttpResult())->withStatus(HttpResult::HTTP_SUCCESS)
+            (new HttpResult())->withStatus(200)
         );
         (new HttpPlug($uri2))->withHeader('X-Qux', 'foo')->post(new TextContent('string'));
         $uri3 = XUri::tryParse('test://example.com/@api/deki/users/123');
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_GET, $uri3),
-            (new HttpResult())->withStatus(HttpResult::HTTP_FORBIDDEN)
+            (new HttpResult())->withStatus(403)
         );
 
         // act

@@ -19,7 +19,6 @@
 namespace MindTouch\Http\tests\HttpPlug\CurlInvoke;
 
 use MindTouch\Http\HttpPlug;
-use MindTouch\Http\HttpResult;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
 class delete_Test extends MindTouchHttpUnitTestCase  {
@@ -36,7 +35,7 @@ class delete_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->delete();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $this->assertEquals(HttpPlug::METHOD_DELETE, $result->getBody()->getVal('method'));
     }
 }

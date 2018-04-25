@@ -20,7 +20,6 @@ namespace MindTouch\Http\tests\HttpPlug\CurlInvoke;
 
 use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\Content\TextContent;
-use MindTouch\Http\HttpResult;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
 class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
@@ -37,7 +36,7 @@ class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
         $result = $plug->get();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $this->assertEquals('https://httpbin.org/redirect/1', $result->getVal('request/uri'));
         $this->assertEquals('https://httpbin.org/get', $result->getBody()->getVal('url'));
         $headers = $result->getAll('rawheaders');
@@ -59,7 +58,7 @@ class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
         $result = $plug->post(new TextContent('foo'));
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
         $this->assertEquals('https://httpbin.org/post', $body->getVal('url'));
         $this->assertEquals(ContentType::TEXT, $body->getVal('headers/Content-Type'));
@@ -79,7 +78,7 @@ class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
         $result = $plug->withAutoRedirects(2)->get();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_FOUND, $result->getStatus());
+        $this->assertEquals(302, $result->getStatus());
         $this->assertEquals(47, $result->getVal('errno'));
         $this->assertEquals('/get', $result->getHeaders()->getHeaderLine('Location'));
     }
@@ -96,7 +95,7 @@ class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
         $result = $plug->withAutoRedirects(0)->get();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_FOUND, $result->getStatus());
+        $this->assertEquals(302, $result->getStatus());
         $this->assertEquals(0, $result->getVal('errno'));
         $this->assertEquals('/get', $result->getHeaders()->getHeaderLine('Location'));
     }

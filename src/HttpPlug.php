@@ -35,18 +35,12 @@ use MindTouch\Http\Parser\IHttpResultParser;
  * @package MindTouch\Http
  */
 class HttpPlug {
-    const TARGET_ORIGIN_FORM = 'origin-form';
-    const TARGET_ABSOLUTE_FORM = 'absolute-form';
-    const TARGET_AUTHORITY_FORM = 'authority-form';
-    const TARGET_ASTERISK_FORM = 'asterisk-form';
-
+    const DEFAULT_MAX_AUTO_REDIRECTS = 10;
     const METHOD_DELETE = 'DELETE';
     const METHOD_GET = 'GET';
     const METHOD_HEAD = 'HEAD';
     const METHOD_POST = 'POST';
     const METHOD_PUT = 'PUT';
-
-    const DEFAULT_MAX_AUTO_REDIRECTS = 10;
 
     /**
      * @var int

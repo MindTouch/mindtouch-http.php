@@ -38,7 +38,6 @@ class ApiPlug extends HttpPlug {
     const DREAM_FORMAT_PHP = 'php';
     const DREAM_FORMAT_JSON = 'json';
     const DREAM_FORMAT_XML = 'xml';
-    const HEADER_DEKI_TOKEN = 'X-Deki-Token';
 
     /**
      * Path segments that should not be url encoded
@@ -188,7 +187,7 @@ class ApiPlug extends HttpPlug {
     protected function invokeApplyCredentials($headers) {
         parent::invokeApplyCredentials($headers);
         if($this->token !== null) {
-            $headers->setHeader(self::HEADER_DEKI_TOKEN, $this->token->toHash());
+            $headers->setHeader('X-Deki-Token', $this->token->toHash());
         }
     }
 

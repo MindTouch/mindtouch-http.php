@@ -41,7 +41,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
                     [Headers::HEADER_AUTHORIZATION, 'Basic cXV4OmJheg==']
                 ])),
             (new HttpResult())
-                ->withStatus(HttpResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withBody('baz')
         );
         $plug = (new HttpPlug($uri))->withCredentials('qux', 'baz');
@@ -51,6 +51,6 @@ class post_Test extends MindTouchHttpUnitTestCase  {
 
         // assert
         $this->assertAllMockPlugMocksCalled();
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
     }
 }

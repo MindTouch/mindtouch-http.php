@@ -25,7 +25,6 @@ use MindTouch\Http\Content\JsonContent;
 use MindTouch\Http\Content\TextContent;
 use MindTouch\Http\Content\XmlContent;
 use MindTouch\Http\HttpPlug;
-use MindTouch\Http\HttpResult;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
 class post_Test extends MindTouchHttpUnitTestCase  {
@@ -42,7 +41,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->post();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $this->assertEquals(HttpPlug::METHOD_POST, $result->getBody()->getVal('method'));
     }
 
@@ -58,7 +57,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->post(new TextContent('foo'));
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
         $this->assertEquals(ContentType::TEXT, $body->getVal('headers/Content-Type'));
         $this->assertEquals('3', $body->getVal('headers/Content-Length'));
@@ -77,7 +76,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->post(new TextContent(''));
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
         $this->assertEquals(ContentType::TEXT, $body->getVal('headers/Content-Type'));
         $this->assertEquals('0', $body->getVal('headers/Content-Length'));
@@ -97,7 +96,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->post(new FileContent($filePath));
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
         $this->assertStringStartsWith('image/png; charset=binary', $body->getVal('headers/Content-Type'));
         $this->assertStringStartsWith('data:application/octet-stream;base64,', $body->getVal('data'));
@@ -122,7 +121,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         ]));
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
         $this->assertStringStartsWith('multipart/form-data', $body->getVal('headers/Content-Type'));
         $this->assertEquals('236', $body->getVal('headers/Content-Length'));
@@ -149,7 +148,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         ]));
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
         $this->assertEquals(ContentType::JSON, $body->getVal('headers/Content-Type'));
         $this->assertEquals('41', $body->getVal('headers/Content-Length'));
@@ -177,7 +176,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         ]));
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
         $this->assertEquals(ContentType::XML, $body->getVal('headers/Content-Type'));
         $this->assertEquals('55', $body->getVal('headers/Content-Length'));
