@@ -19,6 +19,7 @@
 namespace MindTouch\Http;
 
 use Closure;
+use CURLFile;
 use InvalidArgumentException;
 use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\IContent;
@@ -450,8 +451,9 @@ class HttpPlug {
                  */
                 if($filePath !== null && is_file($filePath)) {
                     curl_setopt($curl, CURLOPT_POST, true);
-                    $postFields = ['file' => '@' . $filePath];
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, [
+                        'file' => new CURLFile($filePath)
+                    ]);
                 } else {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
                 }

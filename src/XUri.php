@@ -104,7 +104,12 @@ class XUri {
         if($query !== null) {
             $pairs = explode('&', $query);
             foreach($pairs as $pair) {
-                list($k, $v) = array_map('urldecode', explode('=', $pair));
+                if(strpos($pair, '=') === false) {
+                    $k = $pair;
+                    $v = null;
+                } else {
+                    list($k, $v) = array_map('urldecode', explode('=', $pair));
+                }
                 $params[$k] = $v === null ? '' : $v;
             }
         }
