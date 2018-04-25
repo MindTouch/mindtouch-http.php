@@ -18,33 +18,32 @@
  */
 namespace MindTouch\Http\Parser;
 
-use MindTouch\Http\Content\ContentType;
+use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
+use MindTouch\Http\Headers;
 use MindTouch\Http\HttpResult;
 
 /**
- * Class JsonParser
+ * Class HttpResultParserBase
  *
  * @package MindTouch\Http\Parser
  */
-class JsonParser extends HttpResultParserBase implements IHttpResultParser {
+abstract class HttpResultParserBase {
 
     /**
-     * @param int|null $maxContentLength - parser will throw if content length exceeds max (default: null)
+     * @var int|null
      */
-    public function __construct($maxContentLength = null) {
-        $this->maxContentLength = $maxContentLength;
-    }
+    protected $maxContentLength = null;
 
-    public function toParsedResult(HttpResult $result) {
-        if(ContentType::isJson($result->getContentType())) {
-
-            /** @noinspection PhpUnhandledExceptionInspection */
-            $this->validateContentLength($result);
-            $body = $result->getVal('body', '');
-            if(is_string($body)) {
-                $result->setVal('body', json_decode($body, true));
-            }
+    /**
+     * @param HttpResult $result
+     * @throws CannotParseContentExceedsMaxContentLengthException
+     */
+    protected function validateContentLength(HttpResult $result) {
+        if(!is_int($this->maxContentLength)) {
+            return;
         }
-        return $result;
+        if(intval($result->getHeaders()->getHeaderLine(Headers::HEADER_CONTENT_LENGTH)) > $this->maxContentLength) {
+            throw new CannotParseContentExceedsMaxContentLengthException($result);
+        }
     }
 }

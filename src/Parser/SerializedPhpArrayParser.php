@@ -25,12 +25,22 @@ use MindTouch\Http\HttpResult;
  *
  * @package MindTouch\Http\Parser
  */
-class SerializedPhpArrayParser implements IHttpResultParser {
+class SerializedPhpArrayParser extends HttpResultParserBase implements IHttpResultParser {
+
+    /**
+     * @param int|null $maxContentLength - parser will throw if content length exceeds max (default: null)
+     */
+    public function __construct($maxContentLength = null) {
+        $this->maxContentLength = $maxContentLength;
+    }
 
     public function toParsedResult(HttpResult $result) {
 
         // TODO (modethirteen, 20180422): ensure its safe to use ContentType::PHP here
         if(strpos($result->getContentType(), '/php')) {
+
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $this->validateContentLength($result);
             $body = $result->getVal('body', '');
             if(is_string($body)) {
                 $result->setVal('body', unserialize($body));
