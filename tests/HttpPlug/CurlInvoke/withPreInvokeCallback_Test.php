@@ -18,10 +18,9 @@
  */
 namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
 
-use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\HttpResult;
-use MindTouch\Http\Mock\MockPlug;
+use MindTouch\Http\IMutableHeaders;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 use MindTouch\Http\XUri;
 
@@ -33,18 +32,21 @@ class withPreInvokeCallback_Test extends MindTouchHttpUnitTestCase  {
     public function Can_execute_callback_and_mutate_plug_before_invocation() {
 
         // arrange
-        $plug = $this->newHttpBinPlug()->at('anything');
+        $plug = $this->newHttpBinPlug();
 
         // act
         $result = $plug
-            ->withPreInvokeCallback(function(HttpPlug $plug) {
-                $plug->getHeaders()->toMutableHeaders()->setHeader('X-Callback-Header', 'baz');
+            ->withPreInvokeCallback(function(&$method, XUri &$uri, IMutableHeaders $headers) {
+                $method = HttpPlug::METHOD_GET;
+                $uri = $uri->at('anything');
+                $headers->setHeader('X-Callback-Header', 'baz');
             })
-            ->get();
+            ->post();
 
         // assert
         $this->assertAllMockPlugMocksCalled();
         $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(HttpPlug::METHOD_GET, $result->getBody()->getVal('method'));
         $this->assertEquals('baz', $result->getBody()->getVal('headers/X-Callback-Header'));
     }
 }

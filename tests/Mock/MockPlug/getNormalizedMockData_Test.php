@@ -18,9 +18,9 @@
  */
 namespace MindTouch\Http\tests\Mock\MockPlug;
 
+use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\HttpResult;
-use MindTouch\Http\Headers;
 use MindTouch\Http\Mock\MockPlug;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 use MindTouch\Http\XUri;

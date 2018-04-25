@@ -18,8 +18,8 @@
  */
 namespace MindTouch\Http\tests\XUri;
 
-use MindTouch\Http\XUri;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\XUri;
 
 class withReplacedQueryParam_Test extends MindTouchHttpUnitTestCase {
 
