@@ -23,6 +23,7 @@ use CURLFile;
 use InvalidArgumentException;
 use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\IContent;
+use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
 use MindTouch\Http\Exception\NotImplementedException;
 use MindTouch\Http\Mock\MockPlug;
 use MindTouch\Http\Mock\MockRequestMatcher;
@@ -317,6 +318,7 @@ class HttpPlug {
      * Performs a GET request
      *
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
     public function get() { return $this->invoke(self::METHOD_GET); }
 
@@ -324,6 +326,7 @@ class HttpPlug {
      * Performs a HEAD request
      *
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
     public function head() { return $this->invoke(self::METHOD_HEAD); }
 
@@ -332,6 +335,8 @@ class HttpPlug {
      *
      * @param IContent|null $content - optionally send a content body with the request
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
+     * @throws InvalidArgumentException
      */
     public function post($content = null) { return $this->invoke(self::METHOD_POST, $content); }
 
@@ -340,6 +345,7 @@ class HttpPlug {
      *
      * @param IContent|null $content - optionally send a content body with the request
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      * @throws NotImplementedException
      */
     public function put($content = null) {
@@ -355,6 +361,7 @@ class HttpPlug {
      * Performs a DELETE request
      *
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
     public function delete() { return $this->invoke(self::METHOD_DELETE); }
 
@@ -366,6 +373,8 @@ class HttpPlug {
      * @param string $method
      * @param IContent|null $content
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
+     * @throws InvalidArgumentException
      */
     protected function invoke($method, $content = null) {
         $requestUri = $this->getUri();
@@ -539,6 +548,7 @@ class HttpPlug {
      * @param int $end
      * @param HttpResult $result
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
     protected function invokeComplete(XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
         foreach($this->postInvokeCallbacks as $callback) {
