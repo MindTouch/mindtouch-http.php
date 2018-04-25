@@ -93,4 +93,12 @@ interface IHeaders extends Iterator {
      * @return IMutableHeaders
      */
     function toMutableHeaders();
+
+    /**
+     * Return an new instance with the incoming HTTP headers merged with the existing HTTP headers
+     *
+     * @param IHeaders $headers
+     * @return IHeaders
+     */
+    function toMergedHeaders(IHeaders $headers);
 }
