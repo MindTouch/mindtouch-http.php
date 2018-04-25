@@ -35,7 +35,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(ApiPlug::METHOD_GET, $uri),
-            (new ApiResult())->withStatus(ApiResult::HTTP_SUCCESS)
+            (new ApiResult())->withStatus(200)
         );
         $plug = new ApiPlug($uri);
 

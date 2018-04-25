@@ -42,7 +42,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
                 $uri->with('dream.in.verb', ApiPlug::METHOD_PUT)
             ),
             (new ApiResult())
-                ->withStatus(ApiResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     ['X-Deki-Foo', 'bar'],
                     ['X-Deki-Foo', 'baz'],
@@ -55,7 +55,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
         $result = $plug->put();
 
         // assert
-        $this->assertEquals(ApiResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
     }
 
     /**
@@ -72,7 +72,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
                 ]))
                 ->withBody('qux'),
             (new ApiResult())
-                ->withStatus(ApiResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     ['X-Deki-Foo', 'bar'],
                     ['X-Deki-Foo', 'baz'],
@@ -85,7 +85,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
         $result = $plug->put(new TextContent('qux'));
 
         // assert
-        $this->assertEquals(ApiResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
     }
 
     /**
@@ -105,7 +105,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
                     'baz' => 'qux'
                 ]),
             (new ApiResult())
-                ->withStatus(ApiResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     ['X-Deki-Foo', 'bar'],
                     ['X-Deki-Foo', 'baz'],
@@ -121,6 +121,6 @@ class put_Test extends MindTouchHttpUnitTestCase {
         ]));
 
         // assert
-        $this->assertEquals(ApiResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
     }
 }

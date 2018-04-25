@@ -19,16 +19,13 @@
 namespace MindTouch\Http\tests\HttpPlug\CurlInvoke;
 
 use MindTouch\Http\Content\FileContent;
-use MindTouch\Http\Exception\NotImplementedException;
 use MindTouch\Http\HttpPlug;
-use MindTouch\Http\HttpResult;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
 class put_Test extends MindTouchHttpUnitTestCase  {
 
     /**
      * @test
-     * @throws NotImplementedException
      */
     public function Can_invoke_put() {
 
@@ -39,13 +36,12 @@ class put_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->put();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $this->assertEquals(HttpPlug::METHOD_PUT, $result->getBody()->getVal('method'));
     }
 
     /**
      * @test
-     * @throws NotImplementedException
      */
     public function Can_invoke_put_with_file_content() {
 
@@ -57,7 +53,7 @@ class put_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->put(new FileContent($filePath));
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
         $this->assertEquals('image/png; charset=binary', $body->getVal('headers/Content-Type'));
         $this->assertEquals(<<<TEXT

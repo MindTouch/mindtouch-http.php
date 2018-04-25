@@ -23,6 +23,7 @@ use CURLFile;
 use InvalidArgumentException;
 use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\IContent;
+use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
 use MindTouch\Http\Exception\NotImplementedException;
 use MindTouch\Http\Mock\MockPlug;
 use MindTouch\Http\Mock\MockRequestMatcher;
@@ -34,18 +35,12 @@ use MindTouch\Http\Parser\IHttpResultParser;
  * @package MindTouch\Http
  */
 class HttpPlug {
-    const TARGET_ORIGIN_FORM = 'origin-form';
-    const TARGET_ABSOLUTE_FORM = 'absolute-form';
-    const TARGET_AUTHORITY_FORM = 'authority-form';
-    const TARGET_ASTERISK_FORM = 'asterisk-form';
-
+    const DEFAULT_MAX_AUTO_REDIRECTS = 10;
     const METHOD_DELETE = 'DELETE';
     const METHOD_GET = 'GET';
     const METHOD_HEAD = 'HEAD';
     const METHOD_POST = 'POST';
     const METHOD_PUT = 'PUT';
-
-    const DEFAULT_MAX_AUTO_REDIRECTS = 10;
 
     /**
      * @var int
@@ -317,6 +312,7 @@ class HttpPlug {
      * Performs a GET request
      *
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
     public function get() { return $this->invoke(self::METHOD_GET); }
 
@@ -324,6 +320,7 @@ class HttpPlug {
      * Performs a HEAD request
      *
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
     public function head() { return $this->invoke(self::METHOD_HEAD); }
 
@@ -332,6 +329,8 @@ class HttpPlug {
      *
      * @param IContent|null $content - optionally send a content body with the request
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
+     * @throws InvalidArgumentException
      */
     public function post($content = null) { return $this->invoke(self::METHOD_POST, $content); }
 
@@ -340,6 +339,7 @@ class HttpPlug {
      *
      * @param IContent|null $content - optionally send a content body with the request
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      * @throws NotImplementedException
      */
     public function put($content = null) {
@@ -355,6 +355,7 @@ class HttpPlug {
      * Performs a DELETE request
      *
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
     public function delete() { return $this->invoke(self::METHOD_DELETE); }
 
@@ -366,6 +367,8 @@ class HttpPlug {
      * @param string $method
      * @param IContent|null $content
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
+     * @throws InvalidArgumentException
      */
     protected function invoke($method, $content = null) {
         $requestUri = $this->getUri();
@@ -413,7 +416,7 @@ class HttpPlug {
                 ->withBody($body);
             $result = MockPlug::getHttpResult($matcher);
             if($result !== null) {
-                return $this->invokeComplete($requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
+                return $this->invokeComplete($method, $requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
             }
         }
 
@@ -516,7 +519,7 @@ class HttpPlug {
             $result = $result->withBody($httpMessage);
         }
         curl_close($curl);
-        return $this->invokeComplete($requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
+        return $this->invokeComplete($method, $requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
     }
 
     /**
@@ -533,14 +536,16 @@ class HttpPlug {
     /**
      * Return the formatted invocation result
      *
+     * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
      * @param int $start
      * @param int $end
      * @param HttpResult $result
      * @return HttpResult
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
-    protected function invokeComplete(XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+    protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
         foreach($this->postInvokeCallbacks as $callback) {
 
             // mutate result instance with callback
@@ -549,7 +554,7 @@ class HttpPlug {
         foreach($this->parsers as $parser) {
             $result = $parser->toParsedResult($result);
         }
-        return $result->withRequestInfo($uri, $headers, $start, $end);
+        return $result->withRequestInfo($method, $uri, $headers, $start, $end);
     }
 
     /**

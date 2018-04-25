@@ -26,7 +26,15 @@ namespace MindTouch\Http;
 interface IMutableHeaders extends IHeaders {
 
     /**
-     * Set or add value to a header
+     * Set or add values from an HTTP headers collection
+     *
+     * @param IHeaders $headers
+     * @return mixed
+     */
+    function addHeaders(IHeaders $headers);
+
+    /**
+     * Set or add value to an HTTP header
      *
      * @param string $name
      * @param string $value
@@ -34,7 +42,7 @@ interface IMutableHeaders extends IHeaders {
     function addHeader($name, $value);
 
     /**
-     * Set or replace value on a header
+     * Set or replace value on an HTTP header
      *
      * @param string $name
      * @param string $value
@@ -42,21 +50,21 @@ interface IMutableHeaders extends IHeaders {
     function setHeader($name, $value);
 
     /**
-     * Set or add header value(s) with a raw header
+     * Set or add header value(s) with a raw HTTP header
      *
      * @param string $header - 'name: value, ...'
      */
     function addRawHeader($header);
 
     /**
-     * Set or replace header value(s) with a raw header
+     * Set or replace header value(s) with a raw HTTP header
      *
      * @param string $header - 'name: value, ...'
      */
     function setRawHeader($header);
 
     /**
-     * Remove a header and all its values
+     * Remove an HTTP header and all its values
      *
      * @param string $name
      */

@@ -21,6 +21,7 @@ namespace MindTouch\Http;
 use Closure;
 use MindTouch\Http\Content\IContent;
 use MindTouch\Http\Exception\ApiResultException;
+use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
 use MindTouch\Http\Parser\SerializedPhpArrayParser;
 
 /**
@@ -37,7 +38,6 @@ class ApiPlug extends HttpPlug {
     const DREAM_FORMAT_PHP = 'php';
     const DREAM_FORMAT_JSON = 'json';
     const DREAM_FORMAT_XML = 'xml';
-    const HEADER_DEKI_TOKEN = 'X-Deki-Token';
 
     /**
      * Path segments that should not be url encoded
@@ -187,13 +187,14 @@ class ApiPlug extends HttpPlug {
     protected function invokeApplyCredentials($headers) {
         parent::invokeApplyCredentials($headers);
         if($this->token !== null) {
-            $headers->setHeader(self::HEADER_DEKI_TOKEN, $this->token->toHash());
+            $headers->setHeader('X-Deki-Token', $this->token->toHash());
         }
     }
 
     /**
      * Return the formatted invocation result
      *
+     * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
      * @param int $start
@@ -201,9 +202,10 @@ class ApiPlug extends HttpPlug {
      * @param HttpResult $result
      * @return ApiResult
      * @throws ApiResultException
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
-    protected function invokeComplete(XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
-        $result = parent::invokeComplete($uri, $headers, $start, $end, $result);
+    protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+        $result = parent::invokeComplete($method, $uri, $headers, $start, $end, $result);
         $result = new ApiResult($result->toArray());
         if(!$result->isSuccess()) {
             $e = new ApiResultException($result);

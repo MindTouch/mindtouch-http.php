@@ -26,10 +26,19 @@ use MindTouch\Http\HttpResult;
  *
  * @package MindTouch\Http\Parser
  */
-class JsonParser implements IHttpResultParser {
+class JsonParser extends HttpResultParserBase implements IHttpResultParser {
+
+    public function withMaxContentLength($length) {
+        $parser = clone $this;
+        $parser->maxContentLength = $length;
+        return $parser;
+    }
 
     public function toParsedResult(HttpResult $result) {
         if(ContentType::isJson($result->getContentType())) {
+
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $this->validateContentLength($result);
             $body = $result->getVal('body', '');
             if(is_string($body)) {
                 $result->setVal('body', json_decode($body, true));

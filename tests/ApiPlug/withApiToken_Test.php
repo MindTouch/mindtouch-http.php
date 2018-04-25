@@ -21,7 +21,6 @@ namespace MindTouch\Http\tests\ApiPlug;
 use MindTouch\Http\ApiPlug;
 use MindTouch\Http\ApiResult;
 use MindTouch\Http\Headers;
-use MindTouch\Http\HttpResult;
 use MindTouch\Http\IApiToken;
 use MindTouch\Http\Mock\MockPlug;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
@@ -43,9 +42,9 @@ class withApiToken_Test extends MindTouchHttpUnitTestCase  {
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(ApiPlug::METHOD_GET, $uri)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
-                    [ApiPlug::HEADER_DEKI_TOKEN, 'foo']
+                    ['X-Deki-Token', 'foo']
                 ])),
-            (new ApiResult())->withStatus(ApiResult::HTTP_SUCCESS)
+            (new ApiResult())->withStatus(200)
         );
         $plug = new ApiPlug($uri);
 
@@ -54,6 +53,6 @@ class withApiToken_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->withApiToken($token)->get();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
     }
 }

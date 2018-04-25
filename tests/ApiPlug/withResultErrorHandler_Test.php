@@ -39,7 +39,7 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(ApiPlug::METHOD_GET, $uri),
             (new ApiResult())
-                ->withStatus(ApiResult::HTTP_FORBIDDEN)
+                ->withStatus(403)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::PHP]
                 ]))
@@ -54,12 +54,12 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
         // act
         $result = $plug->withResultErrorHandler(function(ApiResultException $e) {
             $result = $e->getResult();
-            $this->assertEquals(ApiResult::HTTP_FORBIDDEN, $result->getStatus());
+            $this->assertEquals(403, $result->getStatus());
             $this->assertEquals('baz', $result->getError());
             return true;
         })->get();
 
         // assert
-        $this->assertEquals(ApiResult::HTTP_FORBIDDEN, $result->getStatus());
+        $this->assertEquals(403, $result->getStatus());
     }
 }

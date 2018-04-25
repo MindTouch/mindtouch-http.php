@@ -40,7 +40,7 @@ class withPostInvokeCallback_Test extends MindTouchHttpUnitTestCase  {
 
         // assert
         $this->assertAllMockPlugMocksCalled();
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $this->assertEquals('foo', $result->getHeaders()->getHeaderLine('X-Callback-Header'));
     }
 }

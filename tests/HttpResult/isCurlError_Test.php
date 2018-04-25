@@ -30,7 +30,7 @@ class isCurlError_Test extends MindTouchHttpUnitTestCase  {
 
         // arrange
         $data = [
-            'status' => HttpResult::HTTP_FOUND,
+            'status' => 302,
             'errno' => 47
         ];
         $result = new HttpResult($data);
@@ -49,7 +49,7 @@ class isCurlError_Test extends MindTouchHttpUnitTestCase  {
 
         // arrange
         $data = [
-            'status' => HttpResult::HTTP_FOUND,
+            'status' => 302,
             'errno' => 0
         ];
         $result = new HttpResult($data);

@@ -40,7 +40,7 @@ class getNormalizedMockData_Test extends MindTouchHttpUnitTestCase  {
                     ['X-Foo', 'bar'],
                     ['X-Baz', 'qux']
                 ])),
-            (new HttpResult())->withStatus(HttpResult::HTTP_SUCCESS)
+            (new HttpResult())->withStatus(200)
         );
         $uri2 = XUri::tryParse('test://example.com/@api/deki/pages/=bar/contents');
         MockPlug::register(
@@ -50,7 +50,7 @@ class getNormalizedMockData_Test extends MindTouchHttpUnitTestCase  {
                 ]))
                 ->withBody('string'),
             (new HttpResult())
-                ->withStatus(HttpResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     ['Set-Cookie', 'dekisession=abc']
                 ])),

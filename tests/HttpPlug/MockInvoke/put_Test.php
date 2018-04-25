@@ -18,7 +18,6 @@
  */
 namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
 
-use MindTouch\Http\Exception\NotImplementedException;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\HttpResult;
@@ -31,7 +30,6 @@ class put_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @note httpbin credentials endpoint does not support put method
      * @test
-     * @throws NotImplementedException
      */
     public function Can_invoke_put_with_credentials() {
 
@@ -43,7 +41,7 @@ class put_Test extends MindTouchHttpUnitTestCase  {
                     [Headers::HEADER_AUTHORIZATION, 'Basic cXV4OmJheg==']
                 ])),
             (new HttpResult())
-                ->withStatus(HttpResult::HTTP_SUCCESS)
+                ->withStatus(200)
                 ->withBody('baz')
         );
         $plug = (new HttpPlug($uri))->withCredentials('qux', 'baz');
@@ -53,6 +51,6 @@ class put_Test extends MindTouchHttpUnitTestCase  {
 
         // assert
         $this->assertAllMockPlugMocksCalled();
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
     }
 }

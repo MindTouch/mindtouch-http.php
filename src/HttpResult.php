@@ -26,29 +26,21 @@ use MindTouch\XArray\XArray;
  * @package MindTouch\Http
  */
 class HttpResult extends XArray {
-    const HTTP_SUCCESS = 200;
-    const HTTP_MOVED_PERMANENTLY = 301;
-    const HTTP_FOUND = 302;
-    const HTTP_TEMPORARY_REDIRECT = 307;
-    const HTTP_BADREQUEST = 400;
-    const HTTP_AUTHFAILED = 401;
-    const HTTP_FORBIDDEN = 403;
-    const HTTP_NOTFOUND = 404;
-    const HTTP_CONFLICT = 409;
-    const HTTP_SERVERERROR = 500;
 
     /**
      * Return an instance with the added request information
      *
+     * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
      * @param int $start - curl start timestamp
      * @param int $end - curl stop timestamp
      * @return static
      */
-    public function withRequestInfo(XUri $uri, IHeaders $headers, $start, $end) {
+    public function withRequestInfo($method, XUri $uri, IHeaders $headers, $start, $end) {
         $result = clone $this;
         $result->array['request'] = [
+            'method' => $method,
             'uri' => $uri->toString(),
             'headers' => $headers->toArray(),
             'start' => $start,

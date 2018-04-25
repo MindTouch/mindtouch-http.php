@@ -16,32 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\Parser;
+namespace MindTouch\Http\Exception;
 
-use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
+use Exception;
 use MindTouch\Http\HttpResult;
 
 /**
- * Interface IHttpResultParser
+ * Class CannotParseContentExceedsMaxContentLengthException
  *
- * @package MindTouch\Http\Parser
+ * @package MindTouch\Http\Exception
  */
-interface IHttpResultParser {
+class CannotParseContentExceedsMaxContentLengthException extends Exception {
 
     /**
-     * Return an instance with a max content length
-     *
-     * @param int $length
-     * @return IHttpResultParser
+     * @var HttpResult
      */
-    function withMaxContentLength($length);
+    private $result;
 
     /**
-     * Return an instance with the content body parsed into an array
-     *
      * @param HttpResult $result
-     * @return HttpResult
-     * @throws CannotParseContentExceedsMaxContentLengthException
      */
-    function toParsedResult(HttpResult $result);
+    public function __construct(HttpResult $result) {
+        parent::__construct('Cannot parse response content that exceeds max content length');
+        $this->result = $result;
+    }
+
+    /**
+     * @return HttpResult
+     */
+    public function getResult() { return $this->result; }
 }

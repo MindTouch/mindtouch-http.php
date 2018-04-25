@@ -19,7 +19,6 @@
 namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
 
 use MindTouch\Http\HttpPlug;
-use MindTouch\Http\HttpResult;
 use MindTouch\Http\IMutableHeaders;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 use MindTouch\Http\XUri;
@@ -45,7 +44,7 @@ class withPreInvokeCallback_Test extends MindTouchHttpUnitTestCase  {
 
         // assert
         $this->assertAllMockPlugMocksCalled();
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
         $this->assertEquals(HttpPlug::METHOD_GET, $result->getBody()->getVal('method'));
         $this->assertEquals('baz', $result->getBody()->getVal('headers/X-Callback-Header'));
     }

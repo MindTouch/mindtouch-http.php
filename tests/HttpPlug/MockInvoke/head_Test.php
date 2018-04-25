@@ -39,7 +39,7 @@ class head_Test extends MindTouchHttpUnitTestCase  {
         $uri = XUri::tryParse('test://example.com/foo');
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_HEAD, $uri),
-            (new HttpResult())->withStatus(HttpResult::HTTP_SUCCESS)
+            (new HttpResult())->withStatus(200)
         );
         $plug = new HttpPlug($uri);
 
@@ -47,7 +47,7 @@ class head_Test extends MindTouchHttpUnitTestCase  {
         $result = $plug->head();
 
         // assert
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
     }
 
     /**
@@ -62,7 +62,7 @@ class head_Test extends MindTouchHttpUnitTestCase  {
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_AUTHORIZATION, 'Basic cXV4OmJheg==']
                 ])),
-            (new HttpResult())->withStatus(HttpResult::HTTP_SUCCESS)
+            (new HttpResult())->withStatus(200)
         );
         $plug = (new HttpPlug($uri))->withCredentials('qux', 'baz');
 
@@ -71,6 +71,6 @@ class head_Test extends MindTouchHttpUnitTestCase  {
 
         // assert
         $this->assertAllMockPlugMocksCalled();
-        $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
+        $this->assertEquals(200, $result->getStatus());
     }
 }
