@@ -18,12 +18,8 @@
  */
 namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
 
-use MindTouch\Http\Headers;
-use MindTouch\Http\HttpPlug;
 use MindTouch\Http\HttpResult;
-use MindTouch\Http\Mock\MockPlug;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
-use MindTouch\Http\XUri;
 
 class withPostInvokeCallback_Test extends MindTouchHttpUnitTestCase  {
 

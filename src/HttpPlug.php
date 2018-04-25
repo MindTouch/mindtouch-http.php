@@ -272,10 +272,10 @@ class HttpPlug {
     }
 
     /**
-     * Return an instance that calls the supplied callback with the current instance before invocation
+     * Return an instance that calls the supplied callback with the request before invocation
      * Multiple callbacks can be added, and are executed in the order they were added
      *
-     * @param Closure $callback - $callback(self $plug) : void
+     * @param Closure $callback - $callback(string $method, XUri $uri, IMutableHeaders $headers, IContent $content) : void
      * @return static
      */
     public function withPreInvokeCallback(Closure $callback) {
@@ -368,17 +368,15 @@ class HttpPlug {
      * @return HttpResult
      */
     protected function invoke($method, $content = null) {
-        foreach($this->preInvokeCallbacks as $callback) {
-
-            // mutate plug instance with callback
-            $callback($this);
-        }
-
-        // create the request info
         $requestUri = $this->getUri();
         $requestHeaders = clone $this->headers;
         $requestStart = 0;
         $requestEnd = 0;
+        foreach($this->preInvokeCallbacks as $callback) {
+
+            // mutate request settings with callback
+            $callback($method, $requestUri, $requestHeaders, $content);
+        }
 
         // handle content data
         $filePath = null;

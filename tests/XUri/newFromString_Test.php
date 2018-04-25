@@ -19,8 +19,8 @@
 namespace MindTouch\Http\tests\XUri;
 
 use MindTouch\Http\Exception\MalformedUriException;
-use MindTouch\Http\XUri;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\XUri;
 
 class newFromString_Test extends MindTouchHttpUnitTestCase {
 

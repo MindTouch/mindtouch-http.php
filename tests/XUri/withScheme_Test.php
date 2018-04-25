@@ -19,8 +19,8 @@
 namespace MindTouch\Http\tests\XUri;
 
 use InvalidArgumentException;
-use MindTouch\Http\XUri;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\XUri;
 
 class withScheme_Test extends MindTouchHttpUnitTestCase {
 
