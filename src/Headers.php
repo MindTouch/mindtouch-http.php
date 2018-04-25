@@ -192,6 +192,16 @@ class Headers implements IMutableHeaders {
 
     public function toMutableHeaders() { return $this; }
 
+    public function toMergedHeaders(IHeaders $headers) {
+        $instance = clone $this;
+        foreach($headers as $name => $values) {
+            foreach($values as $value) {
+                $instance->addHeader($name, $value);
+            }
+        }
+        return $instance;
+    }
+
     /**
      * @param string $name
      * @param string[] $values
