@@ -99,10 +99,12 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         // assert
         $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
         $body = $result->getBody();
-        $this->assertStringStartsWith('image/png; charset=binary; boundary=', $body->getVal('headers/Content-Type'));
+        $this->assertStringStartsWith('image/png; charset=binary', $body->getVal('headers/Content-Type'));
         $this->assertStringStartsWith('data:application/octet-stream;base64,', $body->getVal('data'));
         $this->assertEquals('100-continue', $body->getVal('headers/Expect'));
-        $this->assertEquals('1881', $body->getVal('headers/Content-Length'));
+
+        // content-length when posting files is inconsistent across different versions of php and curl
+        //$this->assertEquals('1881', $body->getVal('headers/Content-Length'));
     }
 
     /**
@@ -122,7 +124,7 @@ class post_Test extends MindTouchHttpUnitTestCase  {
         // assert
         $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
         $body = $result->getBody();
-        $this->assertStringStartsWith('multipart/form-data; boundary=', $body->getVal('headers/Content-Type'));
+        $this->assertStringStartsWith('multipart/form-data', $body->getVal('headers/Content-Type'));
         $this->assertEquals('236', $body->getVal('headers/Content-Length'));
         $this->assertEquals('100-continue', $body->getVal('headers/Expect'));
         $this->assertEquals(['foo' => 'bar', 'baz' => 'qux'], $body->getVal('form'));
