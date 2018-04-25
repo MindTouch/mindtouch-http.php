@@ -21,12 +21,12 @@ namespace MindTouch\Http\tests\Headers;
 use MindTouch\Http\Headers;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
-class toMergedHeaders_Test extends MindTouchHttpUnitTestCase {
+class addHeaders_Test extends MindTouchHttpUnitTestCase {
 
-    /**
+       /**
      * @test
      */
-    public function Can_return_instance_as_mutable_headers() {
+    public function Can_add_headers_collection_to_existing_headers() {
 
         // arrange
         $headers = new Headers();
@@ -46,7 +46,7 @@ class toMergedHeaders_Test extends MindTouchHttpUnitTestCase {
         $incomingHeaders->addHeader('Deki-Frontend', 'web');
 
         // act
-        $result = $headers->toMergedHeaders($incomingHeaders);
+        $headers->addHeaders($incomingHeaders);
 
         // assert
         $this->assertEquals([
@@ -56,6 +56,6 @@ class toMergedHeaders_Test extends MindTouchHttpUnitTestCase {
             'Deki-Database' => ['000'],
             'Set-Cookie' => ['dekisession=765', 'authtoken=123'],
             'Deki-Frontend' => ['web']
-        ], $result->toArray());
+        ], $headers->toArray());
     }
 }

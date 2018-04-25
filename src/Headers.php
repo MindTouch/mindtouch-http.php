@@ -134,6 +134,14 @@ class Headers implements IMutableHeaders {
         return null;
     }
 
+    public function addHeaders(IHeaders $headers) {
+        foreach($headers as $name => $values) {
+            foreach($values as $value) {
+                $this->addHeader($name, $value);
+            }
+        }
+    }
+
     public function addHeader($name, $value) {
         $values = StringUtil::isNullOrEmpty($value) ? [] : [trim($value)];
         $name = self::getFormattedHeaderName($name);
@@ -194,11 +202,7 @@ class Headers implements IMutableHeaders {
 
     public function toMergedHeaders(IHeaders $headers) {
         $instance = clone $this;
-        foreach($headers as $name => $values) {
-            foreach($values as $value) {
-                $instance->addHeader($name, $value);
-            }
-        }
+        $instance->addHeaders($headers);
         return $instance;
     }
 
