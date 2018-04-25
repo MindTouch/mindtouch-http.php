@@ -40,15 +40,17 @@ class HttpResult extends XArray {
     /**
      * Return an instance with the added request information
      *
+     * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
      * @param int $start - curl start timestamp
      * @param int $end - curl stop timestamp
      * @return static
      */
-    public function withRequestInfo(XUri $uri, IHeaders $headers, $start, $end) {
+    public function withRequestInfo($method, XUri $uri, IHeaders $headers, $start, $end) {
         $result = clone $this;
         $result->array['request'] = [
+            'method' => $method,
             'uri' => $uri->toString(),
             'headers' => $headers->toArray(),
             'start' => $start,

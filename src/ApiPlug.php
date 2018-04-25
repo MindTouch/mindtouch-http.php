@@ -21,6 +21,7 @@ namespace MindTouch\Http;
 use Closure;
 use MindTouch\Http\Content\IContent;
 use MindTouch\Http\Exception\ApiResultException;
+use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
 use MindTouch\Http\Parser\SerializedPhpArrayParser;
 
 /**
@@ -194,6 +195,7 @@ class ApiPlug extends HttpPlug {
     /**
      * Return the formatted invocation result
      *
+     * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
      * @param int $start
@@ -201,9 +203,10 @@ class ApiPlug extends HttpPlug {
      * @param HttpResult $result
      * @return ApiResult
      * @throws ApiResultException
+     * @throws CannotParseContentExceedsMaxContentLengthException
      */
-    protected function invokeComplete(XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
-        $result = parent::invokeComplete($uri, $headers, $start, $end, $result);
+    protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+        $result = parent::invokeComplete($method, $uri, $headers, $start, $end, $result);
         $result = new ApiResult($result->toArray());
         if(!$result->isSuccess()) {
             $e = new ApiResultException($result);

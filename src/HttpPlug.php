@@ -422,7 +422,7 @@ class HttpPlug {
                 ->withBody($body);
             $result = MockPlug::getHttpResult($matcher);
             if($result !== null) {
-                return $this->invokeComplete($requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
+                return $this->invokeComplete($method, $requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
             }
         }
 
@@ -525,7 +525,7 @@ class HttpPlug {
             $result = $result->withBody($httpMessage);
         }
         curl_close($curl);
-        return $this->invokeComplete($requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
+        return $this->invokeComplete($method, $requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
     }
 
     /**
@@ -542,6 +542,7 @@ class HttpPlug {
     /**
      * Return the formatted invocation result
      *
+     * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
      * @param int $start
@@ -550,7 +551,7 @@ class HttpPlug {
      * @return HttpResult
      * @throws CannotParseContentExceedsMaxContentLengthException
      */
-    protected function invokeComplete(XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+    protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
         foreach($this->postInvokeCallbacks as $callback) {
 
             // mutate result instance with callback
@@ -559,7 +560,7 @@ class HttpPlug {
         foreach($this->parsers as $parser) {
             $result = $parser->toParsedResult($result);
         }
-        return $result->withRequestInfo($uri, $headers, $start, $end);
+        return $result->withRequestInfo($method, $uri, $headers, $start, $end);
     }
 
     /**
