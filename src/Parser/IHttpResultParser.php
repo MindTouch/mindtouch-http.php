@@ -29,6 +29,16 @@ use MindTouch\Http\HttpResult;
 interface IHttpResultParser {
 
     /**
+     * Return an instance with a max content length
+     *
+     * @param int $length
+     * @return IHttpResultParser
+     */
+    function withMaxContentLength($length);
+
+    /**
+     * Return an instance with the content body parsed into an array
+     *
      * @param HttpResult $result
      * @return HttpResult
      * @throws CannotParseContentExceedsMaxContentLengthException

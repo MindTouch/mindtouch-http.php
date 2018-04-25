@@ -26,7 +26,6 @@ class newFromString_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
-     * @throws MalformedUriException
      */
     public function XUri_roundtrip_test_1() {
 
@@ -42,7 +41,6 @@ class newFromString_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
-     * @throws MalformedUriException
      */
     public function XUri_roundtrip_test_2() {
 
@@ -58,7 +56,6 @@ class newFromString_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
-     * @throws MalformedUriException
      */
     public function XUri_roundtrip_test_3() {
 

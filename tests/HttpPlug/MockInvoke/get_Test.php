@@ -55,7 +55,8 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         $plug = new HttpPlug($uri);
 
         // act
-        $result = $plug->withHttpResultParser(new JsonParser(50000))->get();
+        $parser = (new JsonParser())->withMaxContentLength(50000);
+        $result = $plug->withHttpResultParser($parser)->get();
 
         // assert
         $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
@@ -83,7 +84,8 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         // act
         $exceptionThrown = false;
         try {
-            $plug->withHttpResultParser(new JsonParser(500))->get();
+            $parser = (new JsonParser())->withMaxContentLength(500);
+            $plug->withHttpResultParser($parser)->get();
         } catch(CannotParseContentExceedsMaxContentLengthException $e) {
             $exceptionThrown = true;
         }
@@ -113,7 +115,8 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         $plug = new HttpPlug($uri);
 
         // act
-        $result = $plug->withHttpResultParser(new SerializedPhpArrayParser(50000))->get();
+        $parser = (new SerializedPhpArrayParser())->withMaxContentLength(50000);
+        $result = $plug->withHttpResultParser($parser)->get();
 
         // assert
         $this->assertEquals(HttpResult::HTTP_SUCCESS, $result->getStatus());
@@ -141,7 +144,8 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         // act
         $exceptionThrown = false;
         try {
-            $plug->withHttpResultParser(new SerializedPhpArrayParser(500))->get();
+            $parser = (new SerializedPhpArrayParser())->withMaxContentLength(500);
+            $plug->withHttpResultParser($parser)->get();
         } catch(CannotParseContentExceedsMaxContentLengthException $e) {
             $exceptionThrown = true;
         }

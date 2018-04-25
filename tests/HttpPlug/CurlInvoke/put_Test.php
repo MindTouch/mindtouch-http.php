@@ -28,7 +28,6 @@ class put_Test extends MindTouchHttpUnitTestCase  {
 
     /**
      * @test
-     * @throws NotImplementedException
      */
     public function Can_invoke_put() {
 
@@ -45,7 +44,6 @@ class put_Test extends MindTouchHttpUnitTestCase  {
 
     /**
      * @test
-     * @throws NotImplementedException
      */
     public function Can_invoke_put_with_file_content() {
 

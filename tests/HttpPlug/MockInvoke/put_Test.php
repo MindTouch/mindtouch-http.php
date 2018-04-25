@@ -31,7 +31,6 @@ class put_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @note httpbin credentials endpoint does not support put method
      * @test
-     * @throws NotImplementedException
      */
     public function Can_invoke_put_with_credentials() {
 

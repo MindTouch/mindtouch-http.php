@@ -27,11 +27,10 @@ use MindTouch\Http\HttpResult;
  */
 class SerializedPhpArrayParser extends HttpResultParserBase implements IHttpResultParser {
 
-    /**
-     * @param int|null $maxContentLength - parser will throw if content length exceeds max (default: null)
-     */
-    public function __construct($maxContentLength = null) {
-        $this->maxContentLength = $maxContentLength;
+    public function withMaxContentLength($length) {
+        $parser = clone $this;
+        $parser->maxContentLength = $length;
+        return $parser;
     }
 
     public function toParsedResult(HttpResult $result) {
