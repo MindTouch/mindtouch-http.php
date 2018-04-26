@@ -18,6 +18,11 @@
  */
 namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
 
+use MindTouch\Http\Content\FileContent;
+use MindTouch\Http\Content\IContent;
+use MindTouch\Http\Content\JsonContent;
+use MindTouch\Http\Content\TextContent;
+use MindTouch\Http\Content\XmlContent;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\HttpResult;
@@ -48,6 +53,32 @@ class post_Test extends MindTouchHttpUnitTestCase  {
 
         // act
         $result = $plug->post();
+
+        // assert
+        $this->assertAllMockPlugMocksCalled();
+        $this->assertEquals(200, $result->getStatus());
+    }
+
+    /**
+     * @dataProvider content_dataProvider
+     * @note testing mockplug with content
+     * @param IContent $content
+     * @test
+     */
+    public function Can_invoke_post_with_content(IContent $content) {
+
+        // arrange
+        $uri = XUri::tryParse('test://example.com/foo');
+        MockPlug::register(
+            $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_POST, $uri)
+                ->withContent($content),
+            (new HttpResult())
+                ->withStatus(200)
+        );
+        $plug = new HttpPlug($uri);
+
+        // act
+        $result = $plug->post($content);
 
         // assert
         $this->assertAllMockPlugMocksCalled();
