@@ -19,6 +19,7 @@
 namespace MindTouch\Http\Mock;
 
 use InvalidArgumentException;
+use MindTouch\Http\Content\IContent;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\IHeaders;
@@ -113,6 +114,24 @@ class MockRequestMatcher {
             $body = http_build_query($body);
         }
         $request = clone $this;
+        $request->body = $body;
+        return $request;
+    }
+
+    /**
+     * Return an instance with the specified content. Method will set a body and content-type depending on
+     * the value of the content object
+     *
+     * @param IContent $content
+     * @return MockRequestMatcher
+     */
+    public function withContent(IContent $content) {
+        $request = clone $this;
+        $request->headers->setHeader(Headers::HEADER_CONTENT_TYPE, $content->getContentType());
+        $body = $content->toData();
+        if(is_array($body)) {
+            $body = http_build_query($body);
+        }
         $request->body = $body;
         return $request;
     }

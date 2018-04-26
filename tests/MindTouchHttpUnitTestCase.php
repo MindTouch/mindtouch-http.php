@@ -18,6 +18,10 @@
  */
 namespace MindTouch\Http\tests;
 
+use MindTouch\Http\Content\FileContent;
+use MindTouch\Http\Content\JsonContent;
+use MindTouch\Http\Content\TextContent;
+use MindTouch\Http\Content\XmlContent;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\Mock\MockPlug;
@@ -30,6 +34,21 @@ use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
 class MindTouchHttpUnitTestCase extends PHPUnit_Framework_TestCase {
+
+    #region Test data providers
+
+    /**
+     * @return array
+     */
+    public static function content_dataProvider() {
+        return [
+            'text' => [new TextContent('foo')],
+            'json' => [JsonContent::newFromArray(['foo' => ['bar', 'baz']])],
+            'xml' => [XmlContent::newFromArray(['foo' => ['bar' => ['@id' => 'qux']]])]
+        ];
+    }
+
+    #endregion
 
     public function setUp() {
         parent::setUp();
