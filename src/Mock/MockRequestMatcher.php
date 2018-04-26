@@ -128,7 +128,7 @@ class MockRequestMatcher {
     public function withContent(IContent $content) {
         $request = clone $this;
         $request->headers->setHeader(Headers::HEADER_CONTENT_TYPE, $content->getContentType());
-        $body = $content->toData();
+        $body = $content->toInvokeData();
         if(is_array($body)) {
             $body = http_build_query($body);
         }

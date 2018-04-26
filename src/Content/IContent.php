@@ -37,5 +37,12 @@ interface IContent {
      *
      * @return string|string[]
      */
-    function toData();
+    function toInvokeData();
+
+    /**
+     * Convert the content into text for a result
+     *
+     * @return string
+     */
+    function toResultData();
 }

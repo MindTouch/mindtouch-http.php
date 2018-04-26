@@ -51,5 +51,7 @@ class FileContent implements IContent {
 
     public function getContentType() { return $this->contentType; }
 
-    public function toData() { return $this->filePath; }
+    public function toInvokeData() { return $this->filePath; }
+
+    public function toResultData() { throw new NotImplementedException(); }
 }

@@ -18,6 +18,8 @@
  */
 namespace MindTouch\Http\Content;
 
+use MindTouch\Http\Exception\NotImplementedException;
+
 /**
  * Class FormDataContent
  *
@@ -39,5 +41,7 @@ class FormDataContent implements IContent {
 
     public function getContentType() { return ContentType::FORM; }
 
-    public function toData() { return $this->data; }
+    public function toInvokeData() { return $this->data; }
+
+    public function toResultData() { throw new NotImplementedException(); }
 }

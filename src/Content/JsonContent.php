@@ -47,5 +47,7 @@ class JsonContent implements IContent {
 
     public function getContentType() { return ContentType::JSON; }
 
-    public function toData() { return $this->json; }
+    public function toInvokeData() { return $this->json; }
+
+    public function toResultData() { return $this->json; }
 }

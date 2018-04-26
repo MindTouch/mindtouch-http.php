@@ -389,9 +389,9 @@ class HttpPlug {
                 throw new InvalidArgumentException('Content object must be an implementation IContent');
             }
             if($content instanceof FileContent) {
-                $filePath = $content->toData();
+                $filePath = $content->toInvokeData();
             } else {
-                $body = $content->toData();
+                $body = $content->toInvokeData();
 
                 // explicitly set content length 0 if string content is empty
                 if(is_string($body) && StringUtil::isNullOrEmpty($body)) {

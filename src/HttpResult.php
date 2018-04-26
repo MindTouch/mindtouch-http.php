@@ -18,6 +18,11 @@
  */
 namespace MindTouch\Http;
 
+use MindTouch\Http\Content\FileContent;
+use MindTouch\Http\Content\IContent;
+use MindTouch\Http\Content\JsonContent;
+use MindTouch\Http\Content\TextContent;
+use MindTouch\Http\Content\XmlContent;
 use MindTouch\XArray\XArray;
 
 /**
@@ -82,6 +87,19 @@ class HttpResult extends XArray {
     public function withBody($body) {
         $result = clone $this;
         $result->array['body'] = $body;
+        return $result;
+    }
+
+    /**
+     * Return an instance with the specified result content body and content type
+     *
+     * @param  $content
+     * @return static
+     */
+    public function withContent(IContent $content) {
+        $result = clone $this;
+        $result->array['body'] = $content->toResultData();
+        $result->array['type'] = $content->getContentType();
         return $result;
     }
 

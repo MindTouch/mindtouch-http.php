@@ -49,5 +49,7 @@ class XmlContent implements IContent {
 
     public function getContentType() { return ContentType::XML; }
 
-    public function toData() { return $this->xml; }
+    public function toInvokeData() { return $this->xml; }
+
+    public function toResultData() { return $this->xml; }
 }
