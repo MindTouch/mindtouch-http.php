@@ -30,7 +30,7 @@ class FormDataContent implements IContent {
     /**
      * @var string[]
      */
-    private $data;
+    protected $data;
 
     /**
      * @param string[] $data - name/value pairs of form data

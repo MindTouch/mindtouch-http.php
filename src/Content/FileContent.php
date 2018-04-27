@@ -18,6 +18,8 @@
  */
 namespace MindTouch\Http\Content;
 
+use MindTouch\Http\Exception\NotImplementedException;
+
 /**
  * Class FileContent
  *
@@ -28,12 +30,12 @@ class FileContent implements IContent {
     /**
      * @var string
      */
-    private $filePath;
+    protected $filePath;
 
     /**
      * @var string
      */
-    private $contentType;
+    protected $contentType;
 
     /**
      * @param string $filePath

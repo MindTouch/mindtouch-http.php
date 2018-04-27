@@ -36,7 +36,7 @@ class JsonContent implements IContent {
     /**
      * @var string
      */
-    private $json;
+    protected $json;
 
     /**
      * @param string $json

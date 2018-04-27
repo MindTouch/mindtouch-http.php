@@ -38,7 +38,7 @@ class XmlContent implements IContent {
     /**
      * @var string
      */
-    private $xml;
+    protected $xml;
 
     /**
      * @param string $xml
