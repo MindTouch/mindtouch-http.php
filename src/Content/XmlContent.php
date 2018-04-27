@@ -33,7 +33,7 @@ class XmlContent implements IContent {
      * @param array $xml
      * @return static
      */
-    public static function newFromArray(array $xml) { return new self((new XArray($xml))->toXml()); }
+    public static function newFromArray(array $xml) { return new static((new XArray($xml))->toXml()); }
 
     /**
      * @var string
