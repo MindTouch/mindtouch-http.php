@@ -18,11 +18,7 @@
  */
 namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
 
-use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\IContent;
-use MindTouch\Http\Content\JsonContent;
-use MindTouch\Http\Content\TextContent;
-use MindTouch\Http\Content\XmlContent;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\HttpResult;

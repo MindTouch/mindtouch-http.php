@@ -18,7 +18,6 @@
  */
 namespace MindTouch\Http\tests;
 
-use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\JsonContent;
 use MindTouch\Http\Content\TextContent;
 use MindTouch\Http\Content\XmlContent;

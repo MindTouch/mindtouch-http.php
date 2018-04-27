@@ -18,11 +18,7 @@
  */
 namespace MindTouch\Http;
 
-use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\IContent;
-use MindTouch\Http\Content\JsonContent;
-use MindTouch\Http\Content\TextContent;
-use MindTouch\Http\Content\XmlContent;
 use MindTouch\XArray\XArray;
 
 /**
