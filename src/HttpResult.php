@@ -94,7 +94,7 @@ class HttpResult extends XArray {
      */
     public function withContent(IContent $content) {
         $result = clone $this;
-        $result->array['body'] = $content->toResultData();
+        $result->array['body'] = $content->toString();
         $result->array['type'] = $content->getContentType();
         return $result;
     }

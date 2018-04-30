@@ -36,7 +36,7 @@ class JsonContent implements IContent {
     /**
      * @var string
      */
-    protected $json;
+    private $json;
 
     /**
      * @param string $json
@@ -47,7 +47,9 @@ class JsonContent implements IContent {
 
     public function getContentType() { return ContentType::JSON; }
 
-    public function toInvokeData() { return $this->json; }
+    public function toRaw() { return $this->json; }
 
-    public function toResultData() { return $this->json; }
+    public function toString() { return $this->json; }
+
+    public function __toString() { return $this->toString(); }
 }

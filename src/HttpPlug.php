@@ -389,9 +389,9 @@ class HttpPlug {
                 throw new InvalidArgumentException('Content object must be an implementation IContent');
             }
             if($content instanceof FileContent) {
-                $filePath = $content->toInvokeData();
+                $filePath = $content->toRaw();
             } else {
-                $body = $content->toInvokeData();
+                $body = $content->toRaw();
 
                 // explicitly set content length 0 if string content is empty
                 if(is_string($body) && StringUtil::isNullOrEmpty($body)) {
@@ -430,38 +430,6 @@ class HttpPlug {
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-        // custom behavior based on the request type
-        switch($method) {
-            case self::METHOD_PUT:
-                if($filePath !== null && is_file($filePath)) {
-
-                    // read in content from file
-                    curl_setopt($curl, CURLOPT_PUT, true);
-                    curl_setopt($curl, CURLOPT_INFILE, fopen($filePath, 'r'));
-                    curl_setopt($curl, CURLOPT_INFILESIZE, filesize($filePath));
-                }
-
-                // TODO (modethirteen, 20180422): handle PUT content that is not file content
-                break;
-            case self::METHOD_POST:
-
-                /**
-                 * The full data to post in a HTTP "POST" operation. To post a file, prepend a filename with @ and use the full path.
-                 * This can either be passed as a urlencoded string like 'para1=val1&para2=val2&...' or as an array with the field name as
-                 * key and field data as value. If value is an array, the Content-Type header will be set to multipart/form-data.
-                 */
-                if($filePath !== null && is_file($filePath)) {
-                    curl_setopt($curl, CURLOPT_POST, true);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, [
-                        'file' => new CURLFile($filePath)
-                    ]);
-                } else {
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
-                }
-                break;
-            default:
-        }
-
         // add the request headers
         if(!$requestHeaders->isEmpty()) {
             curl_setopt($curl, CURLOPT_HTTPHEADER, $requestHeaders->toRawHeaders());
@@ -499,6 +467,38 @@ class HttpPlug {
             }
             return $length;
         });
+
+        // custom behavior based on the request type
+        switch($method) {
+            case self::METHOD_PUT:
+                if($filePath !== null) {
+
+                    // read in content from file
+                    curl_setopt($curl, CURLOPT_PUT, true);
+                    curl_setopt($curl, CURLOPT_INFILE, fopen($filePath, 'r'));
+                    curl_setopt($curl, CURLOPT_INFILESIZE, filesize($filePath));
+                }
+
+                // TODO (modethirteen, 20180422): handle PUT content that is not file content
+                break;
+            case self::METHOD_POST:
+
+                /**
+                 * The full data to post in a HTTP "POST" operation. To post a file, prepend a filename with @ and use the full path.
+                 * This can either be passed as a urlencoded string like 'para1=val1&para2=val2&...' or as an array with the field name as
+                 * key and field data as value. If value is an array, the Content-Type header will be set to multipart/form-data.
+                 */
+                if($filePath !== null) {
+                    curl_setopt($curl, CURLOPT_POST, true);
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, [
+                        'file' => new CURLFile($filePath)
+                    ]);
+                } else {
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
+                }
+                break;
+            default:
+        }
 
         // execute request
         $requestStart = $this->getTime();

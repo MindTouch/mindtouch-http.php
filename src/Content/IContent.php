@@ -33,16 +33,14 @@ interface IContent {
     function getContentType();
 
     /**
-     * Convert the content into data that curl can handle
+     * Retrive the content in raw form for curl invocation
      *
-     * @return string|string[]
+     * @return mixed
      */
-    function toInvokeData();
+    function toRaw();
 
     /**
-     * Convert the content into text for a result
-     *
      * @return string
      */
-    function toResultData();
+    function toString();
 }

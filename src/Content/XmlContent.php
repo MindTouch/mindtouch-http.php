@@ -38,7 +38,7 @@ class XmlContent implements IContent {
     /**
      * @var string
      */
-    protected $xml;
+    private $xml;
 
     /**
      * @param string $xml
@@ -49,7 +49,9 @@ class XmlContent implements IContent {
 
     public function getContentType() { return ContentType::XML; }
 
-    public function toInvokeData() { return $this->xml; }
+    public function toRaw() { return $this->xml; }
 
-    public function toResultData() { return $this->xml; }
+    public function toString() { return $this->xml; }
+
+    public function __toString() { return $this->toString(); }
 }

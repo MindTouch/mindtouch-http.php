@@ -28,12 +28,12 @@ class TextContent implements IContent {
     /**
      * @var string
      */
-    protected $text;
+    private $text;
 
     /**
      * @var string
      */
-    protected $contentType;
+    private $contentType;
 
     /**
      * @param string $text
@@ -46,7 +46,9 @@ class TextContent implements IContent {
 
     public function getContentType() { return $this->contentType; }
 
-    public function toInvokeData() { return $this->text; }
+    public function toRaw() { return $this->text; }
 
-    public function toResultData() { return $this->text; }
+    public function toString() { return $this->text; }
+
+    public function __toString() { return $this->toString(); }
 }
