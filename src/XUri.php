@@ -37,7 +37,7 @@ class XUri {
      */
     public static function tryParse($string) {
         try {
-            return self::newFromString($string);
+            return static::newFromString($string);
         } catch(MalformedUriException $e) {
             return null;
         }
@@ -55,7 +55,7 @@ class XUri {
         if(!$data || !isset($data['scheme']) || $data['scheme'] === null) {
             throw new MalformedUriException($string);
         }
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -123,7 +123,7 @@ class XUri {
      * @return static
      */
     private static function newFromUriData(array $data) {
-        $uri = new self();
+        $uri = new static();
         if(isset($data['port'])) {
             $data['port'] = intval($data['port']);
         }
@@ -272,7 +272,7 @@ class XUri {
         $data = $this->data;
         $data['user'] = $user;
         $data['pass'] = $password;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -288,7 +288,7 @@ class XUri {
         }
         $data = $this->data;
         $data['host'] = $host;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -303,7 +303,7 @@ class XUri {
         }
         $data = $this->data;
         $data['port'] = $port;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -314,7 +314,7 @@ class XUri {
     public function withoutPort() {
         $data = $this->data;
         $data['port'] = null;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -330,7 +330,7 @@ class XUri {
         }
         $data = $this->data;
         $data['scheme'] = $scheme;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -346,7 +346,7 @@ class XUri {
         }
         $data = $this->data;
         $data['fragment'] = $fragment;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -357,7 +357,7 @@ class XUri {
     public function withoutFragment() {
         $data = $this->data;
         $data['fragment'] = null;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -373,7 +373,7 @@ class XUri {
         }
         $data = $this->data;
         $data['query'] = $query;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -392,7 +392,7 @@ class XUri {
         } else {
             $data['query'] = http_build_query([$param => $value]);
         }
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -421,7 +421,7 @@ class XUri {
         }
         unset($params[$param]);
         $data['query'] = http_build_query($params);
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -444,7 +444,7 @@ class XUri {
         }
         $params[$param] = $value;
         $data['query'] = http_build_query($params);
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -461,7 +461,7 @@ class XUri {
         } else {
             $data['query'] = http_build_query($params);
         }
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -479,7 +479,7 @@ class XUri {
             }
         }
         $data['query'] = http_build_query($currentParams);
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -491,7 +491,7 @@ class XUri {
     public function withPath($path) {
         $data = $this->data;
         $data['path'] = $this->normalize($path);
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -511,7 +511,7 @@ class XUri {
             $path .= $this->normalize($segment);
         }
         $data['path'] = $path;
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**
@@ -532,7 +532,7 @@ class XUri {
         if(isset($newUriData['fragment'])) {
             $data['fragment'] = $newUriData['fragment'];
         }
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     #endregion
@@ -560,7 +560,7 @@ class XUri {
             }
             $data['query'] = http_build_query($params);
         }
-        return self::newFromUriData($data);
+        return static::newFromUriData($data);
     }
 
     /**

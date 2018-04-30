@@ -52,4 +52,16 @@ class tryParse_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertNull($result);
     }
+
+    /**
+     * @test
+     */
+    public function Can_return_extended_instance() {
+
+        // act
+        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev/somepath?a=b&c=d&e=f#fragment');
+
+        // assert
+        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+    }
 }

@@ -108,4 +108,16 @@ class newFromString_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertTrue($exceptionThrown);
     }
+
+    /**
+     * @test
+     */
+    public function Can_return_extended_instance() {
+
+        // act
+        $result = TestXUri::newFromString('http://user:password@test.mindtouch.dev/?a=b&c=d#fragment');
+
+        // assert
+        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+    }
 }
