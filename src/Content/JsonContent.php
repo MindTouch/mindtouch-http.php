@@ -29,9 +29,9 @@ class JsonContent implements IContent {
      * Return an instance from a JSON encoded array
      *
      * @param array $json
-     * @return self
+     * @return static
      */
-    public static function newFromArray(array $json) { return new self(json_encode($json)); }
+    public static function newFromArray(array $json) { return new static(json_encode($json)); }
 
     /**
      * @var string
@@ -47,5 +47,9 @@ class JsonContent implements IContent {
 
     public function getContentType() { return ContentType::JSON; }
 
-    public function toData() { return $this->json; }
+    public function toRaw() { return $this->json; }
+
+    public function toString() { return $this->json; }
+
+    public function __toString() { return $this->toString(); }
 }

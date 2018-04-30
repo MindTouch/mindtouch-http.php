@@ -39,5 +39,9 @@ class FormDataContent implements IContent {
 
     public function getContentType() { return ContentType::FORM; }
 
-    public function toData() { return $this->data; }
+    public function toRaw() { return $this->data; }
+
+    public function toString() { return http_build_query($this->data); }
+
+    public function __toString() { return $this->toString(); }
 }

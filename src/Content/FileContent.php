@@ -18,6 +18,8 @@
  */
 namespace MindTouch\Http\Content;
 
+use InvalidArgumentException;
+
 /**
  * Class FileContent
  *
@@ -40,6 +42,9 @@ class FileContent implements IContent {
      * @param string|null $contentType - if null or stream the content type will be determined from file path
      */
     public function __construct($filePath, $contentType = ContentType::STREAM) {
+        if(!is_file($filePath)) {
+            throw new InvalidArgumentException('File path does not exist: ' . $filePath);
+        }
         $this->filePath = $filePath;
         if($contentType === ContentType::STREAM) {
             $finfo = finfo_open(FILEINFO_MIME);
@@ -51,5 +56,9 @@ class FileContent implements IContent {
 
     public function getContentType() { return $this->contentType; }
 
-    public function toData() { return $this->filePath; }
+    public function toRaw() { return $this->filePath; }
+
+    public function toString() { return $this->filePath; }
+
+    public function __toString() { return $this->toString(); }
 }

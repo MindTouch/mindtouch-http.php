@@ -16,31 +16,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\Content;
+namespace MindTouch\Http\tests\Content\FileContent;
 
-/**
- * Interface IContent
- *
- * @package MindTouch\Http\Content
- */
-interface IContent {
+use InvalidArgumentException;
+use MindTouch\Http\Content\FileContent;
+use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
-    /**
-     * Retrieve the Content-Type HTTP header value
-     *
-     * @return string
-     */
-    function getContentType();
+class __construct_Test extends MindTouchHttpUnitTestCase {
 
     /**
-     * Retrive the content in raw form for curl invocation
-     *
-     * @return mixed
+     * @test
      */
-    function toRaw();
+    public function Cannot_instantiate_file_content_with_invalid_file_path() {
 
-    /**
-     * @return string
-     */
-    function toString();
+        // assert
+        $filePath = dirname(__FILE__) . '/foo.png';
+
+        // act
+        $exceptionThrown = false;
+        try {
+            new FileContent($filePath);
+        } catch(InvalidArgumentException $e) {
+            $exceptionThrown = true;
+        }
+
+        // assert
+        $this->assertTrue($exceptionThrown);
+    }
 }

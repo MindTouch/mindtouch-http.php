@@ -46,5 +46,9 @@ class TextContent implements IContent {
 
     public function getContentType() { return $this->contentType; }
 
-    public function toData() { return $this->text; }
+    public function toRaw() { return $this->text; }
+
+    public function toString() { return $this->text; }
+
+    public function __toString() { return $this->toString(); }
 }

@@ -31,9 +31,9 @@ class XmlContent implements IContent {
      * Return an instance from an XML encoded array
      *
      * @param array $xml
-     * @return self
+     * @return static
      */
-    public static function newFromArray(array $xml) { return new self((new XArray($xml))->toXml()); }
+    public static function newFromArray(array $xml) { return new static((new XArray($xml))->toXml()); }
 
     /**
      * @var string
@@ -49,5 +49,9 @@ class XmlContent implements IContent {
 
     public function getContentType() { return ContentType::XML; }
 
-    public function toData() { return $this->xml; }
+    public function toRaw() { return $this->xml; }
+
+    public function toString() { return $this->xml; }
+
+    public function __toString() { return $this->toString(); }
 }
