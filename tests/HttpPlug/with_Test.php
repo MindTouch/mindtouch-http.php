@@ -36,7 +36,7 @@ class with_Test extends MindTouchHttpUnitTestCase  {
         $plug = $plug->with('a', 'b');
 
         // assert
-        $this->assertEquals('http://foo.com/?a=b', $plug->getUri());
+        $this->assertEquals('http://foo.com?a=b', $plug->getUri());
     }
 
     /**
@@ -53,7 +53,7 @@ class with_Test extends MindTouchHttpUnitTestCase  {
         // assert
 
         /** @var HttpPlug $plug */
-        $this->assertEquals('http://foo.com/?a=b&c=d', $plug->getUri());
+        $this->assertEquals('http://foo.com?a=b&c=d', $plug->getUri());
     }
 
     /**
@@ -132,7 +132,7 @@ class with_Test extends MindTouchHttpUnitTestCase  {
         $plug = $plug->with('foo', 'bar');
 
         // assert
-        $this->assertEquals('http://foo.com/?a=b&c=d&foo=bar', $plug->getUri());
+        $this->assertEquals('http://foo.com?a=b&c=d&foo=bar', $plug->getUri());
     }
 
     /**
@@ -147,7 +147,7 @@ class with_Test extends MindTouchHttpUnitTestCase  {
         $plug = $plug->with('bar', 'qux')->with('fred', 'foo');
 
         // assert
-        $this->assertEquals('http://foo.com/?a=b&c=d&bar=qux&fred=foo', $plug->getUri());
+        $this->assertEquals('http://foo.com?a=b&c=d&bar=qux&fred=foo', $plug->getUri());
     }
 }
 

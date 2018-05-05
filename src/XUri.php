@@ -164,7 +164,7 @@ class XUri {
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      * @return string
      */
-    public function getPath() { return isset($this->data['path']) ? $this->data['path'] : '/'; }
+    public function getPath() { return isset($this->data['path']) ? $this->data['path'] : null; }
 
     /**
      * Retrieve the path segments of the URI
