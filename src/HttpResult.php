@@ -28,6 +28,13 @@ use MindTouch\XArray\XArray;
  */
 class HttpResult extends XArray {
 
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->array = unserialize(serialize($this->array));
+    }
+
+
     /**
      * Return an instance with the added request information
      *

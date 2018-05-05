@@ -16,37 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\XUri;
+namespace MindTouch\Http\tests\Content\SerializedPhpArrayContent;
 
+use MindTouch\Http\Content\ContentType;
+use MindTouch\Http\Content\SerializedPhpArrayContent;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
-use MindTouch\Http\XUri;
 
-class with_Test extends MindTouchHttpUnitTestCase {
+class newFromArray_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
      */
-    public function With_add_query_parameters() {
-
-        // arrange
-        $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
-
-         // act
-        $result = XUri::tryParse($uriStr)->with('foo', 'bar');
+    public function Can_return_valid_instance() {
 
         // assert
-        $this->assertEquals('http://user:password@test.mindtouch.dev/?a=b&c=d&foo=bar#fragment', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function Can_return_extended_instance() {
+        $array = ['foo' => ['bar' => ['bar', 'qux']]];
 
         // act
-        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev/somepath?a=b&c=d&e=f#fragment')->with('foo', 'bar');
+        $content = SerializedPhpArrayContent::newFromArray($array);
 
         // assert
-        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+        $this->assertInstanceOf('MindTouch\Http\Content\SerializedPhpArrayContent', $content);
+        $this->assertEquals('a:1:{s:3:"foo";a:1:{s:3:"bar";a:2:{i:0;s:3:"bar";i:1;s:3:"qux";}}}', $content->toString());
+        $this->assertEquals('a:1:{s:3:"foo";a:1:{s:3:"bar";a:2:{i:0;s:3:"bar";i:1;s:3:"qux";}}}', $content->toRaw());
+        $this->assertEquals(ContentType::PHP, $content->getContentType());
     }
 }

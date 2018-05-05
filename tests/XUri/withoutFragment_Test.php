@@ -29,12 +29,24 @@ class withoutFragment_Test extends MindTouchHttpUnitTestCase {
     public function Can_remove_fragment() {
 
         // arrange
-        $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d';
+        $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
 
         // act
         $result = XUri::tryParse($uriStr)->withoutFragment();
 
         // assert
         $this->assertEquals('http://user:password@test.mindtouch.dev/?a=b&c=d', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function Can_return_extended_instance() {
+
+        // act
+        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev/somepath?a=b&c=d&e=f#foo')->withoutFragment();
+
+        // assert
+        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
     }
 }

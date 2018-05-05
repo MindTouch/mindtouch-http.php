@@ -111,6 +111,24 @@ class Headers implements IMutableHeaders {
      */
     private $name;
 
+    /**
+     * @var bool - split added raw headers on commas?
+     */
+    private $isRawHeaderCommaSeparationEnabled = false;
+
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->headers = unserialize(serialize($this->headers));
+        $this->names = unserialize(serialize($this->names));
+    }
+
+    public function withRawHeaderCommaSeparationEnabled() {
+        $headers = clone $this;
+        $headers->isRawHeaderCommaSeparationEnabled = true;
+        return $headers;
+    }
+
     public function getHeaderLine($name) {
         $values = $this->getHeader(self::getFormattedHeaderName($name));
         return !empty($values) ? implode(', ', $values) : null;
@@ -160,7 +178,11 @@ class Headers implements IMutableHeaders {
 
     public function hasHeader($name) { return isset($this->headers[self::getFormattedHeaderName($name)]); }
 
-    public function removeHeader($name) { unset($this->headers[self::getFormattedHeaderName($name)]); }
+    public function removeHeader($name) {
+        unset($this->headers[self::getFormattedHeaderName($name)]);
+        $this->names = array_keys($this->headers);
+        $this->rewind();
+    }
 
     public function isEmpty() { return empty($this->headers); }
 
@@ -244,7 +266,7 @@ class Headers implements IMutableHeaders {
         }
         list($name, $value) = explode(':', $header, 2);
         $name = self::getFormattedHeaderName($name);
-        $values = in_array($name, static::$multipleNameValuePairHeaders)
+        $values = !$this->isRawHeaderCommaSeparationEnabled || in_array($name, static::$multipleNameValuePairHeaders)
             ? [trim($value)]
 
             // split multiple header values

@@ -95,9 +95,18 @@ class HttpPlug {
         $this->uri = $uri;
     }
 
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->headers = unserialize(serialize($this->headers));
+        $this->uri = unserialize(serialize($this->uri));
+    }
+
     #region Plug request data accessors
 
     /**
+     * Retrieves HTTP headers
+     *
      * @return IHeaders
      */
     public function getHeaders() { return $this->headers; }
@@ -546,15 +555,16 @@ class HttpPlug {
      * @throws CannotParseContentExceedsMaxContentLengthException
      */
     protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+        $result = $result->withRequestInfo($method, $uri, $headers, $start, $end);
+        foreach($this->parsers as $parser) {
+            $result = $parser->toParsedResult($result);
+        }
         foreach($this->postInvokeCallbacks as $callback) {
 
             // mutate result instance with callback
             $callback($result);
         }
-        foreach($this->parsers as $parser) {
-            $result = $parser->toParsedResult($result);
-        }
-        return $result->withRequestInfo($method, $uri, $headers, $start, $end);
+        return $result;
     }
 
     /**

@@ -44,7 +44,7 @@ class toArray_Test extends MindTouchHttpUnitTestCase  {
         // assert
         $this->assertEquals([
             'method' => 'POST',
-            'uri' => 'http://example.com/',
+            'uri' => 'http://example.com',
             'headers' => [
                 'X-Qux' => 'foo'
             ],

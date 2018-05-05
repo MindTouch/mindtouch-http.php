@@ -78,4 +78,16 @@ class withScheme_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertTrue($exceptionThrown);
     }
+
+    /**
+     * @test
+     */
+    public function Can_return_extended_instance() {
+
+        // act
+        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev:80/somepath?a=b&c=d&e=f#foo')->withScheme('https');
+
+        // assert
+        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+    }
 }

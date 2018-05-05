@@ -16,37 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\XUri;
+namespace MindTouch\Http\tests\HttpResult;
 
+use MindTouch\Http\Content\ContentType;
+use MindTouch\Http\HttpResult;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
-use MindTouch\Http\XUri;
 
-class with_Test extends MindTouchHttpUnitTestCase {
+class __clone_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
      */
-    public function With_add_query_parameters() {
+    public function Can_deep_copy() {
 
         // arrange
-        $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
-
-         // act
-        $result = XUri::tryParse($uriStr)->with('foo', 'bar');
-
-        // assert
-        $this->assertEquals('http://user:password@test.mindtouch.dev/?a=b&c=d&foo=bar#fragment', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function Can_return_extended_instance() {
+        $result = (new HttpResult());
+        $result->setVal('type', ContentType::JSON);
 
         // act
-        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev/somepath?a=b&c=d&e=f#fragment')->with('foo', 'bar');
+        $cloned = clone $result;
+        $cloned->setVal('type', ContentType::XML);
 
         // assert
-        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+        $this->assertEquals(ContentType::JSON, $result->getVal('type'));
+        $this->assertEquals(ContentType::XML, $cloned->getVal('type'));
     }
 }

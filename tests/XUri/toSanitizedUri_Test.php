@@ -52,4 +52,16 @@ class toSanitizedUri_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertEquals('http://user:###@test.mindtouch.dev/somepath?a=b&c=%23%23%23&e=%23%23%23#fragment', $result);
     }
+
+    /**
+     * @test
+     */
+    public function Can_return_extended_instance() {
+
+        // act
+        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev/somepath?a=b&c=d&e=f#fragment')->toSanitizedUri(['c', 'e']);
+
+        // assert
+        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+    }
 }

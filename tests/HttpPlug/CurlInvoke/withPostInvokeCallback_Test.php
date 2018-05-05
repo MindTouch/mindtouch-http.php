@@ -43,4 +43,29 @@ class withPostInvokeCallback_Test extends MindTouchHttpUnitTestCase  {
         $this->assertEquals(200, $result->getStatus());
         $this->assertEquals('foo', $result->getHeaders()->getHeaderLine('X-Callback-Header'));
     }
+
+    /**
+     * @test
+     */
+    public function Can_execute_callback_after_request_info_has_been_added_and_parsers_have_run() {
+
+        // arrange
+        $plug = $this->newHttpBinPlug()->at('anything');
+        $request = null;
+        $body = null;
+
+        // act
+        $result = $plug
+            ->withPostInvokeCallback(function(HttpResult $result) use (&$request, &$body) {
+                $request = $result->getVal('request');
+                $body = $result->getVal('body');
+            })
+            ->get();
+
+        // assert
+        $this->assertAllMockPlugMocksCalled();
+        $this->assertEquals(200, $result->getStatus());
+        $this->assertTrue(is_array($request));
+        $this->assertTrue(is_array($body));
+    }
 }

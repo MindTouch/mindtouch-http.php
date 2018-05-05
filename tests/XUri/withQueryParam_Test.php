@@ -32,9 +32,21 @@ class withQueryParam_Test extends MindTouchHttpUnitTestCase {
         $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
 
          // act
-        $result = XUri::tryParse($uriStr)->withQueryParam('foo', 'bar');
+        $result = XUri::tryParse($uriStr)->withQueryParam('foo', 'bar')->withQueryParam('qux', 'baz');
 
         // assert
-        $this->assertEquals('http://user:password@test.mindtouch.dev/?a=b&c=d&foo=bar#fragment', $result);
+        $this->assertEquals('http://user:password@test.mindtouch.dev/?a=b&c=d&foo=bar&qux=baz#fragment', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function Can_return_extended_instance() {
+
+        // act
+        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev:80/somepath?a=b&c=d&e=f#foo')->withQueryParam('foo', 'bar');
+
+        // assert
+        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
     }
 }

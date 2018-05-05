@@ -67,4 +67,16 @@ class withoutQueryParam_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertEquals('http://user:password@test.mindtouch.dev/?a=b&e=f#fragment', $result);
     }
+
+    /**
+     * @test
+     */
+    public function Can_return_extended_instance() {
+
+        // act
+        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev:80/somepath?a=b&c=d&e=f#foo')->withoutQueryParam('c');
+
+        // assert
+        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+    }
 }

@@ -16,37 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\XUri;
+namespace MindTouch\Http\tests\Headers;
 
+use MindTouch\Http\Headers;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
-use MindTouch\Http\XUri;
 
-class with_Test extends MindTouchHttpUnitTestCase {
+class removeHeader_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
      */
-    public function With_add_query_parameters() {
+    public function Can_remove_header() {
 
         // arrange
-        $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
-
-         // act
-        $result = XUri::tryParse($uriStr)->with('foo', 'bar');
-
-        // assert
-        $this->assertEquals('http://user:password@test.mindtouch.dev/?a=b&c=d&foo=bar#fragment', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function Can_return_extended_instance() {
+        $headers = new Headers();
+        $headers->setHeader('foo', 'bar');
+        $headers->setHeader('baz', 'qux');
 
         // act
-        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev/somepath?a=b&c=d&e=f#fragment')->with('foo', 'bar');
+        $headers->removeHeader('foo');
 
         // assert
-        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+        $this->assertEquals(['Baz' => ['qux']], $headers->toArray());
     }
 }
