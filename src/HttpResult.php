@@ -46,7 +46,7 @@ class HttpResult extends XArray {
      * @return static
      */
     public function withRequestInfo($method, XUri $uri, IHeaders $headers, $start, $end) {
-        $result = new static($this->array);
+        $result = clone $this;
         $result->array['request'] = [
             'method' => $method,
             'uri' => $uri->toString(),
