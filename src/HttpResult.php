@@ -28,6 +28,13 @@ use MindTouch\XArray\XArray;
  */
 class HttpResult extends XArray {
 
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->array = unserialize(serialize($this->array));
+    }
+
+
     /**
      * Return an instance with the added request information
      *
@@ -39,7 +46,7 @@ class HttpResult extends XArray {
      * @return static
      */
     public function withRequestInfo($method, XUri $uri, IHeaders $headers, $start, $end) {
-        $result = clone $this;
+        $result = new static($this->array);
         $result->array['request'] = [
             'method' => $method,
             'uri' => $uri->toString(),

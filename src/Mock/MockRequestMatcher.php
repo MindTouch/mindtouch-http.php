@@ -20,6 +20,7 @@ namespace MindTouch\Http\Mock;
 
 use InvalidArgumentException;
 use MindTouch\Http\Content\IContent;
+use MindTouch\Http\DeepCopyBase;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\IHeaders;
@@ -88,6 +89,52 @@ class MockRequestMatcher {
         $this->headers = new Headers();
     }
 
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->uri = unserialize(serialize($this->uri));
+        $this->headers = unserialize(serialize($this->headers));
+    }
+
+    /**
+     * Retrieve HTTP method
+     *
+     * @return string
+     */
+    public function getMethod() { return $this->method; }
+
+    /**
+     * Retrieve denormalized matcher uri
+     *
+     * @return XUri
+     */
+    public function getUri() { return $this->uri; }
+
+    /**
+     * Retrieve HTTP headers
+     *
+     * @return IHeaders
+     */
+    public function getHeaders() { return $this->headers; }
+
+    /**
+     * Retrieve HTTP message body
+     *
+     * @return string
+     */
+    public function getBody() { return $this->body; }
+
+    /**
+     * Retrieve id to match mock results to matcher
+     *
+     * @return string
+     */
+    public function getMatcherId() {
+        $uri = $this->newNormalizedUriString();
+        $headers = $this->newNormalizedHeaderStrings();
+        return md5(serialize($headers) . "{$this->method}{$uri}{$this->body}");
+    }
+
     /**
      * Return an instance with the specified HTTP headers.
      *
@@ -130,24 +177,6 @@ class MockRequestMatcher {
         $request->headers->setHeader(Headers::HEADER_CONTENT_TYPE, $content->getContentType());
         $request->body = $content->toString();
         return $request;
-    }
-
-    /**
-     * Retrieve denormalized matcher uri
-     *
-     * @return XUri
-     */
-    public function getUri() { return $this->uri; }
-
-    /**
-     * Retrieve id to match mock results to matcher
-     *
-     * @return string
-     */
-    public function getMatcherId() {
-        $uri = $this->newNormalizedUriString();
-        $headers = $this->newNormalizedHeaderStrings();
-        return md5(serialize($headers) . "{$this->method}{$uri}{$this->body}");
     }
 
     /**

@@ -95,9 +95,18 @@ class HttpPlug {
         $this->uri = $uri;
     }
 
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->headers = unserialize(serialize($this->headers));
+        $this->uri = unserialize(serialize($this->uri));
+    }
+
     #region Plug request data accessors
 
     /**
+     * Retrieves HTTP headers
+     *
      * @return IHeaders
      */
     public function getHeaders() { return $this->headers; }

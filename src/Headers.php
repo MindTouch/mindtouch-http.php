@@ -116,6 +116,13 @@ class Headers implements IMutableHeaders {
      */
     private $isRawHeaderCommaSeparationEnabled = false;
 
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->headers = unserialize(serialize($this->headers));
+        $this->names = unserialize(serialize($this->names));
+    }
+
     public function withRawHeaderCommaSeparationEnabled() {
         $headers = clone $this;
         $headers->isRawHeaderCommaSeparationEnabled = true;
