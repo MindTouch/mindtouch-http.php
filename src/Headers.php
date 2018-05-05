@@ -178,7 +178,11 @@ class Headers implements IMutableHeaders {
 
     public function hasHeader($name) { return isset($this->headers[self::getFormattedHeaderName($name)]); }
 
-    public function removeHeader($name) { unset($this->headers[self::getFormattedHeaderName($name)]); }
+    public function removeHeader($name) {
+        unset($this->headers[self::getFormattedHeaderName($name)]);
+        $this->names = array_keys($this->headers);
+        $this->rewind();
+    }
 
     public function isEmpty() { return empty($this->headers); }
 
