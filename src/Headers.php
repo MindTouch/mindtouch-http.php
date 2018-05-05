@@ -111,6 +111,17 @@ class Headers implements IMutableHeaders {
      */
     private $name;
 
+    /**
+     * @var bool - split added raw headers on commas?
+     */
+    private $isRawHeaderCommaSeparationEnabled = false;
+
+    public function withRawHeaderCommaSeparationEnabled() {
+        $headers = clone $this;
+        $headers->isRawHeaderCommaSeparationEnabled = true;
+        return $headers;
+    }
+
     public function getHeaderLine($name) {
         $values = $this->getHeader(self::getFormattedHeaderName($name));
         return !empty($values) ? implode(', ', $values) : null;
@@ -244,7 +255,7 @@ class Headers implements IMutableHeaders {
         }
         list($name, $value) = explode(':', $header, 2);
         $name = self::getFormattedHeaderName($name);
-        $values = in_array($name, static::$multipleNameValuePairHeaders)
+        $values = !$this->isRawHeaderCommaSeparationEnabled || in_array($name, static::$multipleNameValuePairHeaders)
             ? [trim($value)]
 
             // split multiple header values

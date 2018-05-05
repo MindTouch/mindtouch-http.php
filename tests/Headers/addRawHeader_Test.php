@@ -71,7 +71,7 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
         $headers->addRawHeader('X-Foo-bar: qux, fred, quxx; foo');
 
         // assert
-        $this->assertArrayHasKeyValue('X-Foo-Bar', ['qux', 'fred', 'quxx; foo'], $headers->toArray());
+        $this->assertArrayHasKeyValue('X-Foo-Bar', ['qux, fred, quxx; foo'], $headers->toArray());
     }
 
     /**
@@ -81,6 +81,22 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
 
         // arrange
         $headers = new Headers();
+
+        // act
+        $headers->addRawHeader('X-Foo-bar: qux, fred, quxx; foo');
+        $headers->addRawHeader('X-Foo-bar: a, b');
+
+        // assert
+        $this->assertArrayHasKeyValue('X-Foo-Bar', ['qux, fred, quxx; foo', 'a, b'], $headers->toArray());
+    }
+
+    /**
+     * @test
+     */
+    public function Can_add_header_with_comma_separation_enabled() {
+
+        // arrange
+        $headers = (new Headers())->withRawHeaderCommaSeparationEnabled();
 
         // act
         $headers->addRawHeader('X-Foo-bar: qux, fred, quxx; foo');
@@ -125,10 +141,28 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_set_single_value_only_header_values() {
+    public function Single_value_only_header_constraints_are_ignored_by_default_when_adding_raw_headers() {
 
         // arrange
         $headers = new Headers();
+
+        // act
+        $headers->addRawHeader('Content-Type: application/xml, application/json');
+        $headers->addRawHeader('Location: https://example.com/foo, http://bar.example.com');
+
+        // assert
+        $headers = $headers->toArray();
+        $this->assertArrayHasKeyValue('Content-Type', ['application/xml, application/json'], $headers);
+        $this->assertArrayHasKeyValue('Location', ['https://example.com/foo, http://bar.example.com'], $headers);
+    }
+
+    /**
+     * @test
+     */
+    public function Single_value_only_header_constraints_are_used_with_raw_header_comma_parsing_enabled() {
+
+        // arrange
+        $headers = (new Headers())->withRawHeaderCommaSeparationEnabled();
 
         // act
         $headers->addRawHeader('Content-Type: application/xml, application/json');

@@ -28,6 +28,13 @@ use Iterator;
 interface IHeaders extends Iterator {
 
     /**
+     * Return an instance with raw header comma separation enabled
+     *
+     * @return IHeaders
+     */
+    function withRawHeaderCommaSeparationEnabled();
+
+    /**
      * Retrieve comma separated values from HTTP header name
      *
      * @param string $name - case-insensitive header name
@@ -88,7 +95,7 @@ interface IHeaders extends Iterator {
     function toArray();
 
     /**
-     * Return the mutable interface  of thisheader collection
+     * Return the mutable interface of this header collection
      *
      * @return IMutableHeaders
      */

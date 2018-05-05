@@ -546,15 +546,16 @@ class HttpPlug {
      * @throws CannotParseContentExceedsMaxContentLengthException
      */
     protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+        $result = $result->withRequestInfo($method, $uri, $headers, $start, $end);
+        foreach($this->parsers as $parser) {
+            $result = $parser->toParsedResult($result);
+        }
         foreach($this->postInvokeCallbacks as $callback) {
 
             // mutate result instance with callback
             $callback($result);
         }
-        foreach($this->parsers as $parser) {
-            $result = $parser->toParsedResult($result);
-        }
-        return $result->withRequestInfo($method, $uri, $headers, $start, $end);
+        return $result;
     }
 
     /**
