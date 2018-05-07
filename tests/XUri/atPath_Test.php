@@ -97,4 +97,19 @@ class atPath_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertEquals('http://user:password@test.mindtouch.dev/foo/bar?a=b&c=d&z=x&y=z#mouse', $result);
     }
+
+    /**
+     * @test
+     */
+    public function Can_add_path_with_colon() {
+
+        // arrange
+        $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
+
+        // act
+        $result = XUri::tryParse($uriStr)->atPath('Special:foo/bar');
+
+        // assert
+        $this->assertEquals('http://user:password@test.mindtouch.dev/Special:foo/bar?a=b&c=d#fragment', $result);
+    }
 }

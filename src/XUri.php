@@ -521,7 +521,7 @@ class XUri {
      * @return static
      */
     public function atPath($pathQueryFragment) {
-        $newUriData = parse_url($pathQueryFragment);
+        $newUriData = parse_url($this->normalize($pathQueryFragment));
         $data = $this->data;
         $path = $this->getInternalPath($data);
         $data['path'] = !StringUtil::isNullOrEmpty($path) ? $path . $this->normalize($newUriData['path']) : $this->normalize($newUriData['path']);
