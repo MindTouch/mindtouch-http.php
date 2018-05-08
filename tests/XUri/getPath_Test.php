@@ -37,4 +37,34 @@ class getPath_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertEquals('/foo/bar', $result);
     }
+
+    /**
+     * @test
+     */
+    public function Can_get_homepage_path_without_slash() {
+
+        // arrange
+        $uriStr = 'ftp://user:password@test.mindtouch.dev?a=b&c=d#fragment';
+
+        // act
+        $result = XUri::tryParse($uriStr)->getPath();
+
+        // assert
+        $this->assertEquals('', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function Can_get_homepage_path_with_slash() {
+
+        // arrange
+        $uriStr = 'ftp://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
+
+        // act
+        $result = XUri::tryParse($uriStr)->getPath();
+
+        // assert
+        $this->assertEquals('/', $result);
+    }
 }
