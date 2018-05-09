@@ -160,6 +160,7 @@ class XUri {
     /**
      * Retrieve the path component of the URI
      *
+     * @note A root/homepage path may return '/' or ''. It is the client's responsibility to handle both cases!
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      * @return string
