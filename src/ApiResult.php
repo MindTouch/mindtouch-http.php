@@ -58,7 +58,7 @@ class ApiResult extends HttpResult {
 
         // curl error
         $error = $this->getCurlError();
-        if($error !== null) {
+        if(!StringUtil::isNullOrEmpty($error)) {
             return $error;
         }
 

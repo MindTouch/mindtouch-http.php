@@ -46,6 +46,8 @@ class getError_Test extends MindTouchHttpUnitTestCase {
         // arrange
         $data = [
             'status' => 500,
+            'error' => '',
+            'errno' => 0,
             'body' => $body
         ];
         $result = new ApiResult($data);
