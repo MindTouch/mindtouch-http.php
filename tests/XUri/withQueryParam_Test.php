@@ -41,6 +41,15 @@ class withQueryParam_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
+    public function Can_add_query_parameter_after_removing_it() {
+        $xuri = XUri::tryParse('http://test.mindtouch.dev/?mt-f1=true');
+        $result = $xuri->withoutQueryParam('mt-f1')->withQueryParam('mt-f1', 'true');
+        $this->assertEquals('http://test.mindtouch.dev/?mt-f1=true', $result->toString());
+    }
+
+    /**
+     * @test
+     */
     public function Can_return_extended_instance() {
 
         // act
