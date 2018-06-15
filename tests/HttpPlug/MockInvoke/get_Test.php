@@ -19,7 +19,7 @@
 namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
 
 use MindTouch\Http\Content\ContentType;
-use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
+use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\HttpResult;
@@ -82,15 +82,21 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         $plug = new HttpPlug($uri);
 
         // act
+        $resultContentLength = 0;
+        $maxContentLength = 0;
         $exceptionThrown = false;
         try {
             $parser = (new JsonParser())->withMaxContentLength(500);
             $plug->withHttpResultParser($parser)->get();
-        } catch(CannotParseContentExceedsMaxContentLengthException $e) {
+        } catch(HttpResultParserContentExceedsMaxContentLengthException $e) {
+            $resultContentLength = $e->getResultContentLength();
+            $maxContentLength = $e->getMaxContentLength();
             $exceptionThrown = true;
         }
 
         // assert
+        $this->assertEquals(1000, $resultContentLength);
+        $this->assertEquals(500, $maxContentLength);
         $this->assertTrue($exceptionThrown);
     }
 
@@ -136,21 +142,27 @@ class get_Test extends MindTouchHttpUnitTestCase  {
                 ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::PHP],
-                    [Headers::HEADER_CONTENT_LENGTH, 1000]
+                    [Headers::HEADER_CONTENT_LENGTH, 5000]
                 ]))
         );
         $plug = new HttpPlug($uri);
 
         // act
+        $resultContentLength = 0;
+        $maxContentLength = 0;
         $exceptionThrown = false;
         try {
-            $parser = (new SerializedPhpArrayParser())->withMaxContentLength(500);
+            $parser = (new SerializedPhpArrayParser())->withMaxContentLength(200);
             $plug->withHttpResultParser($parser)->get();
-        } catch(CannotParseContentExceedsMaxContentLengthException $e) {
+        } catch(HttpResultParserContentExceedsMaxContentLengthException $e) {
+            $resultContentLength = $e->getResultContentLength();
+            $maxContentLength = $e->getMaxContentLength();
             $exceptionThrown = true;
         }
 
         // assert
+        $this->assertEquals(5000, $resultContentLength);
+        $this->assertEquals(200, $maxContentLength);
         $this->assertTrue($exceptionThrown);
     }
 }

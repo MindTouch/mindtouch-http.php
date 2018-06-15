@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 namespace MindTouch\Http\Content;
+use CURLFile;
 
 /**
  * Class FormDataContent
@@ -31,17 +32,47 @@ class FormDataContent implements IContent {
     private $data;
 
     /**
+     * @var FileContent[]
+     */
+    private $files = [];
+
+    /**
      * @param string[] $data - name/value pairs of form data
      */
     public function __construct(array $data) {
         $this->data = $data;
     }
 
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->data = unserialize(serialize($this->data));
+        $this->files = unserialize(serialize($this->files));
+    }
+
     public function getContentType() { return ContentType::FORM; }
 
-    public function toRaw() { return $this->data; }
+    public function toRaw() {
+        $data = [];
+        foreach($this->files as $key => $file) {
+            $data["file[{$key}]"] = new CURLFile($file->toString(), $file->getContentType());
+        }
+        return array_merge($this->data, $data);
+    }
 
     public function toString() { return http_build_query($this->data); }
 
     public function __toString() { return $this->toString(); }
+
+    /**
+     * Return an instance with a new CurlFile as part of the form body data
+     *
+     * @param FileContent $content
+     * @return FormDataContent
+     */
+    public function withFileContent(FileContent $content) {
+        $instance = clone $this;
+        $instance->files[] = $content;
+        return $instance;
+    }
 }

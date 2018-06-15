@@ -19,9 +19,10 @@
 namespace MindTouch\Http;
 
 use Closure;
+use Exception;
 use MindTouch\Http\Content\IContent;
 use MindTouch\Http\Exception\ApiResultException;
-use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
+use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
 use MindTouch\Http\Parser\SerializedPhpArrayParser;
 
 /**
@@ -202,20 +203,27 @@ class ApiPlug extends HttpPlug {
      * @param HttpResult $result
      * @return ApiResult
      * @throws ApiResultException
-     * @throws CannotParseContentExceedsMaxContentLengthException
+     * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
     protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
-        $result = parent::invokeComplete($method, $uri, $headers, $start, $end, $result);
+        $exception = null;
+        try {
+            $result = parent::invokeComplete($method, $uri, $headers, $start, $end, $result);
+        } catch(Exception $e) {
+            $exception = $e;
+        }
         $result = new ApiResult($result->toArray());
-        if(!$result->isSuccess()) {
-            $e = new ApiResultException($result);
+        if($exception === null && !$result->isSuccess()) {
+            $exception = new ApiResultException($result);
+        }
+        if($exception !== null) {
             if($this->postInvokeErrorHandler !== null) {
                 $handler = $this->postInvokeErrorHandler;
-                if($handler($e) === true) {
+                if($handler($exception) === true) {
                     return $result;
                 }
             }
-            throw $e;
+            throw $exception;
         }
         return $result;
     }
