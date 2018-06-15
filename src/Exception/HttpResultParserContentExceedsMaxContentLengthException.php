@@ -22,27 +22,44 @@ use Exception;
 use MindTouch\Http\HttpResult;
 
 /**
- * Class CannotParseContentExceedsMaxContentLengthException
+ * Class HttpResultParserContentExceedsMaxContentLengthException
  *
  * @package MindTouch\Http\Exception
  */
-class CannotParseContentExceedsMaxContentLengthException extends Exception {
+class HttpResultParserContentExceedsMaxContentLengthException extends HttpResultParserException {
 
     /**
-     * @var HttpResult
+     * @var int
      */
-    private $result;
+    private $resultContentLength = 0;
+
+    /**
+     * @var int
+     */
+    private $maxContentLength = 0;
 
     /**
      * @param HttpResult $result
+     * @param int $resultContentLength
+     * @param int $maxContentLength
      */
-    public function __construct(HttpResult $result) {
-        parent::__construct('Cannot parse response content that exceeds max content length');
-        $this->result = $result;
+    public function __construct(HttpResult $result, $resultContentLength, $maxContentLength) {
+        parent::__construct($result, 'content exceeds max content length');
+        $this->resultContentLength = $resultContentLength;
+        $this->maxContentLength = $maxContentLength;
     }
 
     /**
-     * @return HttpResult
+     * @return int
      */
-    public function getResult() { return $this->result; }
+    public function getResultContentLength() {
+        return $this->resultContentLength;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxContentLength() {
+        return $this->maxContentLength;
+    }
 }
