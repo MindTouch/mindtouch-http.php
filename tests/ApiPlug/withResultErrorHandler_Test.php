@@ -21,9 +21,12 @@ namespace MindTouch\Http\tests\ApiPlug;
 use MindTouch\Http\ApiPlug;
 use MindTouch\Http\ApiResult;
 use MindTouch\Http\Content\ContentType;
+use MindTouch\Http\Content\SerializedPhpArrayContent;
 use MindTouch\Http\Exception\ApiResultException;
+use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
 use MindTouch\Http\Headers;
 use MindTouch\Http\Mock\MockPlug;
+use MindTouch\Http\Parser\SerializedPhpArrayParser;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 use MindTouch\Http\XUri;
 
@@ -61,5 +64,39 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
 
         // assert
         $this->assertEquals(403, $result->getStatus());
+    }
+
+    /**
+     * @test
+     */
+    public function Result_error_handler_can_handle_parser_error() {
+
+        // arrange
+        $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
+        MockPlug::register(
+            $this->newDefaultMockRequestMatcher(ApiPlug::METHOD_GET, $uri),
+            (new ApiResult())
+                ->withStatus(200)
+                ->withHeaders(Headers::newFromHeaderNameValuePairs([
+                    [Headers::HEADER_CONTENT_TYPE, ContentType::PHP],
+                    [Headers::HEADER_CONTENT_LENGTH, 1000]
+                ]))
+                ->withBody(serialize([
+                    'page' => [
+                        'foo' => 'bar'
+                    ]
+                ]))
+        );
+        $plug = (new ApiPlug($uri))->withHttpResultParser((new SerializedPhpArrayParser())->withMaxContentLength(500));
+        $handled = false;
+
+        // act
+        $plug->withResultErrorHandler(function(CannotParseContentExceedsMaxContentLengthException $e) use (&$handled) {
+            $handled = true;
+            return true;
+        })->get();
+
+        // assert
+        $this->assertTrue($handled);
     }
 }
