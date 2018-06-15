@@ -18,7 +18,7 @@
  */
 namespace MindTouch\Http\Parser;
 
-use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
+use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpResult;
 
@@ -36,14 +36,15 @@ abstract class HttpResultParserBase {
 
     /**
      * @param HttpResult $result
-     * @throws CannotParseContentExceedsMaxContentLengthException
+     * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
     protected function validateContentLength(HttpResult $result) {
         if(!is_int($this->maxContentLength)) {
             return;
         }
-        if(intval($result->getHeaders()->getHeaderLine(Headers::HEADER_CONTENT_LENGTH)) > $this->maxContentLength) {
-            throw new CannotParseContentExceedsMaxContentLengthException($result);
+        $resultContentLength = intval($result->getHeaders()->getHeaderLine(Headers::HEADER_CONTENT_LENGTH));
+        if($resultContentLength > $this->maxContentLength) {
+            throw new HttpResultParserContentExceedsMaxContentLengthException($result, $resultContentLength, $this->maxContentLength);
         }
     }
 }

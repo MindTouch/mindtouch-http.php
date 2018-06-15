@@ -22,7 +22,7 @@ use Closure;
 use Exception;
 use MindTouch\Http\Content\IContent;
 use MindTouch\Http\Exception\ApiResultException;
-use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
+use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
 use MindTouch\Http\Parser\SerializedPhpArrayParser;
 
 /**
@@ -203,7 +203,7 @@ class ApiPlug extends HttpPlug {
      * @param HttpResult $result
      * @return ApiResult
      * @throws ApiResultException
-     * @throws CannotParseContentExceedsMaxContentLengthException
+     * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
     protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
         $exception = null;

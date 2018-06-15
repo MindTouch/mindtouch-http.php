@@ -23,7 +23,8 @@ use MindTouch\Http\ApiResult;
 use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\Content\SerializedPhpArrayContent;
 use MindTouch\Http\Exception\ApiResultException;
-use MindTouch\Http\Exception\CannotParseContentExceedsMaxContentLengthException;
+use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
+use MindTouch\Http\Exception\HttpResultParserException;
 use MindTouch\Http\Headers;
 use MindTouch\Http\Mock\MockPlug;
 use MindTouch\Http\Parser\SerializedPhpArrayParser;
@@ -88,15 +89,49 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
                 ]))
         );
         $plug = (new ApiPlug($uri))->withHttpResultParser((new SerializedPhpArrayParser())->withMaxContentLength(500));
-        $handled = false;
+        $result = null;
 
         // act
-        $plug->withResultErrorHandler(function(CannotParseContentExceedsMaxContentLengthException $e) use (&$handled) {
-            $handled = true;
+        $plug->withResultErrorHandler(function(HttpResultParserException $e) use (&$result) {
+            $result = $e->getResult();
             return true;
         })->get();
 
         // assert
-        $this->assertTrue($handled);
+        $this->assertInstanceOf('MindTouch\Http\HttpResult', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function Result_error_handler_can_handle_content_length_parser_error() {
+
+        // arrange
+        $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
+        MockPlug::register(
+            $this->newDefaultMockRequestMatcher(ApiPlug::METHOD_GET, $uri),
+            (new ApiResult())
+                ->withStatus(200)
+                ->withHeaders(Headers::newFromHeaderNameValuePairs([
+                    [Headers::HEADER_CONTENT_TYPE, ContentType::PHP],
+                    [Headers::HEADER_CONTENT_LENGTH, 1000]
+                ]))
+                ->withBody(serialize([
+                    'page' => [
+                        'foo' => 'bar'
+                    ]
+                ]))
+        );
+        $plug = (new ApiPlug($uri))->withHttpResultParser((new SerializedPhpArrayParser())->withMaxContentLength(500));
+        $result = null;
+
+        // act
+        $plug->withResultErrorHandler(function(HttpResultParserContentExceedsMaxContentLengthException $e) use (&$result) {
+            $result = $e->getResult();
+            return true;
+        })->get();
+
+        // assert
+        $this->assertInstanceOf('MindTouch\Http\HttpResult', $result);
     }
 }
