@@ -19,7 +19,6 @@
 namespace MindTouch\Http;
 
 use Closure;
-use CURLFile;
 use InvalidArgumentException;
 use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\IContent;
@@ -382,13 +381,63 @@ class HttpPlug {
     protected function invoke($method, $content = null) {
         $requestUri = $this->getUri();
         $requestHeaders = clone $this->headers;
-        $requestStart = 0;
-        $requestEnd = 0;
         foreach($this->preInvokeCallbacks as $callback) {
 
             // mutate request settings with callback
             $callback($method, $requestUri, $requestHeaders, $content);
         }
+        return $this->invokeRequest($method, $requestUri, $requestHeaders, $content);
+    }
+
+    /**
+     * @param IMutableHeaders $headers
+     */
+    protected function invokeApplyCredentials($headers) {
+
+        // apply manually given credentials
+        if($this->user !== null || $this->password !== null) {
+            $headers->addHeader(Headers::HEADER_AUTHORIZATION, 'Basic ' . base64_encode($this->user . ':' . $this->password));
+        }
+    }
+
+    /**
+     * Return the formatted invocation result
+     *
+     * @param string $method
+     * @param XUri $uri
+     * @param IHeaders $headers
+     * @param int $start
+     * @param int $end
+     * @param HttpResult $result
+     * @return HttpResult
+     * @throws HttpResultParserContentExceedsMaxContentLengthException
+     */
+    protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+        $result = $result->withRequestInfo($method, $uri, $headers, $start, $end);
+        foreach($this->parsers as $parser) {
+            $result = $parser->toParsedResult($result);
+        }
+        foreach($this->postInvokeCallbacks as $callback) {
+
+            // mutate result instance with callback
+            $callback($result);
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $method
+     * @param XUri $requestUri
+     * @param IHeaders $requestHeaders
+     * @param IContent|null $content
+     * @return HttpResult
+     * @throws HttpResultParserContentExceedsMaxContentLengthException
+     * @throws InvalidArgumentException
+     */
+    protected function invokeRequest($method, XUri $requestUri, IHeaders $requestHeaders, $content) {
+        $requestStart = 0;
+        $requestEnd = 0;
+        $requestHeaders = $requestHeaders->toMutableHeaders();
 
         // handle content data
         $filePath = null;
@@ -532,42 +581,6 @@ class HttpPlug {
         }
         curl_close($curl);
         return $this->invokeComplete($method, $requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
-    }
-
-    /**
-     * @param IMutableHeaders $headers
-     */
-    protected function invokeApplyCredentials($headers) {
-
-        // apply manually given credentials
-        if($this->user !== null || $this->password !== null) {
-            $headers->addHeader(Headers::HEADER_AUTHORIZATION, 'Basic ' . base64_encode($this->user . ':' . $this->password));
-        }
-    }
-
-    /**
-     * Return the formatted invocation result
-     *
-     * @param string $method
-     * @param XUri $uri
-     * @param IHeaders $headers
-     * @param int $start
-     * @param int $end
-     * @param HttpResult $result
-     * @return HttpResult
-     * @throws HttpResultParserContentExceedsMaxContentLengthException
-     */
-    protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
-        $result = $result->withRequestInfo($method, $uri, $headers, $start, $end);
-        foreach($this->parsers as $parser) {
-            $result = $parser->toParsedResult($result);
-        }
-        foreach($this->postInvokeCallbacks as $callback) {
-
-            // mutate result instance with callback
-            $callback($result);
-        }
-        return $result;
     }
 
     /**
