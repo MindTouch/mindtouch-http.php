@@ -47,6 +47,11 @@ class MockPlug {
     private static $calls = [];
 
     /**
+     * @var int
+     */
+    private static $callCount = 0;
+
+    /**
      * @var string[]
      * @structure [ id, ... ]
      */
@@ -113,6 +118,7 @@ class MockPlug {
 
         // log the call
         self::$calls[$id] = $request;
+        self::$callCount++;
 
         // match the mock
         $result = isset(self::$mocks[$id]) ? self::$mocks[$id]->result : null;
@@ -130,6 +136,13 @@ class MockPlug {
      * @return MockRequestMatcher[]
      */
     public static function getCalls() { return self::$calls; }
+
+    /**
+     * Get a count of how many calls were invoked
+     *
+     * @return int
+     */
+    public static function getCallCount() { return self::$callCount; }
 
     /**
      * Get a collection of registered mocks
@@ -183,6 +196,7 @@ class MockPlug {
     public static function deregisterAll() {
         self::$mocks = [];
         self::$calls = [];
+        self::$callCount = 0;
         self::$matches = [];
         self::$isRegistered = false;
     }
