@@ -18,6 +18,7 @@
  */
 namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
 
+use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\IMutableHeaders;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
@@ -28,7 +29,7 @@ class withPreInvokeCallback_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Can_execute_callback_and_mutate_plug_before_invocation() {
+    public function Can_execute_callback_and_mutate_request_before_invocation() {
 
         // arrange
         $plug = $this->newHttpBinPlug();
@@ -47,5 +48,32 @@ class withPreInvokeCallback_Test extends MindTouchHttpUnitTestCase  {
         $this->assertEquals(200, $result->getStatus());
         $this->assertEquals(HttpPlug::METHOD_GET, $result->getBody()->getVal('method'));
         $this->assertEquals('baz', $result->getBody()->getVal('headers/X-Callback-Header'));
+    }
+
+    /**
+     * @test
+     */
+    public function Can_execute_callback_and_mutate_request_credentials_before_invocation() {
+
+        // arrange
+        $plug = $this->newHttpBinPlug()
+            ->at('anything')
+            ->withCredentials('foo', 'bar');
+        $preInvokeAuthorizationHeaderValue = null;
+
+        // act
+        $result = $plug
+            ->withPreInvokeCallback(function($method, XUri $uri, IMutableHeaders $headers) use (&$preInvokeAuthorizationHeaderValue) {
+                $preInvokeAuthorizationHeaderValue = $headers->getHeaderLine(Headers::HEADER_AUTHORIZATION);
+                $headers->setHeader(Headers::HEADER_AUTHORIZATION, 'Basic ' . base64_encode('foo:fred'));
+            })
+            ->get();
+
+        // assert
+        $this->assertAllMockPlugMocksCalled();
+        $this->assertEquals(200, $result->getStatus());
+        $this->assertEquals(HttpPlug::METHOD_GET, $result->getBody()->getVal('method'));
+        $this->assertEquals('Basic Zm9vOmJhcg==', $preInvokeAuthorizationHeaderValue);
+        $this->assertEquals('Basic Zm9vOmZyZWQ=', $result->getBody()->getVal('headers/Authorization'));
     }
 }
