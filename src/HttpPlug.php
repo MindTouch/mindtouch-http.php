@@ -49,7 +49,7 @@ class HttpPlug {
     /**
      * @var Closure[]
      */
-    protected $preInvokeCallbacks = [];
+    protected $preInvokeRequestCallbacks = [];
 
     /**
      * @var Closure[]
@@ -283,7 +283,7 @@ class HttpPlug {
      */
     public function withPreInvokeCallback(Closure $callback) {
         $plug = clone $this;
-        $plug->preInvokeCallbacks[] = $callback;
+        $plug->preInvokeRequestCallbacks[] = $callback;
         return $plug;
     }
 
@@ -381,7 +381,8 @@ class HttpPlug {
     protected function invoke($method, $content = null) {
         $requestUri = $this->getUri();
         $requestHeaders = clone $this->headers;
-        foreach($this->preInvokeCallbacks as $callback) {
+        $this->invokeApplyCredentials($requestHeaders);
+        foreach($this->preInvokeRequestCallbacks as $callback) {
 
             // mutate request settings with callback
             $callback($method, $requestUri, $requestHeaders, $content);
@@ -465,7 +466,6 @@ class HttpPlug {
         } else {
              $requestHeaders->setHeader(Headers::HEADER_CONTENT_LENGTH, 0);
         }
-        $this->invokeApplyCredentials($requestHeaders);
 
         // if MockPlug returns a response, curl is not needed
         if(MockPlug::$isRegistered && $filePath === null) {
