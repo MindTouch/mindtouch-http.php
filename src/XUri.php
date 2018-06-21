@@ -416,7 +416,7 @@ class XUri {
      */
     public function withoutQueryParam($param) {
         $data = $this->data;
-        $params = self::parseQuery($data['query']);
+        $params = isset($data['query']) ? self::parseQuery($data['query']) : [];
         if(!isset($params[$param])) {
 
             // key not found, nothing to do
