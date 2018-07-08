@@ -18,6 +18,7 @@
  */
 namespace MindTouch\Http;
 
+use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\Content\IContent;
 use MindTouch\XArray\XArray;
 
@@ -116,9 +117,9 @@ class HttpResult extends XArray {
     /**
      * Retrieve the HTTP response content type
      *
-     * @return string|null
+     * @return ContentType|null - returns null if not set or invalid content type
      */
-    public function getContentType() { return isset($this->array['type']) ? $this->array['type'] : null; }
+    public function getContentType() { return isset($this->array['type']) ? ContentType::newFromContentTypeHeaderLine($this->array['type']) : null; }
 
     /**
      * Retrieve an instance of HTTP response headers
