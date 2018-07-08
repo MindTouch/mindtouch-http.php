@@ -21,6 +21,7 @@ namespace MindTouch\Http\tests\HttpPlug\CurlInvoke;
 use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\Content\TextContent;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\XUri;
 
 class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
 
@@ -37,8 +38,9 @@ class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
 
         // assert
         $this->assertEquals(200, $result->getStatus());
-        $this->assertEquals('https://httpbin.org/redirect/1', $result->getVal('request/uri'));
-        $this->assertEquals('https://httpbin.org/get', $result->getBody()->getVal('url'));
+        $uri = $plug->getUri();
+        $this->assertEquals($uri->toString(), $result->getVal('request/uri'));
+        $this->assertEquals($uri->toBaseUri()->at('get')->toString(), $result->getBody()->getVal('url'));
         $headers = $result->getAll('rawheaders');
         $this->assertContains('HTTP/1.1 302 FOUND', $headers);
         $this->assertContains('Location: /get', $headers);
@@ -49,9 +51,10 @@ class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
      */
     public function Can_follow_redirect_by_method() {
 
-           // arrange
-        $plug = $this->newHttpBinPlug()->at('redirect-to')
-            ->with('url', 'https://httpbin.org/post')
+        // arrange
+        $plug = $this->newHttpBinPlug();
+        $plug = $plug->at('redirect-to')
+            ->with('url', $plug->at('post')->getUri()->toString())
             ->with('status_code', '307');
 
         // act
@@ -60,7 +63,7 @@ class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
-        $this->assertEquals('https://httpbin.org/post', $body->getVal('url'));
+        $this->assertEquals($plug->getUri()->toBaseUri()->at('post')->toString(), $body->getVal('url'));
         $this->assertEquals(ContentType::TEXT, $body->getVal('headers/Content-Type'));
         $this->assertEquals('3', $body->getVal('headers/Content-Length'));
         $this->assertEquals('foo', $body->getVal('data'));

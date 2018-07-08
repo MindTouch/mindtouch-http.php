@@ -27,6 +27,11 @@ use CURLFile;
 class FormDataContent implements IContent {
 
     /**
+     * @var ContentType
+     */
+    private $contentType;
+
+    /**
      * @var string[]
      */
     private $data;
@@ -40,22 +45,24 @@ class FormDataContent implements IContent {
      * @param string[] $data - name/value pairs of form data
      */
     public function __construct(array $data) {
+        $this->contentType = ContentType::newFromString(ContentType::FORM);
         $this->data = $data;
     }
 
     public function __clone() {
 
         // deep copy internal data objects and arrays
+        $this->contentType = unserialize(serialize($this->contentType));
         $this->data = unserialize(serialize($this->data));
         $this->files = unserialize(serialize($this->files));
     }
 
-    public function getContentType() { return ContentType::FORM; }
+    public function getContentType() { return $this->contentType; }
 
     public function toRaw() {
         $data = [];
         foreach($this->files as $key => $file) {
-            $data["file[{$key}]"] = new CURLFile($file->toString(), $file->getContentType());
+            $data["file[{$key}]"] = new CURLFile($file->toString(), $file->getContentType()->toString());
         }
         return array_merge($this->data, $data);
     }

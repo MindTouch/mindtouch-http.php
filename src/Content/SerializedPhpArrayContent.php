@@ -19,6 +19,7 @@
 namespace MindTouch\Http\Content;
 
 use MindTouch\XArray\XArray;
+use SebastianBergmann\RecursionContext\Context;
 
 /**
  * Class SerializedPhpArrayContent
@@ -36,6 +37,11 @@ class SerializedPhpArrayContent implements IContent {
     public static function newFromArray(array $array) { return new static(serialize($array)); }
 
     /**
+     * @var ContentType
+     */
+    private $contentType;
+
+    /**
      * @var string
      */
     private $serialized;
@@ -44,10 +50,17 @@ class SerializedPhpArrayContent implements IContent {
      * @param string $seralized
      */
     public function __construct($seralized) {
+        $this->contentType = ContentType::newFromString(ContentType::PHP);
         $this->serialized = $seralized;
     }
 
-    public function getContentType() { return ContentType::PHP; }
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->contentType = unserialize(serialize($this->contentType));
+    }
+
+    public function getContentType() { return $this->contentType; }
 
     public function toRaw() { return $this->serialized; }
 

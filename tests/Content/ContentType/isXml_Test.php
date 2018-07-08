@@ -56,7 +56,7 @@ class isXml_Test extends MindTouchHttpUnitTestCase {
     public function Can_check_if_content_type_is_xml($headerLine, $expected) {
 
         // arrange
-        $contentType = ContentType::newFromContentTypeHeaderLine($headerLine);
+        $contentType = ContentType::newFromString($headerLine);
 
         // act
         $result = $contentType->isXml();

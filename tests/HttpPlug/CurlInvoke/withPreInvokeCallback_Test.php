@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\HttpPlug\MockInvoke;
+namespace MindTouch\Http\tests\HttpPlug\CurlInvoke;
 
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
@@ -24,7 +24,7 @@ use MindTouch\Http\IMutableHeaders;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 use MindTouch\Http\XUri;
 
-class withPreInvokeCallback_Test extends MindTouchHttpUnitTestCase  {
+class withPreInvokeCallback_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test

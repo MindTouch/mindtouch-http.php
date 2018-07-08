@@ -92,7 +92,7 @@ class toMainType_Test extends MindTouchHttpUnitTestCase {
     public function Can_return_main_type($headerLine, $expected) {
 
         // arrange
-        $contentType = ContentType::newFromContentTypeHeaderLine($headerLine);
+        $contentType = ContentType::newFromString($headerLine);
 
         // act
         $result = $contentType->toMainType();

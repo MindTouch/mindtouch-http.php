@@ -16,32 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\Content;
-use phpDocumentor\Reflection\Types\Context;
+namespace MindTouch\Http\tests\XUri;
 
-/**
- * Interface IContent
- *
- * @package MindTouch\Http\Content
- */
-interface IContent {
+use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\XUri;
+
+class toBaseUri_Test extends MindTouchHttpUnitTestCase {
 
     /**
-     * Retrieve the Content-Type value
-     *
-     * @return ContentType
+     * @test
      */
-    function getContentType();
+    public function Can_get_base_uri() {
 
-    /**
-     * Retrive the content in raw form for curl invocation
-     *
-     * @return mixed
-     */
-    function toRaw();
+        // arrange
+        $uriStr = 'http://user:password@test.mindtouch.dev/somepath?a=b&c=d#fragment';
 
-    /**
-     * @return string
-     */
-    function toString();
+        // act
+        $result = XUri::tryParse($uriStr)->toBaseUri();
+
+        // assert
+        $this->assertEquals('http://user:password@test.mindtouch.dev', $result);
+    }
 }

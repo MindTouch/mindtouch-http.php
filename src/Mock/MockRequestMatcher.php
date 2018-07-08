@@ -174,7 +174,7 @@ class MockRequestMatcher {
      */
     public function withContent(IContent $content) {
         $request = clone $this;
-        $request->headers->setHeader(Headers::HEADER_CONTENT_TYPE, $content->getContentType());
+        $request->headers->setHeader(Headers::HEADER_CONTENT_TYPE, $content->getContentType()->toString());
         $request->body = $content->toString();
         return $request;
     }

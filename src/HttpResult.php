@@ -97,13 +97,13 @@ class HttpResult extends XArray {
     /**
      * Return an instance with the specified result content body and content type
      *
-     * @param  $content
+     * @param IContent $content
      * @return static
      */
     public function withContent(IContent $content) {
         $result = clone $this;
         $result->array['body'] = $content->toString();
-        $result->array['type'] = $content->getContentType();
+        $result->array['type'] = $content->getContentType()->toString();
         return $result;
     }
 
@@ -119,7 +119,7 @@ class HttpResult extends XArray {
      *
      * @return ContentType|null - returns null if not set or invalid content type
      */
-    public function getContentType() { return isset($this->array['type']) ? ContentType::newFromContentTypeHeaderLine($this->array['type']) : null; }
+    public function getContentType() { return isset($this->array['type']) ? ContentType::newFromString($this->array['type']) : null; }
 
     /**
      * Retrieve an instance of HTTP response headers

@@ -36,6 +36,11 @@ class XmlContent implements IContent {
     public static function newFromArray(array $xml) { return new static((new XArray($xml))->toXml()); }
 
     /**
+     * @var ContentType
+     */
+    private $contentType;
+
+    /**
      * @var string
      */
     private $xml;
@@ -44,10 +49,17 @@ class XmlContent implements IContent {
      * @param string $xml
      */
     public function __construct($xml) {
+        $this->contentType = ContentType::newFromString(ContentType::XML);
         $this->xml = $xml;
     }
 
-    public function getContentType() { return ContentType::XML; }
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->contentType = unserialize(serialize($this->contentType));
+    }
+
+    public function getContentType() { return $this->contentType; }
 
     public function toRaw() { return $this->xml; }
 

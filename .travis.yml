@@ -5,13 +5,23 @@ php:
   - '5.5'
   - '5.6'
 
+services:
+  - docker
+
+env:
+  - HTTPBIN_BASEURI=http://localhost:8080
+
 cache:
   directories:
     - vendor
 
 install: composer install
 
+before_script: docker-compose up -d
+
 script: vendor/bin/phpunit --configuration phpunit.xml.dist --coverage-clover=coverage.xml
+
+after_script: docker-compose down
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
