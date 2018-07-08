@@ -37,20 +37,107 @@ class ContentType {
     const PHP = 'application/php; charset=utf-8';
 
     /**
-     * @param string $type
-     * @return bool
+     * Return a new ContentType instance from an HTTP header line (ex: text/html; charset=utf-8)
+     *
+     * @param string $contentTypeHeaderLine
+     * @return ContentType
      */
-    public static function isJson($type) { return StringUtil::startsWithInvariantCase($type, 'application/json') || StringUtil::startsWithInvariantCase($type, 'text/json'); }
+    public static function newFromContentTypeHeaderLine($contentTypeHeaderLine) {
+        $parts = array_map('trim', explode(';', $contentTypeHeaderLine));
+        $typeParts = array_filter(explode('/', $parts[0], 2));
+        if(count($typeParts) !== 2) {
+            return null;
+        }
+        $mainType = strtolower($typeParts[0]);
+        $subType = strtolower($typeParts[1]);
+        $parameters = [];
+        array_shift($parts);
+        foreach($parts as $part) {
+            if(!StringUtil::isNullOrEmpty($part)) {
+                if(strpos($part, '=') === false) {
+                    $k = $part;
+                    $v = null;
+                } else {
+                    list($k, $v) = explode('=', $part);
+                }
+                $parameters[$k] = $v === null ? '' : $v;
+            }
+        }
+        return new self($mainType, $subType, $parameters);
+    }
 
     /**
-     * @param string $type
-     * @return bool
+     * @var string
      */
-    public static function isXml($type) { return StringUtil::startsWithInvariantCase($type, 'application/xml') || StringUtil::startsWithInvariantCase($type, 'text/xml'); }
+    private $mainType;
 
     /**
-     * @param string $type
+     * @var string[]
+     */
+    private $parameters = [];
+
+    /**
+     * @var string
+     */
+    private $subType;
+
+    /**
+     * @param string $mainType - main part of content-type header line (ex: application)
+     * @param string $subType - sub type of content-type header line (ex: json)
+     * @param string[] $parameters - key value pairs of parameters (ex: ['charset' => 'utf-8']
+     */
+    public function __construct($mainType, $subType, array $parameters = []) {
+        $this->mainType = $mainType;
+        $this->subType = $subType;
+        $this->parameters = $parameters;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString() {
+        return $this->toString();
+    }
+
+    /**
      * @return bool
      */
-    public static function isText($type) { return StringUtil::startsWithInvariantCase($type, 'text/plain'); }
+    public function isJson() { return $this->subType === 'json'; }
+
+    /**
+     * @return bool
+     */
+    public function isXml() { return $this->subType === 'xml'; }
+
+    /**
+     * @return bool
+     */
+    public function isPlainText() { return $this->mainType === 'text' && $this->subType === 'plain'; }
+
+    /**
+     * Return the main part of content-type (ex: text)
+     *
+     * @return string
+     */
+    public function toMainType() { return $this->mainType; }
+
+    /**
+     * Return the sub part of content-type (ex: xml)
+     *
+     * @return string
+     */
+    public function toSubType() { return $this->subType; }
+
+    /**
+     * Return an entire content-type string with parameters (ex: application/json; charset=latin)
+     *
+     * @return string
+     */
+    public function toString() {
+        $stringBuilder = ["{$this->mainType}/{$this->subType}"];
+        foreach($this->parameters as $parameter => $value) {
+            $stringBuilder[] = "{$parameter}={$value}";
+        }
+        return implode('; ', $stringBuilder);
+    }
 }

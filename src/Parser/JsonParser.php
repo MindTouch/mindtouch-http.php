@@ -35,7 +35,8 @@ class JsonParser extends HttpResultParserBase implements IHttpResultParser {
     }
 
     public function toParsedResult(HttpResult $result) {
-        if(ContentType::isJson($result->getContentType())) {
+        $contentType = $result->getContentType();
+        if($contentType !== null && $contentType->isJson()) {
 
             /** @noinspection PhpUnhandledExceptionInspection */
             $this->validateContentLength($result);
