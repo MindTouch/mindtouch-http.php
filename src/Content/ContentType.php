@@ -48,8 +48,8 @@ class ContentType {
         if(count($typeParts) !== 2) {
             return null;
         }
-        $mainType = strtolower($typeParts[0]);
-        $subType = strtolower($typeParts[1]);
+        $mainType = $typeParts[0];
+        $subType = $typeParts[1];
         $parameters = [];
         array_shift($parts);
         foreach($parts as $part) {
@@ -87,9 +87,12 @@ class ContentType {
      * @param string[] $parameters - key value pairs of parameters (ex: ['charset' => 'utf-8']
      */
     public function __construct($mainType, $subType, array $parameters = []) {
-        $this->mainType = $mainType;
-        $this->subType = $subType;
-        $this->parameters = $parameters;
+        $this->mainType = strtolower($mainType);
+        $this->subType = strtolower($subType);
+        $this->parameters = [];
+        foreach($parameters as $parameter => $value) {
+            $this->parameters[strtolower($parameter)] = strtolower($value);
+        }
     }
 
     /**
@@ -97,6 +100,17 @@ class ContentType {
      */
     public function __toString() {
         return $this->toString();
+    }
+
+    /**
+     * @param ContentType $contentType
+     * @param bool $includeParameters - include parameters when matching content-type string (default: false)
+     * @return bool
+     */
+    public function is(ContentType $contentType, $includeParameters = false) {
+        return $includeParameters
+            ? $this->toString() === $contentType->toString()
+            : $this->mainType === $contentType->mainType && $this->subType === $contentType->subType;
     }
 
     /**
