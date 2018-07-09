@@ -37,13 +37,13 @@ class ContentType {
     const PHP = 'application/php; charset=utf-8';
 
     /**
-     * Return a new ContentType instance from an HTTP header line (ex: text/html; charset=utf-8)
+     * Return a new ContentType instance from a full content-type string (ex: text/html; charset=utf-8)
      *
-     * @param string $contentTypeHeaderLine
+     * @param string $string
      * @return ContentType
      */
-    public static function newFromContentTypeHeaderLine($contentTypeHeaderLine) {
-        $parts = array_map('trim', explode(';', $contentTypeHeaderLine));
+    public static function newFromString($string) {
+        $parts = array_map('trim', explode(';', $string));
         $typeParts = array_filter(explode('/', $parts[0], 2));
         if(count($typeParts) !== 2) {
             return null;
@@ -113,6 +113,11 @@ class ContentType {
      * @return bool
      */
     public function isPlainText() { return $this->mainType === 'text' && $this->subType === 'plain'; }
+
+    /**
+     * @return bool
+     */
+    public function isStream() { return $this->mainType === 'application' && $this->subType === 'octet-stream'; }
 
     /**
      * Return the main part of content-type (ex: text)

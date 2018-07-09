@@ -21,7 +21,7 @@ namespace MindTouch\Http\tests\Content\SerializedPhpArrayContent;
 use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
-class newFromContentTypeHeaderLine_Test extends MindTouchHttpUnitTestCase {
+class newFromString_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @return array
@@ -97,7 +97,7 @@ class newFromContentTypeHeaderLine_Test extends MindTouchHttpUnitTestCase {
         }
 
         // act
-        $result = ContentType::newFromContentTypeHeaderLine($headerLine);
+        $result = ContentType::newFromString($headerLine);
 
         // assert
         $this->assertEquals($expected, $result->toString());
@@ -109,11 +109,11 @@ class newFromContentTypeHeaderLine_Test extends MindTouchHttpUnitTestCase {
     public function Can_return_null_from_invalid_header_line() {
 
         // act
-        $result1 = ContentType::newFromContentTypeHeaderLine('');
-        $result2 = ContentType::newFromContentTypeHeaderLine('image');
-        $result3 = ContentType::newFromContentTypeHeaderLine('application; charset=utf-8');
-        $result4 = ContentType::newFromContentTypeHeaderLine('/plain; charset=latin');
-        $result5 = ContentType::newFromContentTypeHeaderLine('charset=iso-8859');
+        $result1 = ContentType::newFromString('');
+        $result2 = ContentType::newFromString('image');
+        $result3 = ContentType::newFromString('application; charset=utf-8');
+        $result4 = ContentType::newFromString('/plain; charset=latin');
+        $result5 = ContentType::newFromString('charset=iso-8859');
 
         // assert
         $this->assertNull($result1);

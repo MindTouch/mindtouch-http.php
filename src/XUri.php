@@ -543,6 +543,17 @@ class XUri {
     #region Conversion to Uri|string
 
     /**
+     * @return static
+     * @throws MalformedUriException
+     */
+    public function toBaseUri() {
+        $scheme = $this->getScheme();
+        $result = StringUtil::isNullOrEmpty($scheme) ? 'http://' : $scheme . '://';
+        $result .= $this->getAuthority();
+        return self::newFromString($result);
+    }
+
+    /**
      * Return an instance with basic auth password sensitive information scrubbed
      *
      * @param string[] $scrubQueryParams - list query param keys to scrub values

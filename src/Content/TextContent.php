@@ -31,17 +31,26 @@ class TextContent implements IContent {
     private $text;
 
     /**
-     * @var string
+     * @var ContentType
      */
     private $contentType;
 
     /**
      * @param string $text
-     * @param string|null $contentType - defaults to text/plain
+     * @param ContentType|null $contentType - defaults to text/plain
      */
-    public function __construct($text, $contentType = ContentType::TEXT) {
-        $this->text = $text;
+    public function __construct($text, $contentType = null) {
+        if($contentType === null) {
+            $contentType = ContentType::newFromString(ContentType::TEXT);
+        }
         $this->contentType = $contentType;
+        $this->text = $text;
+    }
+
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->contentType = unserialize(serialize($this->contentType));
     }
 
     public function getContentType() { return $this->contentType; }

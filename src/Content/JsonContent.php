@@ -34,6 +34,11 @@ class JsonContent implements IContent {
     public static function newFromArray(array $json) { return new static(json_encode($json)); }
 
     /**
+     * @var ContentType
+     */
+    private $contentType;
+
+    /**
      * @var string
      */
     private $json;
@@ -42,10 +47,17 @@ class JsonContent implements IContent {
      * @param string $json
      */
     public function __construct($json) {
+        $this->contentType = ContentType::newFromString(ContentType::JSON);
         $this->json = $json;
     }
 
-    public function getContentType() { return ContentType::JSON; }
+    public function __clone() {
+
+        // deep copy internal data objects and arrays
+        $this->contentType = unserialize(serialize($this->contentType));
+    }
+
+    public function getContentType() { return $this->contentType; }
 
     public function toRaw() { return $this->json; }
 

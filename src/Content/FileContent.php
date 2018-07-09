@@ -33,7 +33,7 @@ class FileContent implements IContent {
     private $filePath;
 
     /**
-     * @var string
+     * @var ContentType
      */
     private $contentType;
 
@@ -41,14 +41,17 @@ class FileContent implements IContent {
      * @param string $filePath
      * @param string|null $contentType - if null or stream the content type will be determined from file path
      */
-    public function __construct($filePath, $contentType = ContentType::STREAM) {
+    public function __construct($filePath, $contentType = null) {
         if(!is_file($filePath)) {
             throw new InvalidArgumentException('File path does not exist: ' . $filePath);
         }
         $this->filePath = $filePath;
-        if($contentType === ContentType::STREAM) {
+        if($contentType === null) {
+            $contentType = ContentType::newFromString(ContentType::STREAM);
+        }
+        if($contentType->isStream()) {
             $finfo = finfo_open(FILEINFO_MIME);
-            $contentType = finfo_file($finfo, $filePath);
+            $contentType = ContentType::newFromString(finfo_file($finfo, $filePath));
             finfo_close($finfo);
         }
         $this->contentType = $contentType;
