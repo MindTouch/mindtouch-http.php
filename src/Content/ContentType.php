@@ -40,7 +40,7 @@ class ContentType {
      * Return a new ContentType instance from a full content-type string (ex: text/html; charset=utf-8)
      *
      * @param string $string
-     * @return ContentType
+     * @return static|null
      */
     public static function newFromString($string) {
         $parts = array_map('trim', explode(';', $string));
@@ -63,7 +63,7 @@ class ContentType {
                 $parameters[$k] = $v === null ? '' : $v;
             }
         }
-        return new self($mainType, $subType, $parameters);
+        return new static($mainType, $subType, $parameters);
     }
 
     /**
