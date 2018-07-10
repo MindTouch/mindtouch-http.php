@@ -39,7 +39,7 @@ class FileContent implements IContent {
 
     /**
      * @param string $filePath
-     * @param string|null $contentType - if null or stream the content type will be determined from file path
+     * @param ContentType|null $contentType - if null or stream the content type will be determined from file path
      */
     public function __construct($filePath, $contentType = null) {
         if(!is_file($filePath)) {
