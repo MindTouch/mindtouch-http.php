@@ -56,6 +56,21 @@ class atPath_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
+    public function Can_add_query_if_no_existing_query() {
+
+        // arrange
+        $uriStr = 'http://user:password@test.mindtouch.dev/#fragment';
+
+        // act
+        $result = XUri::tryParse($uriStr)->atPath('foo/bar?z=x&y=z');
+
+        // assert
+        $this->assertEquals('http://user:password@test.mindtouch.dev/foo/bar?z=x&y=z#fragment', $result);
+    }
+
+    /**
+     * @test
+     */
     public function Can_replace_fragment() {
 
         // arrange
