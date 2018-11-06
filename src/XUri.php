@@ -529,8 +529,12 @@ class XUri {
         $path = $this->getInternalPath($data);
         $data['path'] = !StringUtil::isNullOrEmpty($path) ? $path . $this->normalize($newUriData['path']) : $this->normalize($newUriData['path']);
         if(isset($newUriData['query'])) {
-            $currentParams = array_merge(self::parseQuery($data['query']), self::parseQuery($newUriData['query']));
-            $data['query'] = http_build_query($currentParams);
+            if(isset($data['query'])) {
+                $currentParams = array_merge(self::parseQuery($data['query']), self::parseQuery($newUriData['query']));
+                $data['query'] = http_build_query($currentParams);
+            } else {
+                $data['query'] = $newUriData['query'];
+            }
         }
         if(isset($newUriData['fragment'])) {
             $data['fragment'] = $newUriData['fragment'];
