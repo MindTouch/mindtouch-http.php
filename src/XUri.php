@@ -380,6 +380,17 @@ class XUri {
     }
 
     /**
+     * Return an instance without query string
+     *
+     * @return static
+     */
+    public function withoutQuery() {
+        $data = $this->data;
+        $data['query'] = null;
+        return static::newFromUriData($data);
+    }
+
+    /**
      * Return an instance with the specified query param appended
      *
      * @param string $param - query param key
