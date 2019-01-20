@@ -87,7 +87,7 @@ class HttpPlug {
     protected $uri;
 
     /**
-     * @param $uri - target uri
+     * @param XUri $uri - target uri
      */
     public function __construct(XUri $uri) {
         $this->headers = new Headers();
@@ -113,10 +113,10 @@ class HttpPlug {
     /**
      * Retrieves the fully qualified uri
      *
-     * @param bool|null $includeCredentials - if true, any set username and password will be included
+     * @param bool $includeCredentials - if true, any set username and password will be included
      * @return XUri
      */
-    public function getUri(?bool $includeCredentials = false) : XUri {
+    public function getUri(bool $includeCredentials = false) : XUri {
         $uri = clone $this->uri;
 
         // @note user & password are passed via Authorization headers when invoked, see #invokeApplyCredentials
@@ -206,10 +206,10 @@ class HttpPlug {
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      * @param XUri $uri - new request URI to use
-     * @param bool|null $preserveHost - preserve the original state of the Host header
+     * @param bool $preserveHost - preserve the original state of the Host header
      * @return static
      */
-    public function withUri(XUri $uri, ?bool $preserveHost = false) : object {
+    public function withUri(XUri $uri, bool $preserveHost = false) : object {
         $plug = clone $this;
         $host = $plug->uri->getHost();
         $plug->uri = $uri;
@@ -242,9 +242,11 @@ class HttpPlug {
      * @param string|null $value - variable value
      * @return static
      */
-    public function with(string $name, ?string $value = null) : object {
+    public function with(string $name, string $value = null) : object {
         $plug = clone $this;
-        $plug->uri = $plug->uri->withQueryParam($name, $value);
+        $plug->uri = $value !== null
+            ? $plug->uri->withQueryParam($name, $value)
+            : $plug->uri->withoutQueryParam($name);
         return $plug;
     }
 
@@ -303,10 +305,10 @@ class HttpPlug {
     /**
      * Return an instance with auto redirect behavior with the specified number of redirects
      *
-     * @param int|null $maxAutoRedirects - maximum number of redirects to follow, 0 if no redirects should be followed
+     * @param int $maxAutoRedirects - maximum number of redirects to follow, 0 if no redirects should be followed
      * @return static
      */
-    public function withAutoRedirects(?int $maxAutoRedirects = self::DEFAULT_MAX_AUTO_REDIRECTS) : object {
+    public function withAutoRedirects(int $maxAutoRedirects = self::DEFAULT_MAX_AUTO_REDIRECTS) : object {
         $plug = clone $this;
         $plug->maxAutoRedirects = $maxAutoRedirects;
         return $plug;
@@ -340,7 +342,7 @@ class HttpPlug {
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      * @throws InvalidArgumentException
      */
-    public function post(?IContent $content = null) : object { return $this->invoke(self::METHOD_POST, $content); }
+    public function post(IContent $content = null) : object { return $this->invoke(self::METHOD_POST, $content); }
 
     /**
      * Performs a PUT request
@@ -350,7 +352,7 @@ class HttpPlug {
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      * @throws NotImplementedException
      */
-    public function put(?IContent $content = null) : object {
+    public function put(IContent $content = null) : object {
         if($content !== null && !($content instanceof FileContent)) {
 
             // TODO (modethirteen, 20180422): handle PUT content that is not file content
@@ -378,7 +380,7 @@ class HttpPlug {
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      * @throws InvalidArgumentException
      */
-    protected function invoke(string $method, ?IContent $content = null) : object {
+    protected function invoke(string $method, IContent $content = null) : object {
         $requestUri = $this->getUri();
         $requestHeaders = clone $this->headers;
         $this->invokeApplyCredentials($requestHeaders);
@@ -455,7 +457,7 @@ class HttpPlug {
 
             // set the content type if provided
             $contentType = $content->getContentType();
-            if(!StringUtil::isNullOrEmpty($contentType->toString())) {
+            if($contentType !== null && !StringUtil::isNullOrEmpty($contentType->toString())) {
                 $requestHeaders->setHeader(Headers::HEADER_CONTENT_TYPE, $contentType->toString());
             }
         } else {
@@ -574,7 +576,7 @@ class HttpPlug {
         $result = (new HttpResult($data))
             ->withStatus(curl_getinfo($curl, CURLINFO_HTTP_CODE))
             ->withHeaders($responseHeaders);
-        if($httpMessage !== false && !StringUtil::isNullOrEmpty($httpMessage)) {
+        if(!is_bool($httpMessage) && !StringUtil::isNullOrEmpty($httpMessage)) {
             $result = $result->withBody($httpMessage);
         }
         curl_close($curl);

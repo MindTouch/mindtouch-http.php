@@ -34,7 +34,7 @@ class SerializedPhpArrayContent implements IContent {
     public static function newFromArray(array $array) { return new static(serialize($array)); }
 
     /**
-     * @var ContentType
+     * @var ContentType|null
      */
     private $contentType;
 
@@ -57,7 +57,7 @@ class SerializedPhpArrayContent implements IContent {
         $this->contentType = unserialize(serialize($this->contentType));
     }
 
-    public function getContentType() : ContentType { return $this->contentType; }
+    public function getContentType() : ?ContentType { return $this->contentType; }
 
     public function toRaw() : string { return $this->serialized; }
 

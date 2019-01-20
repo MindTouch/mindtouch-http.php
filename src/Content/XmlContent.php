@@ -33,10 +33,10 @@ class XmlContent implements IContent {
      * @param array $xml
      * @return static
      */
-    public static function newFromArray(array $xml) { return new static((new XArray($xml))->toXml()); }
+    public static function newFromArray(array $xml) : object { return new static((new XArray($xml))->toXml()); }
 
     /**
-     * @var ContentType
+     * @var ContentType|null
      */
     private $contentType;
 
@@ -59,7 +59,7 @@ class XmlContent implements IContent {
         $this->contentType = unserialize(serialize($this->contentType));
     }
 
-    public function getContentType() : ContentType { return $this->contentType; }
+    public function getContentType() : ?ContentType { return $this->contentType; }
 
     public function toRaw() : string { return $this->xml; }
 

@@ -64,7 +64,7 @@ class ApiToken implements IApiToken {
         return $token;
     }
 
-    public function toHash(?int $timestamp = null) : string {
+    public function toHash(int $timestamp = null) : string {
         if($timestamp === null) {
             $timestamp = time();
         }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\Content\SerializedPhpArrayContent;
+namespace MindTouch\Http\tests\Content\ContentType;
 
 use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;

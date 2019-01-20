@@ -52,7 +52,7 @@ class XUri {
      */
     public static function newFromString(string $string) {
         $data = parse_url($string);
-        if(!$data || !isset($data['scheme']) || $data['scheme'] === null) {
+        if(!$data || !isset($data['scheme'])) {
             throw new MalformedUriException($string);
         }
         return static::newFromUriData($data);
@@ -192,7 +192,7 @@ class XUri {
      * @return string|null - parameter value
      */
     public function getQueryParam(string $param) : ?string {
-        $params = self::parseQuery($this->getQuery());
+        $params = $this->getQueryParams();
         return isset($params[$param]) ? $params[$param] : null;
     }
 
@@ -274,7 +274,7 @@ class XUri {
      * @param string|null $password - The password associated with $user
      * @return static
      */
-    public function withUserInfo(string $user, ?string $password = null) {
+    public function withUserInfo(string $user, string $password = null) {
         $data = $this->data;
         $data['user'] = $user;
         $data['pass'] = $password;
@@ -514,11 +514,10 @@ class XUri {
     /**
      * Return an instance with a path segment appended
      *
-     * @param string ... $segments,... - path segments to append
+     * @param string ...$segments,... - path segments to append
      * @return static
      */
-    public function at() {
-        $segments = func_get_args();
+    public function at(...$segments) {
         if(empty($segments)) {
             return $this;
         }
@@ -540,8 +539,10 @@ class XUri {
     public function atPath(string $pathQueryFragment) {
         $newUriData = parse_url($this->normalize($pathQueryFragment));
         $data = $this->data;
-        $path = $this->getInternalPath($data);
-        $data['path'] = !StringUtil::isNullOrEmpty($path) ? $path . $this->normalize($newUriData['path']) : $this->normalize($newUriData['path']);
+        if(isset($newUriData['path'])) {
+            $path = $this->getInternalPath($data);
+            $data['path'] = !StringUtil::isNullOrEmpty($path) ? $path . $this->normalize($newUriData['path']) : $this->normalize($newUriData['path']);
+        }
         if(isset($newUriData['query'])) {
             if(isset($data['query'])) {
                 $currentParams = array_merge(self::parseQuery($data['query']), self::parseQuery($newUriData['query']));
@@ -575,10 +576,10 @@ class XUri {
      * Return an instance with basic auth password sensitive information scrubbed
      *
      * @param string[] $scrubQueryParams - list query param keys to scrub values
-     * @param bool|null $scrubBasicAuthPassword - scrub basic auth password?
+     * @param bool $scrubBasicAuthPassword - scrub basic auth password
      * @return static
      */
-    public function toSanitizedUri(array $scrubQueryParams = [], ?bool $scrubBasicAuthPassword = true) {
+    public function toSanitizedUri(array $scrubQueryParams = [], bool $scrubBasicAuthPassword = true) {
         $data = $this->data;
         if($scrubBasicAuthPassword && isset($data['pass'])) {
             $data['pass'] = self::SENSITIVE_DATA_REPLACEMENT;

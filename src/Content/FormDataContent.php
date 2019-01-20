@@ -27,7 +27,7 @@ use CURLFile;
 class FormDataContent implements IContent {
 
     /**
-     * @var ContentType
+     * @var ContentType|null
      */
     private $contentType;
 
@@ -57,12 +57,18 @@ class FormDataContent implements IContent {
         $this->files = unserialize(serialize($this->files));
     }
 
-    public function getContentType() : ContentType { return $this->contentType; }
+    public function getContentType() : ?ContentType { return $this->contentType; }
 
     public function toRaw() : array {
         $data = [];
         foreach($this->files as $key => $file) {
-            $data["file[{$key}]"] = new CURLFile($file->toString(), $file->getContentType()->toString());
+            $contentType = $file->getContentType();
+            if($contentType === null) {
+
+                // skip invalid file content types
+                continue;
+            }
+            $data["file[{$key}]"] = new CURLFile($file->toString(), $contentType->toString());
         }
         return array_merge($this->data, $data);
     }

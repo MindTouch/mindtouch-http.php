@@ -28,9 +28,9 @@ interface IContent {
     /**
      * Retrieve the Content-Type value
      *
-     * @return ContentType
+     * @return ContentType|null
      */
-    function getContentType() : ContentType;
+    function getContentType() : ?ContentType;
 
     /**
      * Retrive the content in raw form for curl invocation

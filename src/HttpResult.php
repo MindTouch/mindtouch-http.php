@@ -102,8 +102,9 @@ class HttpResult extends XArray {
      */
     public function withContent(IContent $content) {
         $result = clone $this;
+        $contentType = $content->getContentType();
         $result->array['body'] = $content->toString();
-        $result->array['type'] = $content->getContentType()->toString();
+        $result->array['type'] = $contentType !== null ? $contentType->toString() : null;
         return $result;
     }
 
@@ -158,7 +159,7 @@ class HttpResult extends XArray {
      * @param string|null $key - result key name (ex: body/content), empty returns entire result as xml (aliases HttpResult::toXml)
      * @return string
      */
-    public function getXml(?string $key = null) : string {
+    public function getXml(string $key = null) : string {
         if(StringUtil::isNullOrEmpty($key)) {
             return "<result>{$this->toXml()}</result>";
         }

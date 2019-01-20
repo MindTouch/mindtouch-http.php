@@ -20,9 +20,11 @@ namespace MindTouch\Http\Mock;
 
 use InvalidArgumentException;
 use MindTouch\Http\Content\IContent;
+use MindTouch\Http\Exception\MalformedUriException;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\IHeaders;
+use MindTouch\Http\IMutableHeaders;
 use MindTouch\Http\XUri;
 
 /**
@@ -69,7 +71,7 @@ class MockRequestMatcher {
     private $uri;
 
     /**
-     * @var IHeaders
+     * @var IMutableHeaders
      */
     private $headers;
 
@@ -119,9 +121,9 @@ class MockRequestMatcher {
     /**
      * Retrieve HTTP message body
      *
-     * @return string
+     * @return string|null
      */
-    public function getBody() : string { return $this->body; }
+    public function getBody() : ?string { return $this->body; }
 
     /**
      * Retrieve id to match mock results to matcher
@@ -142,7 +144,7 @@ class MockRequestMatcher {
      */
     public function withHeaders(IHeaders $headers) : MockRequestMatcher {
         $request = clone $this;
-        $request->headers = $headers;
+        $request->headers = $headers->toMutableHeaders();
         return $request;
     }
 
@@ -153,15 +155,15 @@ class MockRequestMatcher {
      * @return MockRequestMatcher
      */
     public function withBody($body) : MockRequestMatcher {
-        if(!is_string($body) && !is_array($body) && $body !== null) {
-            throw new InvalidArgumentException('Body value must be string, array, or null');
+        if(is_string($body) || is_array($body) || $body == null) {
+            if(is_array($body)) {
+                $body = http_build_query($body);
+            }
+            $request = clone $this;
+            $request->body = $body;
+            return $request;
         }
-        if(is_array($body)) {
-            $body = http_build_query($body);
-        }
-        $request = clone $this;
-        $request->body = $body;
-        return $request;
+        throw new InvalidArgumentException('Body value must be string, array, or null');
     }
 
     /**
@@ -173,7 +175,8 @@ class MockRequestMatcher {
      */
     public function withContent(IContent $content) : MockRequestMatcher {
         $request = clone $this;
-        $request->headers->setHeader(Headers::HEADER_CONTENT_TYPE, $content->getContentType()->toString());
+        $contentType = $content->getContentType();
+        $request->headers->setHeader(Headers::HEADER_CONTENT_TYPE, $contentType !== null ? $contentType->toString() : null);
         $request->body = $content->toString();
         return $request;
     }

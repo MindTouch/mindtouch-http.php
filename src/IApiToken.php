@@ -45,8 +45,8 @@ interface IApiToken {
     /**
      * Convert token to hash for use with "X-Deki-Token" header
      *
-     * @param int|null - unix timestamp (default: epoch)
+     * @param int|null $timestamp - unix timestamp (default: epoch)
      * @return string
      */
-    function toHash(?int $timestamp = null) : string;
+    function toHash(int $timestamp = null) : string;
 }

@@ -21,7 +21,7 @@ namespace MindTouch\Http\tests\Headers;
 use MindTouch\Http\Headers;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
-class get_Test extends MindTouchHttpUnitTestCase {
+class getSetCookieHeaderLine_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test

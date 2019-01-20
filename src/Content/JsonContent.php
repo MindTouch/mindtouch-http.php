@@ -34,7 +34,7 @@ class JsonContent implements IContent {
     public static function newFromArray(array $json) { return new static(json_encode($json)); }
 
     /**
-     * @var ContentType
+     * @var ContentType|null
      */
     private $contentType;
 
@@ -57,7 +57,7 @@ class JsonContent implements IContent {
         $this->contentType = unserialize(serialize($this->contentType));
     }
 
-    public function getContentType() : ContentType { return $this->contentType; }
+    public function getContentType() : ?ContentType { return $this->contentType; }
 
     public function toRaw() : string { return $this->json; }
 

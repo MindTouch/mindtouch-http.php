@@ -91,9 +91,9 @@ class MockPlug {
      *
      * @param MockRequestMatcher $request
      * @param HttpResult $result
-     * @param bool|null $verify - verify when all registered uri calls are checked
+     * @param bool $verify - verify when all registered uri calls are checked
      */
-    public static function register(MockRequestMatcher $request, HttpResult $result, ?bool $verify = true) {
+    public static function register(MockRequestMatcher $request, HttpResult $result, bool $verify = true) {
 
         // ensure content type header is set in the same manner as curl will set it
         if($result->getVal('type') === null && $result->getHeaders()->hasHeader('Content-Type')) {

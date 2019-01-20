@@ -31,7 +31,7 @@ class TextContent implements IContent {
     private $text;
 
     /**
-     * @var ContentType
+     * @var ContentType|null
      */
     private $contentType;
 
@@ -53,7 +53,7 @@ class TextContent implements IContent {
         $this->contentType = unserialize(serialize($this->contentType));
     }
 
-    public function getContentType() : ContentType { return $this->contentType; }
+    public function getContentType() : ?ContentType { return $this->contentType; }
 
     public function toRaw() : string { return $this->text; }
 

@@ -33,7 +33,7 @@ class FileContent implements IContent {
     private $filePath;
 
     /**
-     * @var ContentType
+     * @var ContentType|null
      */
     private $contentType;
 
@@ -49,7 +49,7 @@ class FileContent implements IContent {
         if($contentType === null) {
             $contentType = ContentType::newFromString(ContentType::STREAM);
         }
-        if($contentType->isStream()) {
+        if($contentType !== null && $contentType->isStream()) {
             $finfo = finfo_open(FILEINFO_MIME);
             $contentType = ContentType::newFromString(finfo_file($finfo, $filePath));
             finfo_close($finfo);
@@ -57,7 +57,7 @@ class FileContent implements IContent {
         $this->contentType = $contentType;
     }
 
-    public function getContentType() : ContentType { return $this->contentType; }
+    public function getContentType() : ?ContentType { return $this->contentType; }
 
     public function toRaw() : string { return $this->filePath; }
 
