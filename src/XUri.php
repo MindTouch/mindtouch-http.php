@@ -89,7 +89,7 @@ class XUri {
      * @return bool
      */
     public static function isAbsoluteUrl(string $string) : bool {
-        $filtered = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED);
+        $filtered = filter_var($string, FILTER_VALIDATE_URL);
         return ($filtered !== false);
     }
 
