@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -77,6 +77,6 @@ class withPort_Test extends MindTouchHttpUnitTestCase {
         $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev:80/somepath?a=b&c=d&e=f#foo')->withPort(8080);
 
         // assert
-        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+        $this->assertInstanceOf(TestXUri::class, $result);
     }
 }

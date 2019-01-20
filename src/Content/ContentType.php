@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -42,7 +42,7 @@ class ContentType {
      * @param string $string
      * @return static|null
      */
-    public static function newFromString($string) {
+    public static function newFromString(string $string) {
         $parts = array_map('trim', explode(';', $string));
         $typeParts = array_filter(explode('/', $parts[0], 2));
         if(count($typeParts) !== 2) {
@@ -86,7 +86,7 @@ class ContentType {
      * @param string $subType - sub type of content-type header line (ex: json)
      * @param string[] $parameters - key value pairs of parameters (ex: ['charset' => 'utf-8']
      */
-    public function __construct($mainType, $subType, array $parameters = []) {
+    public function __construct(string $mainType, string $subType, array $parameters = []) {
         $this->mainType = strtolower($mainType);
         $this->subType = strtolower($subType);
         $this->parameters = [];
@@ -98,7 +98,7 @@ class ContentType {
     /**
      * @return string
      */
-    public function __toString() {
+    public function __toString() : string {
         return $this->toString();
     }
 
@@ -107,7 +107,7 @@ class ContentType {
      * @param bool $includeParameters - include parameters when matching content-type string (default: false)
      * @return bool
      */
-    public function is(ContentType $contentType, $includeParameters = false) {
+    public function is(ContentType $contentType, bool $includeParameters = false) : bool {
         return $includeParameters
             ? $this->toString() === $contentType->toString()
             : $this->mainType === $contentType->mainType && $this->subType === $contentType->subType;
@@ -116,43 +116,43 @@ class ContentType {
     /**
      * @return bool
      */
-    public function isJson() { return $this->subType === 'json'; }
+    public function isJson() : bool { return $this->subType === 'json'; }
 
     /**
      * @return bool
      */
-    public function isXml() { return $this->subType === 'xml'; }
+    public function isXml() : bool { return $this->subType === 'xml'; }
 
     /**
      * @return bool
      */
-    public function isPlainText() { return $this->mainType === 'text' && $this->subType === 'plain'; }
+    public function isPlainText() : bool { return $this->mainType === 'text' && $this->subType === 'plain'; }
 
     /**
      * @return bool
      */
-    public function isStream() { return $this->mainType === 'application' && $this->subType === 'octet-stream'; }
+    public function isStream() : bool { return $this->mainType === 'application' && $this->subType === 'octet-stream'; }
 
     /**
      * Return the main part of content-type (ex: text)
      *
      * @return string
      */
-    public function toMainType() { return $this->mainType; }
+    public function toMainType() : string { return $this->mainType; }
 
     /**
      * Return the sub part of content-type (ex: xml)
      *
      * @return string
      */
-    public function toSubType() { return $this->subType; }
+    public function toSubType() : string { return $this->subType; }
 
     /**
      * Return an entire content-type string with parameters (ex: application/json; charset=latin)
      *
      * @return string
      */
-    public function toString() {
+    public function toString() : string {
         $stringBuilder = ["{$this->mainType}/{$this->subType}"];
         foreach($this->parameters as $parameter => $value) {
             $stringBuilder[] = "{$parameter}={$value}";

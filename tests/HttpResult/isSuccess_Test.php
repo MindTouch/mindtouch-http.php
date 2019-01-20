@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -26,7 +26,7 @@ class isSuccess_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @return array
      */
-    public static function status_dataProvider() {
+    public static function status_dataProvider() : array {
         return [
             [200],
             [201]
@@ -38,7 +38,7 @@ class isSuccess_Test extends MindTouchHttpUnitTestCase  {
      * @param int $status
      * @test
      */
-    public function HTTP_200_range_is_success($status) {
+    public function HTTP_200_range_is_success(int $status) {
 
         // arrange
         $data = ['status' => $status];

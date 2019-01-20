@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -26,7 +26,7 @@ class isJson_Test extends MindTouchHttpUnitTestCase {
     /**
      * @return array
      */
-    public static function headerLine_expected_dataProvider() {
+    public static function headerLine_expected_dataProvider() : array {
         return [
             ['application/x-latex', false],
             ['image/x-cmu-raster', false],
@@ -53,7 +53,7 @@ class isJson_Test extends MindTouchHttpUnitTestCase {
      * @param bool $expected
      * @test
      */
-    public function Can_check_if_content_type_is_json($headerLine, $expected) {
+    public function Can_check_if_content_type_is_json(string $headerLine, bool $expected) {
 
         // arrange
         $contentType = ContentType::newFromString($headerLine);

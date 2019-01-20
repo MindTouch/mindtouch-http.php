@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -48,7 +48,7 @@ class XmlContent implements IContent {
     /**
      * @param string $xml
      */
-    public function __construct($xml) {
+    public function __construct(string $xml) {
         $this->contentType = ContentType::newFromString(ContentType::XML);
         $this->xml = $xml;
     }
@@ -59,11 +59,11 @@ class XmlContent implements IContent {
         $this->contentType = unserialize(serialize($this->contentType));
     }
 
-    public function getContentType() { return $this->contentType; }
+    public function getContentType() : ContentType { return $this->contentType; }
 
-    public function toRaw() { return $this->xml; }
+    public function toRaw() : string { return $this->xml; }
 
-    public function toString() { return $this->xml; }
+    public function toString() : string { return $this->xml; }
 
-    public function __toString() { return $this->toString(); }
+    public function __toString() : string { return $this->toString(); }
 }

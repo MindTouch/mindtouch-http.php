@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -35,7 +35,7 @@ class MalformedUriException extends Exception {
     /**
      * @param string $string - malformed URI string
      */
-    public function __construct($string) {
+    public function __construct(string $string) {
         $this->string = $string;
         parent::__construct('String is not a valid URI: ' . $string);
     }
@@ -43,5 +43,5 @@ class MalformedUriException extends Exception {
     /**
      * @return string
      */
-    public function getMalformedUriString() { return $this->string; }
+    public function getMalformedUriString() : string { return $this->string; }
 }

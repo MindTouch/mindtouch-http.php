@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -57,9 +57,9 @@ class FormDataContent implements IContent {
         $this->files = unserialize(serialize($this->files));
     }
 
-    public function getContentType() { return $this->contentType; }
+    public function getContentType() : ContentType { return $this->contentType; }
 
-    public function toRaw() {
+    public function toRaw() : array {
         $data = [];
         foreach($this->files as $key => $file) {
             $data["file[{$key}]"] = new CURLFile($file->toString(), $file->getContentType()->toString());
@@ -67,9 +67,9 @@ class FormDataContent implements IContent {
         return array_merge($this->data, $data);
     }
 
-    public function toString() { return http_build_query($this->data); }
+    public function toString() : string { return http_build_query($this->data); }
 
-    public function __toString() { return $this->toString(); }
+    public function __toString() : string { return $this->toString(); }
 
     /**
      * Return an instance with a new CurlFile as part of the form body data
@@ -77,7 +77,7 @@ class FormDataContent implements IContent {
      * @param FileContent $content
      * @return FormDataContent
      */
-    public function withFileContent(FileContent $content) {
+    public function withFileContent(FileContent $content) : FormDataContent {
         $instance = clone $this;
         $instance->files[] = $content;
         return $instance;

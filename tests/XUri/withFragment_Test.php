@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -77,6 +77,6 @@ class withFragment_Test extends MindTouchHttpUnitTestCase {
         $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev/somepath?a=b&c=d&e=f')->withFragment('foo');
 
         // assert
-        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+        $this->assertInstanceOf(TestXUri::class, $result);
     }
 }

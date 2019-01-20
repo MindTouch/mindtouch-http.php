@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -55,7 +55,7 @@ class ApiPlug extends HttpPlug {
      * @param bool $doubleEncode - if true, the string will be urlencoded twice
      * @return string
      */
-    public static function urlEncode($string, $doubleEncode = false) {
+    public static function urlEncode(string $string, bool $doubleEncode = false) : string {
 
         // encode trailing dots (. => %2E)
         for($i = strlen($string) - 1, $dots = 0; $i >= 0; $dots++, $i--) {
@@ -86,7 +86,7 @@ class ApiPlug extends HttpPlug {
      * @param XUri $uri - target uri
      * @param string $format
      */
-    public function __construct(XUri $uri, $format = self::DREAM_FORMAT_PHP) {
+    public function __construct(XUri $uri, string $format = self::DREAM_FORMAT_PHP) {
         parent::__construct($uri);
         $this->uri = $this->uri->withQueryParam('dream.out.format', $format);
         $this->setHttpResultParser(new SerializedPhpArrayParser());
@@ -96,21 +96,21 @@ class ApiPlug extends HttpPlug {
      * The api requires double urlencoded titles. This method will do it automatically for you.
      * @see #AtRaw() for creating unencoded path components
      *
-     * @param string ... $path - path components to add to the request
+     * @param string ...$segments - path segments to add to the request (ex: $this->at('foo', 'bar', 'baz'))
      * @return static
      */
-    public function at( /* $path[] */) {
+    public function at(...$segments) : object {
         $plug = clone $this;
         $path = $plug->uri->getPath();
-        foreach(func_get_args() as $arg) {
-            if(!in_array($arg, self::$rawUriPathSegments)) {
+        foreach($segments as $segment) {
+            if(!in_array($segment, self::$rawUriPathSegments)) {
 
                 // auto-double encode, check for '=' sign
-                $arg = (strncmp($arg, '=', 1) === 0)
-                    ? '=' . self::urlEncode(substr($arg, 1), true)
-                    : self::urlEncode($arg, true);
+                $segment = (strncmp($segment, '=', 1) === 0)
+                    ? '=' . self::urlEncode(substr($segment, 1), true)
+                    : self::urlEncode($segment, true);
             }
-            $path .= '/' . ltrim($arg, '/');
+            $path .= '/' . ltrim($segment, '/');
         }
         $plug->uri = $plug->uri->withPath($path);
         return $plug;
@@ -127,7 +127,7 @@ class ApiPlug extends HttpPlug {
      * @param string $segment
      * @return static
      */
-    public function atRaw($segment) {
+    public function atRaw(string $segment) : object {
         $plug = clone $this;
         $plug->uri = $plug->uri->at($segment);
         return $plug;
@@ -140,7 +140,7 @@ class ApiPlug extends HttpPlug {
      * @param IApiToken $token
      * @return static
      */
-    public function withApiToken(IApiToken $token) {
+    public function withApiToken(IApiToken $token) : object {
         $plug = clone $this;
         $plug->token = $token;
         return $plug;
@@ -152,9 +152,9 @@ class ApiPlug extends HttpPlug {
      * Only one error handler can be set, executing this method will return an instance with the handler replaced
      *
      * @param Closure $handler - $handler(ApiResultException $exception) : bool
-     * @return self
+     * @return static
      */
-    public function withResultErrorHandler(Closure $handler) {
+    public function withResultErrorHandler(Closure $handler) : object {
         $plug = clone $this;
         $plug->postInvokeErrorHandler = $handler;
         return $plug;
@@ -163,9 +163,9 @@ class ApiPlug extends HttpPlug {
     /**
      * Return an instance with the post-invoke unsuccessful result handler removed
      *
-     * @return self
+     * @return static
      */
-    public function withoutResultErrorHandler() {
+    public function withoutResultErrorHandler() : object {
         $plug = clone $this;
         $plug->postInvokeErrorHandler = null;
         return $plug;
@@ -176,8 +176,9 @@ class ApiPlug extends HttpPlug {
      *
      * @param IContent|null $content - optionally send a content body with the request
      * @return ApiResult
+     * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
-    public function put($content = null) {
+    public function put(IContent $content = null) : object {
         $plug = $this->with('dream.in.verb', 'PUT');
         return $plug->invoke(self::METHOD_POST, $content);
     }
@@ -198,14 +199,13 @@ class ApiPlug extends HttpPlug {
      * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
-     * @param int $start
-     * @param int $end
+     * @param float $start
+     * @param float $end
      * @param HttpResult $result
      * @return ApiResult
      * @throws ApiResultException
-     * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
-    protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+    protected function invokeComplete(string $method, XUri $uri, IHeaders $headers, float $start, float $end, HttpResult $result) : object {
         $exception = null;
         try {
             $result = parent::invokeComplete($method, $uri, $headers, $start, $end, $result);

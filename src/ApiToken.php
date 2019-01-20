@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -37,9 +37,9 @@ class ApiToken implements IApiToken {
     private $secret;
 
     /**
-     * @var int|string
+     * @var string
      */
-    private $user = 2;
+    private $user = '2';
 
     /**
      * Returns an instance with the anonymous user context
@@ -47,24 +47,24 @@ class ApiToken implements IApiToken {
      * @param string $key
      * @param string $secret
      */
-    public function __construct($key, $secret) {
+    public function __construct(string $key, string $secret) {
         $this->key = $key;
         $this->secret = $secret;
     }
 
-    public function withUsername($username) {
+    public function withUsername(string $username) : IApiToken {
         $token = clone $this;
         $token->user = '=' . $username;
         return $token;
     }
 
-    public function withUserId($userId) {
+    public function withUserId(int $userId) : IApiToken {
         $token = clone $this;
-        $token->user = $userId;
+        $token->user = strval($userId);
         return $token;
     }
 
-    public function toHash($timestamp = null) {
+    public function toHash(?int $timestamp = null) : string {
         if($timestamp === null) {
             $timestamp = time();
         }

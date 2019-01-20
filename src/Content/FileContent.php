@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -41,7 +41,7 @@ class FileContent implements IContent {
      * @param string $filePath
      * @param ContentType|null $contentType - if null or stream the content type will be determined from file path
      */
-    public function __construct($filePath, $contentType = null) {
+    public function __construct(string $filePath, ContentType $contentType = null) {
         if(!is_file($filePath)) {
             throw new InvalidArgumentException('File path does not exist: ' . $filePath);
         }
@@ -57,11 +57,11 @@ class FileContent implements IContent {
         $this->contentType = $contentType;
     }
 
-    public function getContentType() { return $this->contentType; }
+    public function getContentType() : ContentType { return $this->contentType; }
 
-    public function toRaw() { return $this->filePath; }
+    public function toRaw() : string { return $this->filePath; }
 
-    public function toString() { return $this->filePath; }
+    public function toString() : string { return $this->filePath; }
 
-    public function __toString() { return $this->toString(); }
+    public function __toString() : string { return $this->toString(); }
 }

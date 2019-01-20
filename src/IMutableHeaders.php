@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -29,7 +29,6 @@ interface IMutableHeaders extends IHeaders {
      * Set or add values from an HTTP headers collection
      *
      * @param IHeaders $headers
-     * @return mixed
      */
     function addHeaders(IHeaders $headers);
 
@@ -37,36 +36,36 @@ interface IMutableHeaders extends IHeaders {
      * Set or add value to an HTTP header
      *
      * @param string $name
-     * @param string $value
+     * @param string|null $value
      */
-    function addHeader($name, $value);
+    function addHeader(string $name, ?string $value);
 
     /**
      * Set or replace value on an HTTP header
      *
      * @param string $name
-     * @param string $value
+     * @param string|null $value
      */
-    function setHeader($name, $value);
+    function setHeader(string $name, ?string $value);
 
     /**
      * Set or add header value(s) with a raw HTTP header
      *
      * @param string $header - 'name: value, ...'
      */
-    function addRawHeader($header);
+    function addRawHeader(string $header);
 
     /**
      * Set or replace header value(s) with a raw HTTP header
      *
      * @param string $header - 'name: value, ...'
      */
-    function setRawHeader($header);
+    function setRawHeader(string $header);
 
     /**
      * Remove an HTTP header and all its values
      *
      * @param string $name
      */
-    function removeHeader($name);
+    function removeHeader(string $name);
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -108,15 +108,15 @@ class HttpPlug {
      *
      * @return IHeaders
      */
-    public function getHeaders() { return $this->headers; }
+    public function getHeaders() : IHeaders { return $this->headers; }
 
     /**
      * Retrieves the fully qualified uri
      *
-     * @param bool $includeCredentials - if true, any set username and password will be included
+     * @param bool|null $includeCredentials - if true, any set username and password will be included
      * @return XUri
      */
-    public function getUri($includeCredentials = false) {
+    public function getUri(?bool $includeCredentials = false) : XUri {
         $uri = clone $this->uri;
 
         // @note user & password are passed via Authorization headers when invoked, see #invokeApplyCredentials
@@ -131,21 +131,21 @@ class HttpPlug {
      *
      * @return int
      */
-    public function getTimeout() { return $this->timeout; }
+    public function getTimeout() : int { return $this->timeout; }
 
     /**
      * Retrieves the maximum number of redirects to follow before giving up
      *
      * @return int
      */
-    public function getMaxAutoRedirects() { return $this->maxAutoRedirects; }
+    public function getMaxAutoRedirects() : int { return $this->maxAutoRedirects; }
 
     /**
      * Will this plug automatically follow redirects (301, 302, 307)?
      *
      * @return bool
      */
-    public function isAutoRedirectEnabled() { return $this->maxAutoRedirects > 0; }
+    public function isAutoRedirectEnabled() : bool { return $this->maxAutoRedirects > 0; }
 
     #endregion
 
@@ -157,7 +157,7 @@ class HttpPlug {
      * @param IHttpResultParser $parser
      * @return static
      */
-    public function withHttpResultParser(IHttpResultParser $parser) {
+    public function withHttpResultParser(IHttpResultParser $parser) : object {
         $plug = clone $this;
         $plug->setHttpResultParser($parser);
         return $plug;
@@ -167,10 +167,10 @@ class HttpPlug {
      * Return an instance with the added header value
      *
      * @param string $name - case-insensitive header field name to add
-     * @param string $value -  header value
+     * @param string $value - header value
      * @return static
      */
-    public function withAddedHeader($name, $value) {
+    public function withAddedHeader(string $name, string $value) : object {
         $plug = clone $this;
         $plug->headers->addHeader($name, $value);
         return $plug;
@@ -180,10 +180,10 @@ class HttpPlug {
      * Return an instance with the set or replaced header value
      *
      * @param string $name - case-insensitive header field name
-     * @param string|string[] $value - header value
+     * @param string $value - header value
      * @return static
      */
-    public function withHeader($name, $value) {
+    public function withHeader(string $name, string $value) : object {
         $plug = clone $this;
         $plug->headers->setHeader($name, $value);
         return $plug;
@@ -195,7 +195,7 @@ class HttpPlug {
      * @param string $name - case-insensitive header field name to remove
      * @return static
      */
-    public function withoutHeader($name) {
+    public function withoutHeader(string $name) : object {
         $plug = clone $this;
         $plug->headers->removeHeader($name);
         return $plug;
@@ -206,10 +206,10 @@ class HttpPlug {
      *
      * @link http://tools.ietf.org/html/rfc3986#section-4.3
      * @param XUri $uri - new request URI to use
-     * @param bool $preserveHost - preserve the original state of the Host header
+     * @param bool|null $preserveHost - preserve the original state of the Host header
      * @return static
      */
-    public function withUri(XUri $uri, $preserveHost = false) {
+    public function withUri(XUri $uri, ?bool $preserveHost = false) : object {
         $plug = clone $this;
         $host = $plug->uri->getHost();
         $plug->uri = $uri;
@@ -222,14 +222,14 @@ class HttpPlug {
     /**
      * Return an instance with appended path segments
      *
-     * @param string ... $path - method takes any number of path segments
+     * @param string ...$segments - path segments to add to the request (ex: $this->at('foo', 'bar', 'baz'))
      * @return static
      */
-    public function at( /* $path[] */) {
+    public function at(...$segments) : object {
         $plug = clone $this;
         $path = '';
-        foreach(func_get_args() as $arg) {
-            $path .= '/' . ltrim($arg, '/');
+        foreach($segments as $segment) {
+            $path .= '/' . ltrim($segment, '/');
         }
         $plug->uri = $plug->uri->atPath($path);
         return $plug;
@@ -239,10 +239,10 @@ class HttpPlug {
      * Return an instance with query string GET variables appaneded
      *
      * @param string $name - variable name
-     * @param string $value - variable value
+     * @param string|null $value - variable value
      * @return static
      */
-    public function with($name, $value = null) {
+    public function with(string $name, ?string $value = null) : object {
         $plug = clone $this;
         $plug->uri = $plug->uri->withQueryParam($name, $value);
         return $plug;
@@ -255,7 +255,7 @@ class HttpPlug {
      * @param string $password
      * @return static
      */
-    public function withCredentials($user, $password) {
+    public function withCredentials(string $user, string $password) : object {
         $plug = clone $this;
         $plug->user = $user;
         $plug->password = $password;
@@ -268,7 +268,7 @@ class HttpPlug {
      * @param int $timeout
      * @return static
      */
-    public function withTimeout($timeout) {
+    public function withTimeout(int $timeout) : object {
         $plug = clone $this;
         $plug->timeout = $timeout;
         return $plug;
@@ -281,7 +281,7 @@ class HttpPlug {
      * @param Closure $callback - $callback(string $method, XUri $uri, IMutableHeaders $headers, IContent $content) : void
      * @return static
      */
-    public function withPreInvokeCallback(Closure $callback) {
+    public function withPreInvokeCallback(Closure $callback) : object {
         $plug = clone $this;
         $plug->preInvokeRequestCallbacks[] = $callback;
         return $plug;
@@ -294,7 +294,7 @@ class HttpPlug {
      * @param Closure $callback - $callback(HttpResult $result) : void
      * @return static
      */
-    public function withPostInvokeCallback(Closure $callback) {
+    public function withPostInvokeCallback(Closure $callback) : object {
         $plug = clone $this;
         $plug->postInvokeCallbacks[] = $callback;
         return $plug;
@@ -303,10 +303,10 @@ class HttpPlug {
     /**
      * Return an instance with auto redirect behavior with the specified number of redirects
      *
-     * @param int $maxAutoRedirects - maximum number of redirects to follow, 0 if no redirects should be followed
+     * @param int|null $maxAutoRedirects - maximum number of redirects to follow, 0 if no redirects should be followed
      * @return static
      */
-    public function withAutoRedirects($maxAutoRedirects = self::DEFAULT_MAX_AUTO_REDIRECTS) {
+    public function withAutoRedirects(?int $maxAutoRedirects = self::DEFAULT_MAX_AUTO_REDIRECTS) : object {
         $plug = clone $this;
         $plug->maxAutoRedirects = $maxAutoRedirects;
         return $plug;
@@ -322,7 +322,7 @@ class HttpPlug {
      * @return HttpResult
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
-    public function get() { return $this->invoke(self::METHOD_GET); }
+    public function get() : object { return $this->invoke(self::METHOD_GET); }
 
     /**
      * Performs a HEAD request
@@ -330,7 +330,7 @@ class HttpPlug {
      * @return HttpResult
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
-    public function head() { return $this->invoke(self::METHOD_HEAD); }
+    public function head() : object { return $this->invoke(self::METHOD_HEAD); }
 
     /**
      * Performs a POST request
@@ -340,7 +340,7 @@ class HttpPlug {
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      * @throws InvalidArgumentException
      */
-    public function post($content = null) { return $this->invoke(self::METHOD_POST, $content); }
+    public function post(?IContent $content = null) : object { return $this->invoke(self::METHOD_POST, $content); }
 
     /**
      * Performs a PUT request
@@ -350,7 +350,7 @@ class HttpPlug {
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      * @throws NotImplementedException
      */
-    public function put($content = null) {
+    public function put(?IContent $content = null) : object {
         if($content !== null && !($content instanceof FileContent)) {
 
             // TODO (modethirteen, 20180422): handle PUT content that is not file content
@@ -365,7 +365,7 @@ class HttpPlug {
      * @return HttpResult
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
-    public function delete() { return $this->invoke(self::METHOD_DELETE); }
+    public function delete() : object { return $this->invoke(self::METHOD_DELETE); }
 
     #endregion
 
@@ -378,7 +378,7 @@ class HttpPlug {
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      * @throws InvalidArgumentException
      */
-    protected function invoke($method, $content = null) {
+    protected function invoke(string $method, ?IContent $content = null) : object {
         $requestUri = $this->getUri();
         $requestHeaders = clone $this->headers;
         $this->invokeApplyCredentials($requestHeaders);
@@ -407,13 +407,13 @@ class HttpPlug {
      * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
-     * @param int $start
-     * @param int $end
+     * @param float $start
+     * @param float $end
      * @param HttpResult $result
      * @return HttpResult
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
-    protected function invokeComplete($method, XUri $uri, IHeaders $headers, $start, $end, HttpResult $result) {
+    protected function invokeComplete(string $method, XUri $uri, IHeaders $headers, float $start, float $end, HttpResult $result) : object {
         $result = $result->withRequestInfo($method, $uri, $headers, $start, $end);
         foreach($this->parsers as $parser) {
             $result = $parser->toParsedResult($result);
@@ -434,7 +434,7 @@ class HttpPlug {
      * @return HttpResult
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
-    protected function invokeRequest($method, XUri $requestUri, IMutableHeaders $requestHeaders, $content) {
+    protected function invokeRequest(string $method, XUri $requestUri, IMutableHeaders $requestHeaders, ?IContent $content) : object {
         $requestStart = 0;
         $requestEnd = 0;
 
@@ -442,9 +442,6 @@ class HttpPlug {
         $filePath = null;
         $body = null;
         if($content !== null) {
-            if(!($content instanceof IContent)) {
-                throw new InvalidArgumentException('Content object must be an implementation IContent');
-            }
             if($content instanceof FileContent) {
                 $filePath = $content->toRaw();
             } else {
@@ -452,17 +449,17 @@ class HttpPlug {
 
                 // explicitly set content length 0 if string content is empty
                 if(is_string($body) && StringUtil::isNullOrEmpty($body)) {
-                    $requestHeaders->setHeader(Headers::HEADER_CONTENT_LENGTH, 0);
+                    $requestHeaders->setHeader(Headers::HEADER_CONTENT_LENGTH, '0');
                 }
             }
 
             // set the content type if provided
             $contentType = $content->getContentType();
-            if(!StringUtil::isNullOrEmpty($contentType)) {
-                $requestHeaders->setHeader(Headers::HEADER_CONTENT_TYPE, $contentType);
+            if(!StringUtil::isNullOrEmpty($contentType->toString())) {
+                $requestHeaders->setHeader(Headers::HEADER_CONTENT_TYPE, $contentType->toString());
             }
         } else {
-             $requestHeaders->setHeader(Headers::HEADER_CONTENT_LENGTH, 0);
+             $requestHeaders->setHeader(Headers::HEADER_CONTENT_LENGTH, '0');
         }
 
         // if MockPlug returns a response, curl is not needed
@@ -497,7 +494,9 @@ class HttpPlug {
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, function(
 
             /** @noinspection PhpUnusedParameterInspection */
-            $curl, $header) use (&$responseHeaders, &$rawResponseHeaders) {
+            $curl,
+            $header
+        ) use (&$responseHeaders, &$rawResponseHeaders) {
             $length = strlen($header);
             $header = trim($header);
             if(!StringUtil::isNullOrEmpty($header)) {
@@ -565,16 +564,17 @@ class HttpPlug {
         $requestEnd = $this->getTime();
 
         // create the result
+        $type = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         $data = [
             'rawheaders' => $rawResponseHeaders,
-            'type' => curl_getinfo($curl, CURLINFO_CONTENT_TYPE),
+            'type' => is_string($type) ? $type : null,
             'errno' => curl_errno($curl),
             'error' => curl_error($curl)
         ];
         $result = (new HttpResult($data))
             ->withStatus(curl_getinfo($curl, CURLINFO_HTTP_CODE))
             ->withHeaders($responseHeaders);
-        if(!StringUtil::isNullOrEmpty($httpMessage) && $httpMessage !== false) {
+        if($httpMessage !== false && !StringUtil::isNullOrEmpty($httpMessage)) {
             $result = $result->withBody($httpMessage);
         }
         curl_close($curl);
@@ -591,7 +591,7 @@ class HttpPlug {
     /**
      * @return float
      */
-    private function getTime() {
+    private function getTime() : float {
         $st = explode(' ', microtime());
         return (float)$st[0] + (float)$st[1];
     }

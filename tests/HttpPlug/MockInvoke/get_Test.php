@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -48,7 +48,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
                 ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::JSON],
-                    [Headers::HEADER_CONTENT_LENGTH, strlen($body)]
+                    [Headers::HEADER_CONTENT_LENGTH, strval(strlen($body))]
                 ]))
                 ->withBody($body)
         );
@@ -76,7 +76,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
                 ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::JSON],
-                    [Headers::HEADER_CONTENT_LENGTH, 1000]
+                    [Headers::HEADER_CONTENT_LENGTH, '1000']
                 ]))
         );
         $plug = new HttpPlug($uri);
@@ -114,7 +114,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
                 ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::PHP],
-                    [Headers::HEADER_CONTENT_LENGTH, strlen($body)]
+                    [Headers::HEADER_CONTENT_LENGTH, strval(strlen($body))]
                 ]))
                 ->withBody($body)
         );
@@ -142,7 +142,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
                 ->withStatus(200)
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
                     [Headers::HEADER_CONTENT_TYPE, ContentType::PHP],
-                    [Headers::HEADER_CONTENT_LENGTH, 5000]
+                    [Headers::HEADER_CONTENT_LENGTH, '5000']
                 ]))
         );
         $plug = new HttpPlug($uri);

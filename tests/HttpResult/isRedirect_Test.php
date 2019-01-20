@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -26,7 +26,7 @@ class isRedirect_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @return array
      */
-    public static function status_dataProvider() {
+    public static function status_dataProvider() : array {
         return [
             [301],
             [302],
@@ -39,7 +39,7 @@ class isRedirect_Test extends MindTouchHttpUnitTestCase  {
      * @param int $status
      * @test
      */
-    public function HTTP_300_range_is_redirect($status) {
+    public function HTTP_300_range_is_redirect(int $status) {
 
         // arrange
         $data = ['status' => $status];

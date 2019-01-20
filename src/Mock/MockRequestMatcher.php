@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -20,7 +20,6 @@ namespace MindTouch\Http\Mock;
 
 use InvalidArgumentException;
 use MindTouch\Http\Content\IContent;
-use MindTouch\Http\DeepCopyBase;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\IHeaders;
@@ -83,7 +82,7 @@ class MockRequestMatcher {
      * @param string $method
      * @param XUri $uri
      */
-    public function __construct($method, XUri $uri) {
+    public function __construct(string $method, XUri $uri) {
         $this->method = $method;
         $this->uri = $uri;
         $this->headers = new Headers();
@@ -101,35 +100,35 @@ class MockRequestMatcher {
      *
      * @return string
      */
-    public function getMethod() { return $this->method; }
+    public function getMethod() : string { return $this->method; }
 
     /**
      * Retrieve denormalized matcher uri
      *
      * @return XUri
      */
-    public function getUri() { return $this->uri; }
+    public function getUri() : XUri { return $this->uri; }
 
     /**
      * Retrieve HTTP headers
      *
      * @return IHeaders
      */
-    public function getHeaders() { return $this->headers; }
+    public function getHeaders() : IHeaders { return $this->headers; }
 
     /**
      * Retrieve HTTP message body
      *
      * @return string
      */
-    public function getBody() { return $this->body; }
+    public function getBody() : string { return $this->body; }
 
     /**
      * Retrieve id to match mock results to matcher
      *
      * @return string
      */
-    public function getMatcherId() {
+    public function getMatcherId() : string {
         $uri = $this->newNormalizedUriString();
         $headers = $this->newNormalizedHeaderStrings();
         return md5(serialize($headers) . "{$this->method}{$uri}{$this->body}");
@@ -141,7 +140,7 @@ class MockRequestMatcher {
      * @param IHeaders $headers
      * @return MockRequestMatcher
      */
-    public function withHeaders(IHeaders $headers) {
+    public function withHeaders(IHeaders $headers) : MockRequestMatcher {
         $request = clone $this;
         $request->headers = $headers;
         return $request;
@@ -153,7 +152,7 @@ class MockRequestMatcher {
      * @param string|string[]|null $body - array body is assumed to be form fields and will be encoded to a string
      * @return MockRequestMatcher
      */
-    public function withBody($body) {
+    public function withBody($body) : MockRequestMatcher {
         if(!is_string($body) && !is_array($body) && $body !== null) {
             throw new InvalidArgumentException('Body value must be string, array, or null');
         }
@@ -172,7 +171,7 @@ class MockRequestMatcher {
      * @param IContent $content
      * @return MockRequestMatcher
      */
-    public function withContent(IContent $content) {
+    public function withContent(IContent $content) : MockRequestMatcher {
         $request = clone $this;
         $request->headers->setHeader(Headers::HEADER_CONTENT_TYPE, $content->getContentType()->toString());
         $request->body = $content->toString();
@@ -182,7 +181,7 @@ class MockRequestMatcher {
     /**
      * @return array
      */
-    public function toArray() {
+    public function toArray() : array {
         return [
             'method' => $this->method,
             'uri' => $this->uri->toString(),
@@ -194,7 +193,7 @@ class MockRequestMatcher {
     /**
      * @return array
      */
-    public function toNormalizedArray() {
+    public function toNormalizedArray() : array {
         return [
             'method' => $this->method,
             'uri' => $this->newNormalizedUriString(),
@@ -206,11 +205,11 @@ class MockRequestMatcher {
     /**
      * @return string
      */
-    private function newNormalizedUriString() {
+    private function newNormalizedUriString() : string {
         $params = [];
 
         // parse uri into components
-        $data = parse_url($this->uri);
+        $data = parse_url($this->uri->toString());
         if(isset($data['query'])) {
             parse_str($data['query'], $params);
         }
@@ -236,7 +235,7 @@ class MockRequestMatcher {
     /**
      * @return string[]
      */
-    private function newNormalizedHeaderStrings() {
+    private function newNormalizedHeaderStrings() : array {
         $headers = $this->headers->toFlattenedArray();
         $headers = array_diff_key($headers, array_flip(self::$ignoredHeaderNames));
 

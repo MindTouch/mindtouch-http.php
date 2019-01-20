@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -32,7 +32,7 @@ interface IHeaders extends Iterator {
      *
      * @return IHeaders
      */
-    function withRawHeaderCommaSeparationEnabled();
+    function withRawHeaderCommaSeparationEnabled() : IHeaders;
 
     /**
      * Retrieve comma separated values from HTTP header name
@@ -40,7 +40,7 @@ interface IHeaders extends Iterator {
      * @param string $name - case-insensitive header name
      * @return string|null
      */
-    function getHeaderLine($name);
+    function getHeaderLine(string $name) : ?string;
 
     /**
      * Retrieve a collection of values or empty collection from HTTP header name
@@ -48,7 +48,7 @@ interface IHeaders extends Iterator {
      * @param string $name - case-insensitive header name
      * @return string[]
      */
-    function getHeader($name);
+    function getHeader(string $name) : array;
 
     /**
      * Retrieve the value of a Set-Cookie HTTP header by the cookie's case-sensitive name
@@ -56,7 +56,7 @@ interface IHeaders extends Iterator {
      * @param string $cookieName - case-sensitive cookie name
      * @return string|null
      */
-    function getSetCookieHeaderLine($cookieName);
+    function getSetCookieHeaderLine(string $cookieName) : ?string;
 
     /**
      * Is HTTP header set in the collection?
@@ -64,42 +64,42 @@ interface IHeaders extends Iterator {
      * @param string $name - case-insensitive header name
      * @return bool
      */
-    function hasHeader($name);
+    function hasHeader(string $name) : bool;
 
     /**
      * Is HTTP header collection empty?
      *
      * @return bool
      */
-    function isEmpty();
+    function isEmpty() : bool;
 
     /**
      * Return a collection of raw HTTP header lines
      *
      * @return string[] - [ 'name: value, value', ... ]
      */
-    function toRawHeaders();
+    function toRawHeaders() : array;
 
     /**
      * Return a collection of HTTP header names to comma separated values
      *
      * @return string[] - [ 'name' => 'value, value', ... ]
      */
-    function toFlattenedArray();
+    function toFlattenedArray() : array;
 
     /**
      * Return multi-dimensional HTTP header collection
      *
      * @return array - [ 'name' => ['value', ... ]
      */
-    function toArray();
+    function toArray() : array;
 
     /**
      * Return the mutable interface of this header collection
      *
      * @return IMutableHeaders
      */
-    function toMutableHeaders();
+    function toMutableHeaders() : IMutableHeaders;
 
     /**
      * Return an new instance with the incoming HTTP headers merged with the existing HTTP headers
@@ -107,5 +107,5 @@ interface IHeaders extends Iterator {
      * @param IHeaders $headers
      * @return IHeaders
      */
-    function toMergedHeaders(IHeaders $headers);
+    function toMergedHeaders(IHeaders $headers) : IHeaders;
 }

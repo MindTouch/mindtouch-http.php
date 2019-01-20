@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -63,14 +63,14 @@ class MockPlug {
      * @param MockRequestMatcher $request
      * @return bool
      */
-    public static function verify(MockRequestMatcher $request) { return isset(self::$calls[$request->getMatcherId()]); }
+    public static function verify(MockRequestMatcher $request) : bool { return isset(self::$calls[$request->getMatcherId()]); }
 
     /**
      * Assert that all registered URI's have been called
      *
      * @return bool
      */
-    public static function verifyAll() {
+    public static function verifyAll() : bool {
         foreach(self::$mocks as $id => $mock) {
             if($mock->verify && !isset(self::$calls[$id])) {
                 return false;
@@ -84,16 +84,16 @@ class MockPlug {
      *
      * @return bool
      */
-    public static function verifyCalled() { return !empty(self::$calls); }
+    public static function verifyCalled() : bool { return !empty(self::$calls); }
 
     /**
      * New request and result to mock
      *
      * @param MockRequestMatcher $request
      * @param HttpResult $result
-     * @param bool $verify - verify when all registered uri calls are checked
+     * @param bool|null $verify - verify when all registered uri calls are checked
      */
-    public static function register(MockRequestMatcher $request, HttpResult $result, $verify = true) {
+    public static function register(MockRequestMatcher $request, HttpResult $result, ?bool $verify = true) {
 
         // ensure content type header is set in the same manner as curl will set it
         if($result->getVal('type') === null && $result->getHeaders()->hasHeader('Content-Type')) {
@@ -113,7 +113,7 @@ class MockPlug {
      * @param MockRequestMatcher $request
      * @return HttpResult|null
      */
-    public static function getHttpResult(MockRequestMatcher $request) {
+    public static function getHttpResult(MockRequestMatcher $request) : ?HttpResult {
         $id = $request->getMatcherId();
 
         // log the call
@@ -135,28 +135,28 @@ class MockPlug {
      *
      * @return MockRequestMatcher[]
      */
-    public static function getCalls() { return self::$calls; }
+    public static function getCalls() : array { return self::$calls; }
 
     /**
      * Get a count of how many calls were invoked
      *
      * @return int
      */
-    public static function getCallCount() { return self::$callCount; }
+    public static function getCallCount() : int { return self::$callCount; }
 
     /**
      * Get a collection of registered mocks
      *
      * @return object[]
      */
-    public static function getMocks() { return self::$mocks; }
+    public static function getMocks() : array { return self::$mocks; }
 
     /**
      * Get collection of attempted http calls with normalized data for reporting
      *
      * @return array
      */
-    public static function getNormalizedCallData() {
+    public static function getNormalizedCallData() : array {
         $calls = [];
         foreach(self::$calls as $id => $request) {
             $call = $request->toNormalizedArray();
@@ -171,7 +171,7 @@ class MockPlug {
      *
      * @return array
      */
-    public static function getNormalizedMockData() {
+    public static function getNormalizedMockData() : array {
         $mocks = [];
         foreach(self::$mocks as $id => $mock) {
 

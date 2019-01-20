@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -26,23 +26,11 @@ namespace MindTouch\Http;
 class ApiResult extends HttpResult {
 
     /**
-     * Return an instance with the specified body
-     *
-     * @param string|array $body
-     * @return static
-     */
-    public function withBody($body) {
-        $result = clone $this;
-        $result->array['body'] = $body;
-        return $result;
-    }
-
-    /**
      * Return an error message, or an xml representation of the HTTP response body.
      *
      * @return string|null
      */
-    public function getError() {
+    public function getError() : ?string {
 
         // formatted API error
         $error = $this->getVal('body/error/message');
@@ -78,7 +66,7 @@ class ApiResult extends HttpResult {
      *
      * @return string|null
      */
-    public function getException() {
+    public function getException() : ?string {
         $exception = $this->getVal('body/error/exception');
         return $exception !== null ? $exception : null;
     }

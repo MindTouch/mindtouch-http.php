@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 namespace MindTouch\Http\Content;
-use phpDocumentor\Reflection\Types\Context;
 
 /**
  * Interface IContent
@@ -31,17 +30,17 @@ interface IContent {
      *
      * @return ContentType
      */
-    function getContentType();
+    function getContentType() : ContentType;
 
     /**
      * Retrive the content in raw form for curl invocation
      *
-     * @return mixed
+     * @return mixed - content implementation decides which raw content type is returned
      */
     function toRaw();
 
     /**
      * @return string
      */
-    function toString();
+    function toString() : string;
 }

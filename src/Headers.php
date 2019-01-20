@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -66,7 +66,7 @@ class Headers implements IMutableHeaders {
      * @param string[][] $pairs
      * @return self
      */
-    public static function newFromHeaderNameValuePairs(array $pairs) {
+    public static function newFromHeaderNameValuePairs(array $pairs) : self {
         $headers = new Headers();
         foreach($pairs as $pair) {
             if(!isset($pair[0])) {
@@ -85,7 +85,7 @@ class Headers implements IMutableHeaders {
      * @param string|null $value
      * @return string
      */
-    private static function newRawHeader($name, $value = null) { return !StringUtil::isNullOrEmpty($value) ? "{$name}: {$value}" : "{$name}:"; }
+    private static function newRawHeader(string $name, string $value = null) : string { return !StringUtil::isNullOrEmpty($value) ? "{$name}: {$value}" : "{$name}:"; }
 
     /**
      * Retrieve HTTP header name in capitalized, hyphenated format (Content-Type, Set-Cookie, ...)
@@ -93,7 +93,7 @@ class Headers implements IMutableHeaders {
      * @param string $name
      * @return string
      */
-    private static function getFormattedHeaderName($name) { return implode('-', array_map('ucfirst', explode('-', strtolower($name)))); }
+    private static function getFormattedHeaderName(string $name) : string { return implode('-', array_map('ucfirst', explode('-', strtolower($name)))); }
 
     /**
      * @var array
@@ -123,23 +123,23 @@ class Headers implements IMutableHeaders {
         $this->names = unserialize(serialize($this->names));
     }
 
-    public function withRawHeaderCommaSeparationEnabled() {
+    public function withRawHeaderCommaSeparationEnabled() : IHeaders {
         $headers = clone $this;
         $headers->isRawHeaderCommaSeparationEnabled = true;
         return $headers;
     }
 
-    public function getHeaderLine($name) {
+    public function getHeaderLine(string $name) : ?string {
         $values = $this->getHeader(self::getFormattedHeaderName($name));
         return !empty($values) ? implode(', ', $values) : null;
     }
 
-    public function getHeader($name) {
+    public function getHeader(string $name) : array {
         $name = self::getFormattedHeaderName($name);
         return isset($this->headers[$name]) ? $this->headers[$name] : [];
     }
 
-    public function getSetCookieHeaderLine($cookieName) {
+    public function getSetCookieHeaderLine(string $cookieName) : ?string {
         $headers = $this->getHeader('Set-Cookie');
         if(empty($headers)) {
             return null;
@@ -160,31 +160,31 @@ class Headers implements IMutableHeaders {
         }
     }
 
-    public function addHeader($name, $value) {
+    public function addHeader(string $name, ?string $value) {
         $values = StringUtil::isNullOrEmpty($value) ? [] : [trim($value)];
         $name = self::getFormattedHeaderName($name);
         $this->set($name, $values, false);
     }
 
-    public function setHeader($name, $value) {
+    public function setHeader(string $name, ?string $value) {
         $values = StringUtil::isNullOrEmpty($value) ? [] : [trim($value)];
         $name = self::getFormattedHeaderName($name);
         $this->set($name, $values, true);
     }
 
-    public function addRawHeader($header) { $this->setRawHeaderHelper($header, false); }
+    public function addRawHeader(string $header) { $this->setRawHeaderHelper($header, false); }
 
-    public function setRawHeader($header) { $this->setRawHeaderHelper($header, true); }
+    public function setRawHeader(string $header) { $this->setRawHeaderHelper($header, true); }
 
-    public function hasHeader($name) { return isset($this->headers[self::getFormattedHeaderName($name)]); }
+    public function hasHeader(string $name) : bool { return isset($this->headers[self::getFormattedHeaderName($name)]); }
 
-    public function removeHeader($name) {
+    public function removeHeader(string $name) {
         unset($this->headers[self::getFormattedHeaderName($name)]);
         $this->names = array_keys($this->headers);
         $this->rewind();
     }
 
-    public function isEmpty() { return empty($this->headers); }
+    public function isEmpty() : bool { return empty($this->headers); }
 
     public function rewind() { $this->name = reset($this->names); }
 
@@ -196,7 +196,7 @@ class Headers implements IMutableHeaders {
 
     public function valid() { return $this->name !== false; }
 
-    public function toRawHeaders() {
+    public function toRawHeaders() : array {
         $headers = [];
         foreach($this as $name => $values) {
             if(in_array($name, static::$multipleNameValuePairHeaders)) {
@@ -210,7 +210,7 @@ class Headers implements IMutableHeaders {
         return $headers;
     }
 
-    public function toFlattenedArray() {
+    public function toFlattenedArray() : array {
         $headers = [];
         foreach($this as $name => $values) {
             $headers[$name] = implode(', ', $values);
@@ -218,11 +218,11 @@ class Headers implements IMutableHeaders {
         return $headers;
     }
 
-    public function toArray() { return $this->headers; }
+    public function toArray() : array { return $this->headers; }
 
-    public function toMutableHeaders() { return $this; }
+    public function toMutableHeaders() : IMutableHeaders { return $this; }
 
-    public function toMergedHeaders(IHeaders $headers) {
+    public function toMergedHeaders(IHeaders $headers) : IHeaders {
         $instance = clone $this;
         $instance->addHeaders($headers);
         return $instance;
@@ -233,7 +233,7 @@ class Headers implements IMutableHeaders {
      * @param string[] $values
      * @param bool $overwrite
      */
-    protected function set($name, $values, $overwrite) {
+    protected function set(string $name, array $values, bool $overwrite) {
         if(in_array($name, static::$singleValueHeaders)) {
 
             // enforce headers that can only hold one value
@@ -260,7 +260,7 @@ class Headers implements IMutableHeaders {
      * @param string $header
      * @param bool $overwrite
      */
-    protected function setRawHeaderHelper($header, $overwrite) {
+    protected function setRawHeaderHelper(string $header, bool $overwrite) {
         if(strpos($header, ':') === false) {
             throw new InvalidArgumentException('Invalid HTTP header: ' . $header);
         }

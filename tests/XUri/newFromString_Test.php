@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -118,6 +118,6 @@ class newFromString_Test extends MindTouchHttpUnitTestCase {
         $result = TestXUri::newFromString('http://user:password@test.mindtouch.dev/?a=b&c=d#fragment');
 
         // assert
-        $this->assertInstanceOf('MindTouch\Http\tests\XUri\TestXUri', $result);
+        $this->assertInstanceOf(TestXUri::class, $result);
     }
 }

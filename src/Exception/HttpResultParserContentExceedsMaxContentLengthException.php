@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -18,7 +18,6 @@
  */
 namespace MindTouch\Http\Exception;
 
-use Exception;
 use MindTouch\Http\HttpResult;
 
 /**
@@ -43,7 +42,7 @@ class HttpResultParserContentExceedsMaxContentLengthException extends HttpResult
      * @param int $resultContentLength
      * @param int $maxContentLength
      */
-    public function __construct(HttpResult $result, $resultContentLength, $maxContentLength) {
+    public function __construct(HttpResult $result, int $resultContentLength, int $maxContentLength) {
         parent::__construct($result, 'content exceeds max content length');
         $this->resultContentLength = $resultContentLength;
         $this->maxContentLength = $maxContentLength;
@@ -52,14 +51,14 @@ class HttpResultParserContentExceedsMaxContentLengthException extends HttpResult
     /**
      * @return int
      */
-    public function getResultContentLength() {
+    public function getResultContentLength() : int {
         return $this->resultContentLength;
     }
 
     /**
      * @return int
      */
-    public function getMaxContentLength() {
+    public function getMaxContentLength() : int {
         return $this->maxContentLength;
     }
 }

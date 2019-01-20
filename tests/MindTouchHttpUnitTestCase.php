@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -29,17 +29,17 @@ use MindTouch\Http\Parser\JsonParser;
 use MindTouch\Http\StringUtil;
 use MindTouch\Http\XUri;
 use MindTouch\XArray\XArray;
-use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class MindTouchHttpUnitTestCase extends PHPUnit_Framework_TestCase {
+class MindTouchHttpUnitTestCase extends TestCase {
 
     #region Test data providers
 
     /**
      * @return array
      */
-    public static function content_dataProvider() {
+    public static function content_dataProvider() : array {
         return [
             'text' => [new TextContent('foo')],
             'json' => [JsonContent::newFromArray(['foo' => ['bar', 'baz']])],
@@ -69,9 +69,9 @@ class MindTouchHttpUnitTestCase extends PHPUnit_Framework_TestCase {
 
     /**
      * @param string $class
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
-    protected function newMock($class) {
+    protected function newMock(string $class) : MockObject {
         return $this->getMockBuilder($class)
             ->setMethods(get_class_methods($class))
             ->disableOriginalConstructor()
@@ -83,14 +83,14 @@ class MindTouchHttpUnitTestCase extends PHPUnit_Framework_TestCase {
      * @param XUri $uri
      * @return MockRequestMatcher
      */
-    protected function newDefaultMockRequestMatcher($method, XUri $uri) { return new MockRequestMatcher($method, $uri); }
+    protected function newDefaultMockRequestMatcher(string $method, XUri $uri) : MockRequestMatcher { return new MockRequestMatcher($method, $uri); }
 
     /**
      * Return a new HttpPlug instance configured for httpbin.org
      *
      * @return HttpPlug
      */
-    protected function newHttpBinPlug() {
+    protected function newHttpBinPlug() : HttpPlug {
         $baseuri = getenv('HTTPBIN_BASEURI');
         if($baseuri === false || StringUtil::isNullOrEmpty($baseuri)) {
             $baseuri = 'https://httpbin.org';
@@ -115,7 +115,7 @@ class MindTouchHttpUnitTestCase extends PHPUnit_Framework_TestCase {
      * @param mixed $expected
      * @param array $array
      */
-    protected function assertArrayHasKeyValue($key, $expected, $array) {
+    protected function assertArrayHasKeyValue(string $key, $expected, array $array) {
         $X = new XArray($array);
         $isExpectingNumericArray = is_array($expected) && key_exists(0, $expected);
         $this->assertEquals($expected, $isExpectingNumericArray ? $X->getAll($key) : $X->getVal($key));

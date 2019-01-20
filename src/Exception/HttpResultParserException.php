@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -37,7 +37,7 @@ class HttpResultParserException extends Exception {
      * @param HttpResult $result
      * @param string $reason
      */
-    public function __construct(HttpResult $result, $reason) {
+    public function __construct(HttpResult $result, string $reason) {
         parent::__construct('Cannot parse result content: ' . $reason);
         $this->result = $result;
     }
@@ -45,5 +45,5 @@ class HttpResultParserException extends Exception {
     /**
      * @return HttpResult
      */
-    public function getResult() { return $this->result; }
+    public function getResult() : HttpResult { return $this->result; }
 }

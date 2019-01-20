@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -39,7 +39,7 @@ class TextContent implements IContent {
      * @param string $text
      * @param ContentType|null $contentType - defaults to text/plain
      */
-    public function __construct($text, $contentType = null) {
+    public function __construct(string $text, ContentType $contentType = null) {
         if($contentType === null) {
             $contentType = ContentType::newFromString(ContentType::TEXT);
         }
@@ -53,11 +53,11 @@ class TextContent implements IContent {
         $this->contentType = unserialize(serialize($this->contentType));
     }
 
-    public function getContentType() { return $this->contentType; }
+    public function getContentType() : ContentType { return $this->contentType; }
 
-    public function toRaw() { return $this->text; }
+    public function toRaw() : string { return $this->text; }
 
-    public function toString() { return $this->text; }
+    public function toString() : string { return $this->text; }
 
-    public function __toString() { return $this->toString(); }
+    public function __toString() : string { return $this->toString(); }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -21,7 +21,6 @@ namespace MindTouch\Http\tests\HttpPlug\CurlInvoke;
 use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\Content\TextContent;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
-use MindTouch\Http\XUri;
 
 class withAutoRedirects_Test extends MindTouchHttpUnitTestCase {
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -27,13 +27,13 @@ use MindTouch\Http\HttpResult;
  */
 class SerializedPhpArrayParser extends HttpResultParserBase implements IHttpResultParser {
 
-    public function withMaxContentLength($length) {
+    public function withMaxContentLength(int $length) : IHttpResultParser {
         $parser = clone $this;
         $parser->maxContentLength = $length;
         return $parser;
     }
 
-    public function toParsedResult(HttpResult $result) {
+    public function toParsedResult(HttpResult $result) : HttpResult {
 
         // TODO (modethirteen, 20180422): ensure its safe to use ContentType::PHP here
         $contentType = $result->getContentType();

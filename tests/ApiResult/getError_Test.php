@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -26,7 +26,7 @@ class getError_Test extends MindTouchHttpUnitTestCase {
     /**
      * @return array
      */
-    public static function body_expected_dataProvider() {
+    public static function body_expected_dataProvider() : array {
         return [
             [['error' => ['message' => 'foo']], 'foo'],
             [['exception' => ['message' => 'bar']], 'bar'],
@@ -41,7 +41,7 @@ class getError_Test extends MindTouchHttpUnitTestCase {
      * @param string $expected
      * @test
      */
-    public function Can_get_error_from_body($body, $expected) {
+    public function Can_get_error_from_body($body, string $expected) {
 
         // arrange
         $data = [

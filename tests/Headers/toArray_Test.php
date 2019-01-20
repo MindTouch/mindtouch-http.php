@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -59,7 +59,9 @@ class toArray_Test extends MindTouchHttpUnitTestCase {
     public function Can_get_array_with_raw_header_comma_parsing_enabled() {
 
         // arrange
-        $headers = (new Headers())->withRawHeaderCommaSeparationEnabled();
+        $headers = (new Headers())
+            ->withRawHeaderCommaSeparationEnabled()
+            ->toMutableHeaders();
         $headers->addHeader('X-Foo', 'bar');
         $headers->addRawHeader('X-Foo: qux, baz');
         $headers->addHeader('Deki-Config', '12345');

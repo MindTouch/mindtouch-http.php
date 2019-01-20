@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -46,7 +46,7 @@ class JsonContent implements IContent {
     /**
      * @param string $json
      */
-    public function __construct($json) {
+    public function __construct(string $json) {
         $this->contentType = ContentType::newFromString(ContentType::JSON);
         $this->json = $json;
     }
@@ -57,11 +57,11 @@ class JsonContent implements IContent {
         $this->contentType = unserialize(serialize($this->contentType));
     }
 
-    public function getContentType() { return $this->contentType; }
+    public function getContentType() : ContentType { return $this->contentType; }
 
-    public function toRaw() { return $this->json; }
+    public function toRaw() : string { return $this->json; }
 
-    public function toString() { return $this->json; }
+    public function toString() : string { return $this->json; }
 
-    public function __toString() { return $this->toString(); }
+    public function __toString() : string { return $this->toString(); }
 }

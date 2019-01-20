@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -36,7 +36,7 @@ class newFromArray_Test extends MindTouchHttpUnitTestCase {
         $content = SerializedPhpArrayContent::newFromArray($array);
 
         // assert
-        $this->assertInstanceOf('MindTouch\Http\Content\SerializedPhpArrayContent', $content);
+        $this->assertInstanceOf(SerializedPhpArrayContent::class, $content);
         $this->assertEquals('a:1:{s:3:"foo";a:1:{s:3:"bar";a:2:{i:0;s:3:"bar";i:1;s:3:"qux";}}}', $content->toString());
         $this->assertEquals('a:1:{s:3:"foo";a:1:{s:3:"bar";a:2:{i:0;s:3:"bar";i:1;s:3:"qux";}}}', $content->toRaw());
         $this->assertEquals(ContentType::PHP, $content->getContentType());

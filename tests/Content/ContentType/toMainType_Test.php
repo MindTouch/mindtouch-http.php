@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -26,7 +26,7 @@ class toMainType_Test extends MindTouchHttpUnitTestCase {
     /**
      * @return array
      */
-    public static function headerLine_expected_dataProvider() {
+    public static function headerLine_expected_dataProvider() : array {
         return [
             ['*/*; charset=iso-8859-1', '*'],
             ['application/excel', 'application'],
@@ -89,7 +89,7 @@ class toMainType_Test extends MindTouchHttpUnitTestCase {
      * @param string $expected
      * @test
      */
-    public function Can_return_main_type($headerLine, $expected) {
+    public function Can_return_main_type(string $headerLine, string $expected) {
 
         // arrange
         $contentType = ContentType::newFromString($headerLine);

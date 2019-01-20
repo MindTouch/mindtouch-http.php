@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -42,7 +42,7 @@ class isServerError_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @return array
      */
-    public static function status_dataProvider() {
+    public static function status_dataProvider() : array {
         return [
             [500],
             [503]
@@ -54,7 +54,7 @@ class isServerError_Test extends MindTouchHttpUnitTestCase  {
      * @param int $status
      * @test
      */
-    public function HTTP_500_range_is_server_error($status) {
+    public function HTTP_500_range_is_server_error(int $status) {
 
         // arrange
         $data = ['status' => $status];

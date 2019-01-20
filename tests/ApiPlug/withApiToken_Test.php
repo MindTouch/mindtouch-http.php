@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -35,7 +35,7 @@ class withApiToken_Test extends MindTouchHttpUnitTestCase  {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
-        $token = $this->newMock('MindTouch\Http\IApiToken');
+        $token = $this->newMock(IApiToken::class);
         $token->expects($this->once())
             ->method('toHash')
             ->will($this->returnValue('foo'));

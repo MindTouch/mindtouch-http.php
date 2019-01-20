@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -26,43 +26,43 @@ namespace MindTouch\Http;
 class StringUtil {
 
     /**
-     * @param string $string
+     * @param string|null $string
      * @return bool
      */
-    public static function isNullOrEmpty($string) { return $string === null || $string === ''; }
+    public static function isNullOrEmpty(?string $string) : bool { return $string === null || $string === ''; }
 
     /**
      * @param string $haystack
      * @param string $needle
      * @return bool
      */
-    public static function startsWith($haystack, $needle) {
+    public static function startsWith(string $haystack, string $needle) : bool {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
     }
 
     /**
-     * @param $haystack
-     * @param $needle
+     * @param string $haystack
+     * @param string $needle
      * @return bool
      */
-    public static function startsWithInvariantCase($haystack, $needle) { return self::startsWith(strtolower($haystack), strtolower($needle)); }
+    public static function startsWithInvariantCase(string $haystack, string $needle) : bool { return self::startsWith(strtolower($haystack), strtolower($needle)); }
 
     /**
      * @param string $haystack
      * @param string $needle
      * @return bool
      */
-    public static function endsWith($haystack, $needle) {
+    public static function endsWith(string $haystack, string $needle) : bool {
         $length = strlen($needle);
         $start = $length * -1; //negative
         return (substr($haystack, $start) === $needle);
     }
 
      /**
-     * @param $haystack
-     * @param $needle
+     * @param string $haystack
+     * @param string $needle
      * @return bool
      */
-    public static function endsWithInvariantCase($haystack, $needle) { return self::endsWith(strtolower($haystack), strtolower($needle)); }
+    public static function endsWithInvariantCase(string $haystack, string $needle) : bool { return self::endsWith(strtolower($haystack), strtolower($needle)); }
 }

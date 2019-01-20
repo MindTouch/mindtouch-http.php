@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -32,7 +32,7 @@ interface IApiToken {
      * @param string $username
      * @return IApiToken
      */
-    function withUsername($username);
+    function withUsername(string $username) : IApiToken;
 
     /**
      * Return an instance with the user context set to a userid
@@ -40,7 +40,7 @@ interface IApiToken {
      * @param int $userId
      * @return IApiToken
      */
-    function withUserId($userId);
+    function withUserId(int $userId) : IApiToken;
 
     /**
      * Convert token to hash for use with "X-Deki-Token" header
@@ -48,5 +48,5 @@ interface IApiToken {
      * @param int|null - unix timestamp (default: epoch)
      * @return string
      */
-    function toHash($timestamp = null);
+    function toHash(?int $timestamp = null) : string;
 }

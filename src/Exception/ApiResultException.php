@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -28,6 +28,10 @@ use MindTouch\Http\StringUtil;
  * @package MindTouch\Http\Exception
  */
 class ApiResultException extends Exception {
+
+    /**
+     * @var ApiResult
+     */
     protected $Result;
 
     /**
@@ -44,5 +48,5 @@ class ApiResultException extends Exception {
      *
      * @return ApiResult
      */
-    public function getResult() { return $this->Result; }
+    public function getResult() : ApiResult { return $this->Result; }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -18,6 +18,7 @@
  */
 namespace MindTouch\Http\tests\HttpResult;
 
+use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\HttpResult;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
@@ -49,7 +50,7 @@ class getContentType_Test extends MindTouchHttpUnitTestCase {
         $result = $result->getContentType();
 
         // assert
-        $this->assertInstanceOf('MindTouch\Http\Content\ContentType', $result);
+        $this->assertInstanceOf(ContentType::class, $result);
         $this->assertEquals('application/json; charset=utf-8', $result->toString());
     }
 

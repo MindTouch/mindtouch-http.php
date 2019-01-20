@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -42,11 +42,11 @@ class HttpResult extends XArray {
      * @param string $method
      * @param XUri $uri
      * @param IHeaders $headers
-     * @param int $start - curl start timestamp
-     * @param int $end - curl stop timestamp
+     * @param float $start - curl start timestamp
+     * @param float $end - curl stop timestamp
      * @return static
      */
-    public function withRequestInfo($method, XUri $uri, IHeaders $headers, $start, $end) {
+    public function withRequestInfo(string $method, XUri $uri, IHeaders $headers, float $start, float $end) {
         $result = clone $this;
         $result->array['request'] = [
             'method' => $method,
@@ -64,7 +64,7 @@ class HttpResult extends XArray {
      * @param int $status
      * @return static
      */
-    public function withStatus($status) {
+    public function withStatus(int $status) {
         $result = clone $this;
         $result->array['status'] = $status;
         return $result;
@@ -112,21 +112,21 @@ class HttpResult extends XArray {
      *
      * @return int
      */
-    public function getStatus() { return isset($this->array['status']) ? $this->array['status'] : 0; }
+    public function getStatus() : int { return isset($this->array['status']) ? $this->array['status'] : 0; }
 
     /**
      * Retrieve the HTTP response content type
      *
      * @return ContentType|null - returns null if not set or invalid content type
      */
-    public function getContentType() { return isset($this->array['type']) ? ContentType::newFromString($this->array['type']) : null; }
+    public function getContentType() : ?ContentType { return isset($this->array['type']) ? ContentType::newFromString($this->array['type']) : null; }
 
     /**
      * Retrieve an instance of HTTP response headers
      *
      * @return IHeaders
      */
-    public function getHeaders() {
+    public function getHeaders() : IHeaders {
         $headers = new Headers();
         if(empty($this->getVal('headers'))) {
             return $headers;
@@ -144,7 +144,7 @@ class HttpResult extends XArray {
      *
      * @return XArray
      */
-    public function getBody() {
+    public function getBody() : XArray {
         $body = $this->getVal('body');
         if(!is_array($body)) {
             $body = ['body' => $body];
@@ -158,7 +158,7 @@ class HttpResult extends XArray {
      * @param string|null $key - result key name (ex: body/content), empty returns entire result as xml (aliases HttpResult::toXml)
      * @return string
      */
-    public function getXml($key = null) {
+    public function getXml(?string $key = null) : string {
         if(StringUtil::isNullOrEmpty($key)) {
             return "<result>{$this->toXml()}</result>";
         }
@@ -173,14 +173,14 @@ class HttpResult extends XArray {
      * @param int $status
      * @return bool
      */
-    public function is($status) { return $this->getStatus() === $status; }
+    public function is(int $status) : bool { return $this->getStatus() === $status; }
 
     /**
      * Is the response status code in the HTTP 2xx range?
      *
      * @return bool
      */
-    public function isSuccess() {
+    public function isSuccess() : bool {
         $status = $this->getStatus();
         return $status >= 200 && $status < 300;
     }
@@ -190,7 +190,7 @@ class HttpResult extends XArray {
      *
      * @return bool
      */
-    public function isRedirect() {
+    public function isRedirect() : bool {
         $status = $this->getStatus();
         return $status >= 300 && $status < 400;
     }
@@ -200,7 +200,7 @@ class HttpResult extends XArray {
      *
      * @return bool
      */
-    public function isServerError() {
+    public function isServerError() : bool {
         $status = $this->getStatus();
         return $status >= 500 && $status < 600;
     }
@@ -210,22 +210,22 @@ class HttpResult extends XArray {
      *
      * @return bool
      */
-    public function isRequestError() {
+    public function isRequestError() : bool {
         $status = $this->getStatus();
         return $status >= 400 && $status < 500;
     }
 
-       /**
+    /**
      * Is there a connection problem or internal curl error?
      *
      * @return bool
      */
-    public function isCurlError() { return $this->array['errno'] > 0; }
+    public function isCurlError() : bool { return $this->array['errno'] > 0; }
 
     /**
      * Get curl internal error message
      *
      * @return string|null
      */
-    public function getCurlError() { return (isset($this->array['error'])) ? $this->array['error'] : null; }
+    public function getCurlError() : ?string { return (isset($this->array['error'])) ? $this->array['error'] : null; }
 }

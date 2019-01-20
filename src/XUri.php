@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -35,7 +35,7 @@ class XUri {
      * @param string $string - full qualified URI
      * @return static|null
      */
-    public static function tryParse($string) {
+    public static function tryParse(string $string) {
         try {
             return static::newFromString($string);
         } catch(MalformedUriException $e) {
@@ -46,11 +46,11 @@ class XUri {
     /**
      * Return an instance, or throw if invalid
      *
-     * @param $string - fully qualified URI
+     * @param string $string - fully qualified URI
      * @return static
      * @throws MalformedUriException
      */
-    public static function newFromString($string) {
+    public static function newFromString(string $string) {
         $data = parse_url($string);
         if(!$data || !isset($data['scheme']) || $data['scheme'] === null) {
             throw new MalformedUriException($string);
@@ -64,7 +64,7 @@ class XUri {
      * @param string $string
      * @return bool
      */
-    public static function isValidUrl($string) {
+    public static function isValidUrl(string $string) : bool {
         $filtered = filter_var($string, FILTER_VALIDATE_URL);
         return ($filtered !== false);
     }
@@ -75,7 +75,7 @@ class XUri {
      * @param string $string
      * @return bool
      */
-    public static function isSchemelessUrl($string) {
+    public static function isSchemelessUrl(string $string) : bool {
         if(substr($string, 0, 2) !== '//') {
             return false;
         }
@@ -88,7 +88,7 @@ class XUri {
      * @param string $string
      * @return bool
      */
-    public static function isAbsoluteUrl($string) {
+    public static function isAbsoluteUrl(string $string) : bool {
         $filtered = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED);
         return ($filtered !== false);
     }
@@ -99,7 +99,7 @@ class XUri {
      * @param string $query
      * @return string[]
      */
-    public static function parseQuery($query) {
+    public static function parseQuery(string $query) : array {
         $params = [];
         if($query !== null) {
             $pairs = explode('&', $query);
@@ -157,7 +157,7 @@ class XUri {
      * @see https://tools.ietf.org/html/rfc3986#section-3.1
      * @return string
      */
-    public function getScheme() { return $this->data['scheme']; }
+    public function getScheme() : string { return $this->data['scheme']; }
 
     /**
      * Retrieve the path component of the URI
@@ -167,14 +167,14 @@ class XUri {
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      * @return string
      */
-    public function getPath() { return isset($this->data['path']) ? $this->data['path'] : ''; }
+    public function getPath() : string { return isset($this->data['path']) ? $this->data['path'] : ''; }
 
     /**
      * Retrieve the path segments of the URI
      *
      * @return string[]
      */
-    public function getSegments() { return explode('/', trim($this->getPath(), '/')); }
+    public function getSegments() : array { return explode('/', trim($this->getPath(), '/')); }
 
     /**
      * Retrieve the query string of the URI
@@ -183,15 +183,15 @@ class XUri {
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
      * @return string|null
      */
-    public function getQuery() { return isset($this->data['query']) ? $this->data['query'] : null; }
+    public function getQuery() : ?string { return isset($this->data['query']) ? $this->data['query'] : null; }
 
     /**
      * Retrieve a query parameter value of the URI
      *
      * @param string $param - name of the parameter
-     * @return string - parameter value
+     * @return string|null - parameter value
      */
-    public function getQueryParam($param) {
+    public function getQueryParam(string $param) : ?string {
         $params = self::parseQuery($this->getQuery());
         return isset($params[$param]) ? $params[$param] : null;
     }
@@ -201,7 +201,10 @@ class XUri {
      *
      * @return string[] - name/value array of query params
      */
-    public function getQueryParams() { return self::parseQuery($this->getQuery()); }
+    public function getQueryParams() : array {
+        $query = $this->getQuery();
+        return $query !== null ? self::parseQuery($query) : [];
+    }
 
     /**
      * Retrieve the fragment component of the URI
@@ -210,7 +213,7 @@ class XUri {
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      * @return string|null
      */
-    public function getFragment() { return isset($this->data['fragment']) ? $this->data['fragment'] : null; }
+    public function getFragment() : ?string { return isset($this->data['fragment']) ? $this->data['fragment'] : null; }
 
     /**
      * Retrieve the host component of the URI
@@ -218,7 +221,7 @@ class XUri {
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
      * @return string
      */
-    public function getHost() { return $this->data['host']; }
+    public function getHost() : string { return $this->data['host']; }
 
     /**
      * Retrieve the authority component of the URI, in "[user-info@]host[:port]" format
@@ -226,7 +229,7 @@ class XUri {
      * @see https://tools.ietf.org/html/rfc3986#section-3.2
      * @return string
      */
-    public function getAuthority() {
+    public function getAuthority() : string {
         $result = '';
         $user = $this->getUserInfo();
         if($user !== '') {
@@ -242,7 +245,7 @@ class XUri {
      *
      * @return string
      */
-    public function getUserInfo() {
+    public function getUserInfo() : string {
         $result = '';
         if(isset($this->data['user'])) {
             $result .= $this->data['user'] . ':';
@@ -258,7 +261,7 @@ class XUri {
 
      * @return int|null
      */
-    public function getPort() { return isset($this->data['port']) ? intval($this->data['port']) : null; }
+    public function getPort() : ?int { return isset($this->data['port']) ? intval($this->data['port']) : null; }
 
     #endregion
 
@@ -271,7 +274,7 @@ class XUri {
      * @param string|null $password - The password associated with $user
      * @return static
      */
-    public function withUserInfo($user, $password = null) {
+    public function withUserInfo(string $user, ?string $password = null) {
         $data = $this->data;
         $data['user'] = $user;
         $data['pass'] = $password;
@@ -285,7 +288,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException
      */
-    public function withHost($host) {
+    public function withHost(string $host) {
         if(StringUtil::isNullOrEmpty($host)) {
             throw new InvalidArgumentException('Host value must be non-empty string');
         }
@@ -300,7 +303,7 @@ class XUri {
      * @param int|null $port - The port to use with the new instance; a null value removes the port information (aliases Uri::withoutPort)
      * @return static
      */
-    public function withPort($port) {
+    public function withPort(?int $port) {
         if($port === null) {
             return $this->withoutPort();
         }
@@ -327,7 +330,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException
      */
-    public function withScheme($scheme) {
+    public function withScheme(string $scheme) {
         if(StringUtil::isNullOrEmpty($scheme)) {
             throw new InvalidArgumentException('Scheme value must non-empty string');
         }
@@ -343,7 +346,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException
      */
-    public function withFragment($fragment) {
+    public function withFragment(?string $fragment) {
         if($fragment === null) {
             return $this->withoutFragment();
         }
@@ -370,7 +373,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException
      */
-    public function withQuery($query) {
+    public function withQuery(string $query) {
         if(StringUtil::startsWith($query, '?')) {
             throw new InvalidArgumentException('Query value must not start with \'?\' character');
         }
@@ -398,7 +401,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException for invalid query params
      */
-    public function withQueryParam($param, $value) {
+    public function withQueryParam(string $param, string $value) {
         $data = $this->data;
         if(isset($data['query'])) {
             $params = array_merge(self::parseQuery($data['query']), [$param => $value]);
@@ -417,7 +420,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException for invalid query params
      */
-    public function with($param, $value) { return $this->withQueryParam($param, $value); }
+    public function with(string $param, string $value) { return $this->withQueryParam($param, $value); }
 
     /**
      * Return an instance without the specified query param
@@ -425,7 +428,7 @@ class XUri {
      * @param string $param
      * @return static
      */
-    public function withoutQueryParam($param) {
+    public function withoutQueryParam(string $param) {
         $data = $this->data;
         $params = isset($data['query']) ? self::parseQuery($data['query']) : [];
         if(!isset($params[$param])) {
@@ -445,7 +448,7 @@ class XUri {
      * @param string|null $value - query param value; a null value removes the query param information (aliases Uri::withoutQueryParam)
      * @return static
      */
-    public function withReplacedQueryParam($param, $value) {
+    public function withReplacedQueryParam(string $param, ?string $value) {
         if($value === null) {
             return $this->withoutQueryParam($param);
         }
@@ -502,7 +505,7 @@ class XUri {
      * @param string $path -  The path to use with the new instance
      * @return static
      */
-    public function withPath($path) {
+    public function withPath(string $path) {
         $data = $this->data;
         $data['path'] = $this->normalize($path);
         return static::newFromUriData($data);
@@ -534,7 +537,7 @@ class XUri {
      * @param string $pathQueryFragment
      * @return static
      */
-    public function atPath($pathQueryFragment) {
+    public function atPath(string $pathQueryFragment) {
         $newUriData = parse_url($this->normalize($pathQueryFragment));
         $data = $this->data;
         $path = $this->getInternalPath($data);
@@ -572,10 +575,10 @@ class XUri {
      * Return an instance with basic auth password sensitive information scrubbed
      *
      * @param string[] $scrubQueryParams - list query param keys to scrub values
-     * @param bool $scrubBasicAuthPassword - scrub basic auth password?
+     * @param bool|null $scrubBasicAuthPassword - scrub basic auth password?
      * @return static
      */
-    public function toSanitizedUri($scrubQueryParams = [], $scrubBasicAuthPassword = true) {
+    public function toSanitizedUri(array $scrubQueryParams = [], ?bool $scrubBasicAuthPassword = true) {
         $data = $this->data;
         if($scrubBasicAuthPassword && isset($data['pass'])) {
             $data['pass'] = self::SENSITIVE_DATA_REPLACEMENT;
@@ -595,7 +598,7 @@ class XUri {
     /**
      * @return string
      */
-    public function toString() {
+    public function toString() : string {
         $scheme = $this->getScheme();
         $result = StringUtil::isNullOrEmpty($scheme) ? 'http://' : $scheme . '://';
         $result .= $this->getAuthority();
@@ -610,7 +613,7 @@ class XUri {
     /**
      * @return string
      */
-    public function toRelativeString() {
+    public function toRelativeString() : string {
         $path = $this->getPath();
         $query = $this->getQuery();
         $fragment = $this->getFragment();
@@ -624,7 +627,7 @@ class XUri {
     /**
      * @return string
      */
-    public function __toString() { return $this->toString(); }
+    public function __toString() : string { return $this->toString(); }
 
     #endregion
 
@@ -634,13 +637,13 @@ class XUri {
      * @param string $path
      * @return string
      */
-    private function normalize($path) { return '/' . trim($path, '/'); }
+    private function normalize(string $path) : string { return '/' . trim($path, '/'); }
 
     /**
      * @param array $data
-     * @return bool
+     * @return string
      */
-    private function getInternalPath($data) { return (isset($data['path']) && $data['path'] !== '/') ? $this->normalize($data['path']) : ''; }
+    private function getInternalPath(array $data) : string { return (isset($data['path']) && $data['path'] !== '/') ? $this->normalize($data['path']) : ''; }
 
     #endregion
 }

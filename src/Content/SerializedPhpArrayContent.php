@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -17,9 +17,6 @@
  * limitations under the License.
  */
 namespace MindTouch\Http\Content;
-
-use MindTouch\XArray\XArray;
-use SebastianBergmann\RecursionContext\Context;
 
 /**
  * Class SerializedPhpArrayContent
@@ -49,7 +46,7 @@ class SerializedPhpArrayContent implements IContent {
     /**
      * @param string $seralized
      */
-    public function __construct($seralized) {
+    public function __construct(string $seralized) {
         $this->contentType = ContentType::newFromString(ContentType::PHP);
         $this->serialized = $seralized;
     }
@@ -60,11 +57,11 @@ class SerializedPhpArrayContent implements IContent {
         $this->contentType = unserialize(serialize($this->contentType));
     }
 
-    public function getContentType() { return $this->contentType; }
+    public function getContentType() : ContentType { return $this->contentType; }
 
-    public function toRaw() { return $this->serialized; }
+    public function toRaw() : string { return $this->serialized; }
 
-    public function toString() { return $this->serialized; }
+    public function toString() : string { return $this->serialized; }
 
-    public function __toString() { return $this->toString(); }
+    public function __toString() : string { return $this->toString(); }
 }

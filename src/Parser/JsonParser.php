@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -18,7 +18,6 @@
  */
 namespace MindTouch\Http\Parser;
 
-use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\HttpResult;
 
 /**
@@ -28,13 +27,13 @@ use MindTouch\Http\HttpResult;
  */
 class JsonParser extends HttpResultParserBase implements IHttpResultParser {
 
-    public function withMaxContentLength($length) {
+    public function withMaxContentLength(int $length) : IHttpResultParser {
         $parser = clone $this;
         $parser->maxContentLength = $length;
         return $parser;
     }
 
-    public function toParsedResult(HttpResult $result) {
+    public function toParsedResult(HttpResult $result) : HttpResult {
         $contentType = $result->getContentType();
         if($contentType !== null && $contentType->isJson()) {
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * MindTouch HTTP
  * Copyright (C) 2006-2018 MindTouch, Inc.
@@ -26,7 +26,7 @@ class isValidUrl_Test extends MindTouchHttpUnitTestCase {
     /**
      * @return array
      */
-    public static function valid_dataProvider() {
+    public static function valid_dataProvider() : array {
         return [
             ['https://google.com?q=foo'],
             ['http://localhost:8080'],
@@ -39,7 +39,7 @@ class isValidUrl_Test extends MindTouchHttpUnitTestCase {
     /**
      * @return array
      */
-    public static function invalid_dataProvider() {
+    public static function invalid_dataProvider() : array {
         return [
             ['localhost'],
             ['foo/bar/baz'],
@@ -52,7 +52,7 @@ class isValidUrl_Test extends MindTouchHttpUnitTestCase {
      * @param string $string
      * @test
      */
-    public function Is_valid_url($string) {
+    public function Is_valid_url(string $string) {
 
         // act
         $result = XUri::isValidUrl($string);
@@ -66,7 +66,7 @@ class isValidUrl_Test extends MindTouchHttpUnitTestCase {
      * @param string $string
      * @test
      */
-    public function Is_not_valid_url($string) {
+    public function Is_not_valid_url(string $string) {
 
         // act
         $result = XUri::isValidUrl($string);
