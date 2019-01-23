@@ -16,5 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+namespace MindTouch\Http\Exception;
 
-require_once(dirname(__FILE__) . '/vendor/autoload.php');
+use Exception;
+
+/**
+ * Class MalformedPathQueryFragmentException
+ *
+ * @package MindTouch\Http\Exception
+ */
+class MalformedPathQueryFragmentException extends Exception {
+
+    /**
+     * @var string
+     */
+    private $string;
+
+    /**
+     * @param string $string - malformed URI path/query/fragment string
+     */
+    public function __construct(string $string) {
+        $this->string = $string;
+        parent::__construct('String is not a valid URI path/query/fragment: ' . $string);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMalformedPathQueryFragmentString() : string { return $this->string; }
+}

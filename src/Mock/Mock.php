@@ -16,5 +16,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+namespace MindTouch\Http\Mock;
 
-require_once(dirname(__FILE__) . '/vendor/autoload.php');
+use MindTouch\Http\HttpResult;
+
+/**
+ * Class Mock
+ *
+ * An object for storing mock state
+ *
+ * @package MindTouch\Http\Mock
+ */
+class Mock {
+
+    /**
+     * @var MockRequestMatcher
+     */
+    public $request;
+
+    /**
+     * @var HttpResult
+     */
+    public $result;
+
+    /**
+     * @var bool
+     */
+    public $verify;
+}

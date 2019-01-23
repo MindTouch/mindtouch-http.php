@@ -152,7 +152,7 @@ class Headers implements IMutableHeaders {
         return null;
     }
 
-    public function addHeaders(IHeaders $headers) {
+    public function addHeaders(IHeaders $headers) : void {
         foreach($headers as $name => $values) {
             foreach($values as $value) {
                 $this->addHeader($name, $value);
@@ -160,25 +160,25 @@ class Headers implements IMutableHeaders {
         }
     }
 
-    public function addHeader(string $name, ?string $value) {
-        $values = StringUtil::isNullOrEmpty($value) ? [] : [trim($value)];
+    public function addHeader(string $name, ?string $value) : void {
+        $values = !is_string($value) ? [] : [trim($value)];
         $name = self::getFormattedHeaderName($name);
         $this->set($name, $values, false);
     }
 
-    public function setHeader(string $name, ?string $value) {
-        $values = StringUtil::isNullOrEmpty($value) ? [] : [trim($value)];
+    public function setHeader(string $name, ?string $value) : void {
+        $values = !is_string($value) ? [] : [trim($value)];
         $name = self::getFormattedHeaderName($name);
         $this->set($name, $values, true);
     }
 
-    public function addRawHeader(string $header) { $this->setRawHeaderHelper($header, false); }
+    public function addRawHeader(string $header) : void { $this->setRawHeaderHelper($header, false); }
 
-    public function setRawHeader(string $header) { $this->setRawHeaderHelper($header, true); }
+    public function setRawHeader(string $header) : void { $this->setRawHeaderHelper($header, true); }
 
     public function hasHeader(string $name) : bool { return isset($this->headers[self::getFormattedHeaderName($name)]); }
 
-    public function removeHeader(string $name) {
+    public function removeHeader(string $name) : void {
         unset($this->headers[self::getFormattedHeaderName($name)]);
         $this->names = array_keys($this->headers);
         $this->rewind();
@@ -232,8 +232,9 @@ class Headers implements IMutableHeaders {
      * @param string $name
      * @param string[] $values
      * @param bool $overwrite
+     * @return void
      */
-    protected function set(string $name, array $values, bool $overwrite) {
+    protected function set(string $name, array $values, bool $overwrite) : void {
         if(in_array($name, static::$singleValueHeaders)) {
 
             // enforce headers that can only hold one value
@@ -259,8 +260,9 @@ class Headers implements IMutableHeaders {
     /**
      * @param string $header
      * @param bool $overwrite
+     * @return void
      */
-    protected function setRawHeaderHelper(string $header, bool $overwrite) {
+    protected function setRawHeaderHelper(string $header, bool $overwrite) : void {
         if(strpos($header, ':') === false) {
             throw new InvalidArgumentException('Invalid HTTP header: ' . $header);
         }

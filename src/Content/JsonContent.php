@@ -31,7 +31,7 @@ class JsonContent implements IContent {
      * @param array $json
      * @return static
      */
-    public static function newFromArray(array $json) { return new static(json_encode($json)); }
+    public static function newFromArray(array $json) : object { return new static(json_encode($json)); }
 
     /**
      * @var ContentType|null

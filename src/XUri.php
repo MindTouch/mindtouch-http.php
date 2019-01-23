@@ -19,6 +19,7 @@
 namespace MindTouch\Http;
 
 use InvalidArgumentException;
+use MindTouch\Http\Exception\MalformedPathQueryFragmentException;
 use MindTouch\Http\Exception\MalformedUriException;
 
 /**
@@ -35,7 +36,7 @@ class XUri {
      * @param string $string - full qualified URI
      * @return static|null
      */
-    public static function tryParse(string $string) {
+    public static function tryParse(string $string) : ?object {
         try {
             return static::newFromString($string);
         } catch(MalformedUriException $e) {
@@ -50,7 +51,7 @@ class XUri {
      * @return static
      * @throws MalformedUriException
      */
-    public static function newFromString(string $string) {
+    public static function newFromString(string $string) : object {
         $data = parse_url($string);
         if(!$data || !isset($data['scheme'])) {
             throw new MalformedUriException($string);
@@ -124,7 +125,7 @@ class XUri {
      * @param array $data - URI data (output from parse_url)
      * @return static
      */
-    private static function newFromUriData(array $data) {
+    private static function newFromUriData(array $data) : object {
         $uri = new static();
         if(isset($data['port'])) {
             $data['port'] = intval($data['port']);
@@ -274,7 +275,7 @@ class XUri {
      * @param string|null $password - The password associated with $user
      * @return static
      */
-    public function withUserInfo(string $user, string $password = null) {
+    public function withUserInfo(string $user, string $password = null) : object {
         $data = $this->data;
         $data['user'] = $user;
         $data['pass'] = $password;
@@ -288,7 +289,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException
      */
-    public function withHost(string $host) {
+    public function withHost(string $host) : object {
         if(StringUtil::isNullOrEmpty($host)) {
             throw new InvalidArgumentException('Host value must be non-empty string');
         }
@@ -303,7 +304,7 @@ class XUri {
      * @param int|null $port - The port to use with the new instance; a null value removes the port information (aliases Uri::withoutPort)
      * @return static
      */
-    public function withPort(?int $port) {
+    public function withPort(?int $port) : object {
         if($port === null) {
             return $this->withoutPort();
         }
@@ -317,7 +318,7 @@ class XUri {
      *
      * @return static
      */
-    public function withoutPort() {
+    public function withoutPort() : object {
         $data = $this->data;
         $data['port'] = null;
         return static::newFromUriData($data);
@@ -330,7 +331,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException
      */
-    public function withScheme(string $scheme) {
+    public function withScheme(string $scheme) : object {
         if(StringUtil::isNullOrEmpty($scheme)) {
             throw new InvalidArgumentException('Scheme value must non-empty string');
         }
@@ -346,7 +347,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException
      */
-    public function withFragment(?string $fragment) {
+    public function withFragment(?string $fragment) : object {
         if($fragment === null) {
             return $this->withoutFragment();
         }
@@ -360,7 +361,7 @@ class XUri {
      *
      * @return static
      */
-    public function withoutFragment() {
+    public function withoutFragment() : object {
         $data = $this->data;
         $data['fragment'] = null;
         return static::newFromUriData($data);
@@ -373,7 +374,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException
      */
-    public function withQuery(string $query) {
+    public function withQuery(string $query) : object {
         if(StringUtil::startsWith($query, '?')) {
             throw new InvalidArgumentException('Query value must not start with \'?\' character');
         }
@@ -387,7 +388,7 @@ class XUri {
      *
      * @return static
      */
-    public function withoutQuery() {
+    public function withoutQuery() : object {
         $data = $this->data;
         $data['query'] = null;
         return static::newFromUriData($data);
@@ -401,7 +402,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException for invalid query params
      */
-    public function withQueryParam(string $param, string $value) {
+    public function withQueryParam(string $param, string $value) : object {
         $data = $this->data;
         if(isset($data['query'])) {
             $params = array_merge(self::parseQuery($data['query']), [$param => $value]);
@@ -420,7 +421,7 @@ class XUri {
      * @return static
      * @throws InvalidArgumentException for invalid query params
      */
-    public function with(string $param, string $value) { return $this->withQueryParam($param, $value); }
+    public function with(string $param, string $value) : object { return $this->withQueryParam($param, $value); }
 
     /**
      * Return an instance without the specified query param
@@ -428,7 +429,7 @@ class XUri {
      * @param string $param
      * @return static
      */
-    public function withoutQueryParam(string $param) {
+    public function withoutQueryParam(string $param) : object {
         $data = $this->data;
         $params = isset($data['query']) ? self::parseQuery($data['query']) : [];
         if(!isset($params[$param])) {
@@ -448,7 +449,7 @@ class XUri {
      * @param string|null $value - query param value; a null value removes the query param information (aliases Uri::withoutQueryParam)
      * @return static
      */
-    public function withReplacedQueryParam(string $param, ?string $value) {
+    public function withReplacedQueryParam(string $param, ?string $value) : object {
         if($value === null) {
             return $this->withoutQueryParam($param);
         }
@@ -470,7 +471,7 @@ class XUri {
      * @param array $params - param/value pairs of query params
      * @return static
      */
-    public function withQueryParams(array $params) {
+    public function withQueryParams(array $params) : object {
         $data = $this->data;
         if(isset($data['query'])) {
             $currentParams = array_merge(self::parseQuery($data['query']), $params);
@@ -487,7 +488,7 @@ class XUri {
      * @param string[] $params - list of query params to remove
      * @return static
      */
-    public function withoutQueryParams(array $params) {
+    public function withoutQueryParams(array $params) : object {
         $data = $this->data;
         $currentParams = self::parseQuery($data['query']);
         foreach($params as $param) {
@@ -505,7 +506,7 @@ class XUri {
      * @param string $path -  The path to use with the new instance
      * @return static
      */
-    public function withPath(string $path) {
+    public function withPath(string $path) : object {
         $data = $this->data;
         $data['path'] = $this->normalize($path);
         return static::newFromUriData($data);
@@ -517,7 +518,7 @@ class XUri {
      * @param string ...$segments,... - path segments to append
      * @return static
      */
-    public function at(...$segments) {
+    public function at(...$segments) : object {
         if(empty($segments)) {
             return $this;
         }
@@ -535,9 +536,13 @@ class XUri {
      *
      * @param string $pathQueryFragment
      * @return static
+     * @throws MalformedPathQueryFragmentException
      */
-    public function atPath(string $pathQueryFragment) {
+    public function atPath(string $pathQueryFragment) : object {
         $newUriData = parse_url($this->normalize($pathQueryFragment));
+        if(!is_array($newUriData)) {
+            throw new MalformedPathQueryFragmentException($pathQueryFragment);
+        }
         $data = $this->data;
         if(isset($newUriData['path'])) {
             $path = $this->getInternalPath($data);
@@ -565,7 +570,7 @@ class XUri {
      * @return static
      * @throws MalformedUriException
      */
-    public function toBaseUri() {
+    public function toBaseUri() : object {
         $scheme = $this->getScheme();
         $result = StringUtil::isNullOrEmpty($scheme) ? 'http://' : $scheme . '://';
         $result .= $this->getAuthority();
@@ -579,7 +584,7 @@ class XUri {
      * @param bool $scrubBasicAuthPassword - scrub basic auth password
      * @return static
      */
-    public function toSanitizedUri(array $scrubQueryParams = [], bool $scrubBasicAuthPassword = true) {
+    public function toSanitizedUri(array $scrubQueryParams = [], bool $scrubBasicAuthPassword = true) : object {
         $data = $this->data;
         if($scrubBasicAuthPassword && isset($data['pass'])) {
             $data['pass'] = self::SENSITIVE_DATA_REPLACEMENT;

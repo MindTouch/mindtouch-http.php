@@ -42,14 +42,14 @@ class ContentType {
      * @param string $string
      * @return static|null
      */
-    public static function newFromString(string $string) {
+    public static function newFromString(string $string) : ?object {
         $parts = array_map('trim', explode(';', $string));
         $typeParts = array_filter(explode('/', $parts[0], 2));
         if(count($typeParts) !== 2) {
             return null;
         }
-        $mainType = $typeParts[0];
-        $subType = $typeParts[1];
+        $mainType = !is_string($typeParts[0]) ? strval($typeParts[0]) : $typeParts[0];
+        $subType = !is_string($typeParts[1]) ? strval($typeParts[1]) : $typeParts[1];
         $parameters = [];
         array_shift($parts);
         foreach($parts as $part) {

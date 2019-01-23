@@ -20,7 +20,7 @@ install: composer install
 before_script: docker-compose up -d
 
 script:
-  - vendor/bin/phpstan analyse --level 5 src
+  - vendor/bin/phpstan analyse --level 7 src
   - vendor/bin/phpunit --configuration phpunit.xml.dist --coverage-clover=coverage.xml
 
 after_script: docker-compose down

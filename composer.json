@@ -15,7 +15,7 @@
   },
   "require": {
     "php": ">=7.2.0",
-    "mindtouch/xarray": "0.1.1",
+    "mindtouch/xarray": "1.0.0-beta.2",
     "ext-fileinfo": "*",
     "ext-json": "*",
     "ext-curl": "*"

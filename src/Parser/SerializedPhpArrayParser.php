@@ -45,7 +45,6 @@ class SerializedPhpArrayParser extends HttpResultParserBase implements IHttpResu
             if(is_string($body)) {
                 $result->setVal('body', unserialize($body));
             }
-
         }
         return $result;
     }

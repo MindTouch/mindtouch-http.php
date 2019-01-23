@@ -20,7 +20,6 @@ namespace MindTouch\Http\Exception;
 
 use Exception;
 use MindTouch\Http\ApiResult;
-use MindTouch\Http\StringUtil;
 
 /**
  * Class ApiResultException
@@ -32,15 +31,15 @@ class ApiResultException extends Exception {
     /**
      * @var ApiResult
      */
-    protected $Result;
+    protected $result;
 
     /**
-     * @param ApiResult $Result
+     * @param ApiResult $result
      */
-    public function __construct(ApiResult $Result) {
-        $this->Result = $Result;
-        $error = $Result->getError();
-        parent::__construct(!StringUtil::isNullOrEmpty($error) ? $error : 'unknown api error');
+    public function __construct(ApiResult $result) {
+        $this->result = $result;
+        $error = $result->getError();
+        parent::__construct(is_string($error) ? $error : 'unknown api error');
     }
 
     /**
@@ -48,5 +47,5 @@ class ApiResultException extends Exception {
      *
      * @return ApiResult
      */
-    public function getResult() : ApiResult { return $this->Result; }
+    public function getResult() : ApiResult { return $this->result; }
 }

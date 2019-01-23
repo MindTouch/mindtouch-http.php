@@ -37,8 +37,9 @@ abstract class HttpResultParserBase {
     /**
      * @param HttpResult $result
      * @throws HttpResultParserContentExceedsMaxContentLengthException
+     * @return void
      */
-    protected function validateContentLength(HttpResult $result) {
+    protected function validateContentLength(HttpResult $result) : void {
         if(!is_int($this->maxContentLength)) {
             return;
         }

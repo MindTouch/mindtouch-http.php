@@ -96,7 +96,9 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
     public function Can_add_header_with_comma_separation_enabled() {
 
         // arrange
-        $headers = (new Headers())->withRawHeaderCommaSeparationEnabled();
+        $headers = (new Headers())
+            ->withRawHeaderCommaSeparationEnabled()
+            ->toMutableHeaders();
 
         // act
         $headers->addRawHeader('X-Foo-bar: qux, fred, quxx; foo');
@@ -162,7 +164,9 @@ class addRawHeader_Test extends MindTouchHttpUnitTestCase {
     public function Single_value_only_header_constraints_are_used_with_raw_header_comma_parsing_enabled() {
 
         // arrange
-        $headers = (new Headers())->withRawHeaderCommaSeparationEnabled();
+        $headers = (new Headers())
+            ->withRawHeaderCommaSeparationEnabled()
+            ->toMutableHeaders();
 
         // act
         $headers->addRawHeader('Content-Type: application/xml, application/json');

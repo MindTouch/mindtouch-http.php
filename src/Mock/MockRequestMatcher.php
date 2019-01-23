@@ -20,7 +20,6 @@ namespace MindTouch\Http\Mock;
 
 use InvalidArgumentException;
 use MindTouch\Http\Content\IContent;
-use MindTouch\Http\Exception\MalformedUriException;
 use MindTouch\Http\Headers;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\IHeaders;
@@ -50,15 +49,17 @@ class MockRequestMatcher {
      * Set query param names to ignore during matching
      *
      * @param string[] $names
+     * @return void
      */
-    public static function setIgnoredQueryParamNames(array $names) { self::$ignoredQueryParamNames = $names; }
+    public static function setIgnoredQueryParamNames(array $names) : void { self::$ignoredQueryParamNames = $names; }
 
     /**
      * Set HTTP header names to ignore during matching
      *
      * @param string[] $names
+     * @return void
      */
-    public static function setIgnoredHeaderNames(array $names) { self::$ignoredHeaderNames = $names; }
+    public static function setIgnoredHeaderNames(array $names) : void { self::$ignoredHeaderNames = $names; }
 
     /**
      * @var string
@@ -210,9 +211,15 @@ class MockRequestMatcher {
      */
     private function newNormalizedUriString() : string {
         $params = [];
+        $href = $this->uri->toString();
 
         // parse uri into components
-        $data = parse_url($this->uri->toString());
+        $data = parse_url($href);
+        if(!is_array($data) || !isset($data['scheme']) || !isset($data['host'])) {
+
+            // if for some outstanding reason, the uri is malformed, at least match on something
+            return $href;
+        }
         if(isset($data['query'])) {
             parse_str($data['query'], $params);
         }

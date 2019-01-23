@@ -35,8 +35,7 @@ class MockPlug {
     public static $isRegistered = false;
 
     /**
-     * @var object[]
-     * @structure [ [id] => [ { MockRequestMatcher, HttpResult, bool }, ... ]
+     * @var Mock[]
      */
     private static $mocks = [];
 
@@ -92,18 +91,19 @@ class MockPlug {
      * @param MockRequestMatcher $request
      * @param HttpResult $result
      * @param bool $verify - verify when all registered uri calls are checked
+     * @return void
      */
-    public static function register(MockRequestMatcher $request, HttpResult $result, bool $verify = true) {
+    public static function register(MockRequestMatcher $request, HttpResult $result, bool $verify = true) : void {
 
         // ensure content type header is set in the same manner as curl will set it
         if($result->getVal('type') === null && $result->getHeaders()->hasHeader('Content-Type')) {
             $result->setVal('type', $result->getHeaders()->getHeaderLine('Content-Type'));
         }
-        self::$mocks[$request->getMatcherId()] = (object) [
-            'request' => $request,
-            'result' => $result,
-            'verify' => $verify
-        ];
+        $mock = new Mock();
+        $mock->request = $request;
+        $mock->result = $result;
+        $mock->verify = $verify;
+        self::$mocks[$request->getMatcherId()] = $mock;
         self::$isRegistered = true;
     }
 
@@ -192,8 +192,10 @@ class MockPlug {
 
     /**
      * Reset MockPlug
+     *
+     * @return void
      */
-    public static function deregisterAll() {
+    public static function deregisterAll() : void {
         self::$mocks = [];
         self::$calls = [];
         self::$callCount = 0;

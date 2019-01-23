@@ -46,7 +46,7 @@ class HttpResult extends XArray {
      * @param float $end - curl stop timestamp
      * @return static
      */
-    public function withRequestInfo(string $method, XUri $uri, IHeaders $headers, float $start, float $end) {
+    public function withRequestInfo(string $method, XUri $uri, IHeaders $headers, float $start, float $end) : object {
         $result = clone $this;
         $result->array['request'] = [
             'method' => $method,
@@ -64,7 +64,7 @@ class HttpResult extends XArray {
      * @param int $status
      * @return static
      */
-    public function withStatus(int $status) {
+    public function withStatus(int $status) : object {
         $result = clone $this;
         $result->array['status'] = $status;
         return $result;
@@ -76,7 +76,7 @@ class HttpResult extends XArray {
      * @param IHeaders $headers
      * @return static
      */
-    public function withHeaders(IHeaders $headers) {
+    public function withHeaders(IHeaders $headers) : object {
         $result = clone $this;
         $result->array['headers'] = $headers->toArray();
         return $result;
@@ -88,7 +88,7 @@ class HttpResult extends XArray {
      * @param string|array $body
      * @return static
      */
-    public function withBody($body) {
+    public function withBody($body) : object {
         $result = clone $this;
         $result->array['body'] = $body;
         return $result;
@@ -100,7 +100,7 @@ class HttpResult extends XArray {
      * @param IContent $content
      * @return static
      */
-    public function withContent(IContent $content) {
+    public function withContent(IContent $content) : object {
         $result = clone $this;
         $contentType = $content->getContentType();
         $result->array['body'] = $content->toString();
@@ -160,10 +160,10 @@ class HttpResult extends XArray {
      * @return string
      */
     public function getXml(string $key = null) : string {
-        if(StringUtil::isNullOrEmpty($key)) {
+        if(!is_string($key)) {
             return "<result>{$this->toXml()}</result>";
         }
-        $value = $this->getVal($key, null);
+        $value = $this->getVal($key);
         $XArray = new XArray($value);
         return $XArray->toXml();
     }

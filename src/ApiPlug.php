@@ -185,8 +185,9 @@ class ApiPlug extends HttpPlug {
 
     /**
      * @param IMutableHeaders $headers
+     * @return void
      */
-    protected function invokeApplyCredentials(IMutableHeaders $headers) {
+    protected function invokeApplyCredentials(IMutableHeaders $headers) : void {
         parent::invokeApplyCredentials($headers);
         if($this->token !== null) {
             $headers->setHeader('X-Deki-Token', $this->token->toHash());

@@ -31,7 +31,7 @@ class SerializedPhpArrayContent implements IContent {
      * @param array $array
      * @return static
      */
-    public static function newFromArray(array $array) { return new static(serialize($array)); }
+    public static function newFromArray(array $array) : object { return new static(serialize($array)); }
 
     /**
      * @var ContentType|null

@@ -394,8 +394,9 @@ class HttpPlug {
 
     /**
      * @param IMutableHeaders $headers
+     * @return void
      */
-    protected function invokeApplyCredentials(IMutableHeaders $headers) {
+    protected function invokeApplyCredentials(IMutableHeaders $headers) : void {
 
         // apply manually given credentials
         if($this->user !== null || $this->password !== null) {
@@ -585,8 +586,9 @@ class HttpPlug {
 
     /**
      * @param IHttpResultParser $parser
+     * @return void
      */
-    protected function setHttpResultParser(IHttpResultParser $parser) {
+    protected function setHttpResultParser(IHttpResultParser $parser) : void {
         $this->parsers[get_class($parser)] = $parser;
     }
 

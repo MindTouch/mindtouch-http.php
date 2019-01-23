@@ -28,13 +28,6 @@ use Iterator;
 interface IHeaders extends Iterator {
 
     /**
-     * Return an instance with raw header comma separation enabled
-     *
-     * @return IHeaders
-     */
-    function withRawHeaderCommaSeparationEnabled() : IHeaders;
-
-    /**
      * Retrieve comma separated values from HTTP header name
      *
      * @param string $name - case-insensitive header name
@@ -105,7 +98,14 @@ interface IHeaders extends Iterator {
      * Return an new instance with the incoming HTTP headers merged with the existing HTTP headers
      *
      * @param IHeaders $headers
-     * @return IHeaders
+     * @return static
      */
     function toMergedHeaders(IHeaders $headers) : IHeaders;
+
+    /**
+     * Return an instance with raw header comma separation enabled
+     *
+     * @return static
+     */
+    function withRawHeaderCommaSeparationEnabled() : IHeaders;
 }
