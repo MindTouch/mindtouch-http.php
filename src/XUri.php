@@ -272,7 +272,7 @@ class XUri {
      * Return an instance with the specified user information
      *
      * @param string $user - The user name to use for authority
-     * @param string|null $password - The password associated with $user
+     * @param string $password - The password associated with $user
      * @return static
      */
     public function withUserInfo(string $user, string $password = null) : object {
@@ -398,12 +398,16 @@ class XUri {
      * Return an instance with the specified query param appended
      *
      * @param string $param - query param key
-     * @param string $value - query param value
+     * @param mixed $value - query param value
      * @return static
      * @throws InvalidArgumentException for invalid query params
      */
-    public function withQueryParam(string $param, string $value) : object {
+    public function withQueryParam(string $param, $value) : object {
+        if($value === null) {
+            return $this;
+        }
         $data = $this->data;
+        $value = StringUtil::stringify($value);
         if(isset($data['query'])) {
             $params = array_merge(self::parseQuery($data['query']), [$param => $value]);
             $data['query'] = http_build_query($params);
@@ -417,11 +421,11 @@ class XUri {
      * Return an instance with the specified query param appended (aliases Url::withQueryParam)
      *
      * @param string $param - query param key
-     * @param string $value - query param value
+     * @param mixed $value - query param value
      * @return static
      * @throws InvalidArgumentException for invalid query params
      */
-    public function with(string $param, string $value) : object { return $this->withQueryParam($param, $value); }
+    public function with(string $param, $value) : object { return $this->withQueryParam($param, $value); }
 
     /**
      * Return an instance without the specified query param
@@ -446,13 +450,14 @@ class XUri {
      * Return an instance with the specified query param replaced
      *
      * @param string $param - query param key
-     * @param string|null $value - query param value; a null value removes the query param information (aliases Uri::withoutQueryParam)
+     * @param mixed $value - query param value; a null value removes the query param information (aliases Uri::withoutQueryParam)
      * @return static
      */
-    public function withReplacedQueryParam(string $param, ?string $value) : object {
+    public function withReplacedQueryParam(string $param, $value) : object {
         if($value === null) {
             return $this->withoutQueryParam($param);
         }
+        $value = StringUtil::stringify($value);
         $data = $this->data;
         $params = self::parseQuery($data['query']);
         if(!isset($params[$param])) {
@@ -473,6 +478,9 @@ class XUri {
      */
     public function withQueryParams(array $params) : object {
         $data = $this->data;
+        $params = array_map(function($value) : string {
+            return StringUtil::stringify($value);
+        }, $params);
         if(isset($data['query'])) {
             $currentParams = array_merge(self::parseQuery($data['query']), $params);
             $data['query'] = http_build_query($currentParams);

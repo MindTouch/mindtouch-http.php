@@ -18,12 +18,32 @@
  */
 namespace MindTouch\Http;
 
+use Closure;
+
 /**
  * Class StringUtil
  *
  * @package MindTouch\Http
  */
 class StringUtil {
+
+    /**
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    public static function endsWith(string $haystack, string $needle) : bool {
+        $length = strlen($needle);
+        $start = $length * -1; //negative
+        return (substr($haystack, $start) === $needle);
+    }
+
+     /**
+     * @param string $haystack
+     * @param string $needle
+     * @return bool
+     */
+    public static function endsWithInvariantCase(string $haystack, string $needle) : bool { return self::endsWith(strtolower($haystack), strtolower($needle)); }
 
     /**
      * @param string|null $string
@@ -49,20 +69,21 @@ class StringUtil {
     public static function startsWithInvariantCase(string $haystack, string $needle) : bool { return self::startsWith(strtolower($haystack), strtolower($needle)); }
 
     /**
-     * @param string $haystack
-     * @param string $needle
-     * @return bool
+     * Stringify any value
+     *
+     * @param mixed $value
+     * @return string
      */
-    public static function endsWith(string $haystack, string $needle) : bool {
-        $length = strlen($needle);
-        $start = $length * -1; //negative
-        return (substr($haystack, $start) === $needle);
+    public static function stringify($value) : string {
+        if(is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+        if(is_array($value)) {
+            return implode(',', array_map('strval', $value));
+        }
+        if($value instanceof Closure) {
+            return strval($value());
+        }
+        return strval($value);
     }
-
-     /**
-     * @param string $haystack
-     * @param string $needle
-     * @return bool
-     */
-    public static function endsWithInvariantCase(string $haystack, string $needle) : bool { return self::endsWith(strtolower($haystack), strtolower($needle)); }
 }

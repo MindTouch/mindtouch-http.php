@@ -33,6 +33,17 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
         $params = [
             'foo' => '!@%$',
             'sherlock' => 'holmes',
+            'baz' => true,
+            'qux' => false,
+            'a' => 0,
+            'b' => -10,
+            'c' => new class {
+                public function __toString() : string {
+                    return 'fred';
+                }
+            },
+            'd' => ['qux', true, -10, 5],
+            'e' => function() { return 'bazz'; }
         ];
 
         // act
@@ -40,7 +51,7 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
 
         // assert
         $this->assertEquals(
-            'http://user:password@test.mindtouch.dev/?foo=%21%40%25%24&sherlock=holmes#fragment',
+            'http://user:password@test.mindtouch.dev/?foo=%21%40%25%24&sherlock=holmes&baz=true&qux=false&a=0&b=-10&c=fred&d=qux%2C1%2C-10%2C5&e=bazz#fragment',
             $result
         );
     }
@@ -51,10 +62,21 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
     public function Can_add_query_parameters() {
 
         // arrange
-        $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
+        $uriStr = 'http://user:password@test.mindtouch.dev/?z=b&x=d#fragment';
         $params = [
             'foo' => '!@%$',
             'sherlock' => 'holmes',
+            'baz' => true,
+            'qux' => false,
+            'a' => 0,
+            'b' => -10,
+            'c' => new class {
+                public function __toString() : string {
+                    return 'fred';
+                }
+            },
+            'd' => ['qux', true, -10, 5],
+            'e' => function() { return 'bazz'; }
         ];
 
         // act
@@ -62,7 +84,7 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
 
         // assert
         $this->assertEquals(
-            'http://user:password@test.mindtouch.dev/?a=b&c=d&foo=%21%40%25%24&sherlock=holmes#fragment',
+            'http://user:password@test.mindtouch.dev/?z=b&x=d&foo=%21%40%25%24&sherlock=holmes&baz=true&qux=false&a=0&b=-10&c=fred&d=qux%2C1%2C-10%2C5&e=bazz#fragment',
             $result
         );
     }

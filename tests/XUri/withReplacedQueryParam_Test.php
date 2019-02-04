@@ -24,18 +24,41 @@ use MindTouch\Http\XUri;
 class withReplacedQueryParam_Test extends MindTouchHttpUnitTestCase {
 
     /**
-     * @test
+     * @return array
      */
-    public function Can_replace_query_parameter() {
+    public static function param_expected_Provider() {
+        return [
+            ['bar', 'http://user:password@test.mindtouch.dev/?a=bar&c=d#fragment'],
+            [true, 'http://user:password@test.mindtouch.dev/?a=true&c=d#fragment'],
+            [false, 'http://user:password@test.mindtouch.dev/?a=false&c=d#fragment'],
+            [0, 'http://user:password@test.mindtouch.dev/?a=0&c=d#fragment'],
+            [-10, 'http://user:password@test.mindtouch.dev/?a=-10&c=d#fragment'],
+            [new class {
+                public function __toString() : string {
+                    return 'fred';
+                }
+            }, 'http://user:password@test.mindtouch.dev/?a=fred&c=d#fragment'],
+            [['qux', true, -10, 5], 'http://user:password@test.mindtouch.dev/?a=qux%2C1%2C-10%2C5&c=d#fragment'],
+            [function() { return 'bazz'; }, 'http://user:password@test.mindtouch.dev/?a=bazz&c=d#fragment']
+        ];
+    }
+
+    /**
+     * @dataProvider param_expected_Provider
+     * @test
+     * @param mixed $param
+     * @param string $expected
+     */
+    public function Can_replace_query_parameter($param, string $expected) {
 
         // arrange
         $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
 
          // act
-        $result = XUri::tryParse($uriStr)->withReplacedQueryParam('a', 'e');
+        $result = XUri::tryParse($uriStr)->withReplacedQueryParam('a', $param);
 
         // assert
-        $this->assertEquals('http://user:password@test.mindtouch.dev/?a=e&c=d#fragment', $result);
+        $this->assertEquals($expected, $result);
     }
 
     /**

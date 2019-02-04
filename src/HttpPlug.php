@@ -23,6 +23,7 @@ use InvalidArgumentException;
 use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\IContent;
 use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
+use MindTouch\Http\Exception\MalformedPathQueryFragmentException;
 use MindTouch\Http\Exception\NotImplementedException;
 use MindTouch\Http\Mock\MockPlug;
 use MindTouch\Http\Mock\MockRequestMatcher;
@@ -167,12 +168,12 @@ class HttpPlug {
      * Return an instance with the added header value
      *
      * @param string $name - case-insensitive header field name to add
-     * @param string $value - header value
+     * @param mixed $value - header value
      * @return static
      */
-    public function withAddedHeader(string $name, string $value) : object {
+    public function withAddedHeader(string $name, $value) : object {
         $plug = clone $this;
-        $plug->headers->addHeader($name, $value);
+        $plug->headers->addHeader($name, StringUtil::stringify($value));
         return $plug;
     }
 
@@ -180,12 +181,12 @@ class HttpPlug {
      * Return an instance with the set or replaced header value
      *
      * @param string $name - case-insensitive header field name
-     * @param string $value - header value
+     * @param mixed $value - header value
      * @return static
      */
-    public function withHeader(string $name, string $value) : object {
+    public function withHeader(string $name, $value) : object {
         $plug = clone $this;
-        $plug->headers->setHeader($name, $value);
+        $plug->headers->setHeader($name, StringUtil::stringify($value));
         return $plug;
     }
 
@@ -224,6 +225,7 @@ class HttpPlug {
      *
      * @param string ...$segments - path segments to add to the request (ex: $this->at('foo', 'bar', 'baz'))
      * @return static
+     * @throws MalformedPathQueryFragmentException
      */
     public function at(...$segments) : object {
         $plug = clone $this;
@@ -239,13 +241,13 @@ class HttpPlug {
      * Return an instance with query string GET variables appaneded
      *
      * @param string $name - variable name
-     * @param string|null $value - variable value
+     * @param mixed $value - variable value
      * @return static
      */
-    public function with(string $name, string $value = null) : object {
+    public function with(string $name, $value) : object {
         $plug = clone $this;
         $plug->uri = $value !== null
-            ? $plug->uri->withQueryParam($name, $value)
+            ? $plug->uri->withQueryParam($name, StringUtil::stringify($value))
             : $plug->uri->withoutQueryParam($name);
         return $plug;
     }
@@ -347,7 +349,7 @@ class HttpPlug {
     /**
      * Performs a PUT request
      *
-     * @param IContent|null $content - optionally send a content body with the request
+     * @param IContent $content - optionally send a content body with the request
      * @return HttpResult
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      * @throws NotImplementedException
@@ -375,7 +377,7 @@ class HttpPlug {
 
     /**
      * @param string $method
-     * @param IContent|null $content
+     * @param IContent $content
      * @return HttpResult
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      * @throws InvalidArgumentException
