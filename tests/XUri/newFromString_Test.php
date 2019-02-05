@@ -71,6 +71,7 @@ class newFromString_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
+     * @expectedException \MindTouch\Http\Exception\MalformedUriException
      */
     public function Invalid_uri_throws_exception() {
 
@@ -78,19 +79,12 @@ class newFromString_Test extends MindTouchHttpUnitTestCase {
         $uriStr = 'totally_invalid_string';
 
         // act
-        $exceptionThrown = false;
-        try {
-            XUri::newFromString($uriStr);
-        } catch(MalformedUriException $e) {
-            $exceptionThrown = true;
-        }
-
-        // assert
-        $this->assertTrue($exceptionThrown);
+        XUri::newFromString($uriStr);
     }
 
     /**
      * @test
+     * @expectedException \MindTouch\Http\Exception\MalformedUriException
      */
     public function Valid_uri_must_have_scheme() {
 
@@ -98,15 +92,20 @@ class newFromString_Test extends MindTouchHttpUnitTestCase {
         $uriStr = 'test.mindtouch.dev/?a=b&c=d#fragment';
 
         // act
-        $exceptionThrown = false;
-        try {
-            XUri::newFromString($uriStr);
-        } catch(MalformedUriException $e) {
-            $exceptionThrown = true;
-        }
+        XUri::newFromString($uriStr);
+    }
 
-        // assert
-        $this->assertTrue($exceptionThrown);
+    /**
+     * @test
+     * @expectedException \MindTouch\Http\Exception\MalformedUriException
+     */
+    public function Valid_uri_must_have_valid_port() {
+
+        // arrange
+        $uriStr = 'http://user:password@test.mindtouch.dev:12322342332423/?a=b&c=d#fragment';
+
+        // act
+        XUri::newFromString($uriStr);
     }
 
     /**
