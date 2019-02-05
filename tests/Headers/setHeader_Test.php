@@ -69,4 +69,35 @@ class setHeader_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertArrayHasKeyValue('Qux', [''], $headers->toArray());
     }
+
+    /**
+     * @test
+     */
+    public function Can_set_non_string_type_header() {
+
+        // arrange
+        $headers = new Headers();
+
+        // act
+        $headers->setHeader('bar', true);
+        $headers->setHeader('fred', false);
+        $headers->setHeader('baz', 0);
+        $headers->setHeader('qux', -10);
+        $headers->setHeader('bazz', new class {
+            public function __toString() : string {
+                return 'zzz';
+            }
+        });
+        $headers->setHeader('fredd', ['qux', true, -10, 5]);
+        $headers->setHeader('barr', function() { return 'bazzzzz'; });
+
+        // assert
+        $this->assertArrayHasKeyValue('Bar', ['true'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Fred', ['false'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Baz', ['0'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Qux', ['-10'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Bazz', ['zzz'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Fredd', ['qux','true','-10','5'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Barr', 'bazzzzz', $headers->toArray());
+    }
 }

@@ -53,4 +53,35 @@ class withHeader_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertEquals('fred', $plug->getHeaders()->getHeaderLine('X-Foo-Bar'));
     }
+    
+    /**
+     * @test
+     */
+    public function Can_set_non_string_type_header() {
+
+        // arrange
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com'));
+
+        // act
+        $plug = $plug->withHeader('bar', true)
+            ->withHeader('fred', false)
+            ->withHeader('baz', 0)
+            ->withHeader('qux', -10)
+            ->withHeader('bazz', new class {
+                public function __toString() : string {
+                    return 'zzz';
+                }
+            })
+            ->withHeader('fredd', ['qux', true, -10, 5])
+            ->withHeader('barr', function() { return 'bazzzzz'; });
+
+        // assert
+        $this->assertEquals('true', $plug->getHeaders()->getHeaderLine('Bar'));
+        $this->assertEquals('false', $plug->getHeaders()->getHeaderLine('Fred'));
+        $this->assertEquals('0', $plug->getHeaders()->getHeaderLine('Baz'));
+        $this->assertEquals('-10', $plug->getHeaders()->getHeaderLine('Qux'));
+        $this->assertEquals('zzz', $plug->getHeaders()->getHeaderLine('Bazz'));
+        $this->assertEquals('qux, true, -10, 5', $plug->getHeaders()->getHeaderLine('Fredd'));
+        $this->assertEquals('bazzzzz', $plug->getHeaders()->getHeaderLine('Barr'));
+    }
 }

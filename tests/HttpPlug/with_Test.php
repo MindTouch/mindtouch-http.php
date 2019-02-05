@@ -149,5 +149,30 @@ class with_Test extends MindTouchHttpUnitTestCase  {
         // assert
         $this->assertEquals('http://foo.com?a=b&c=d&bar=qux&fred=foo', $plug->getUri());
     }
-}
 
+    /**
+     * @test
+     */
+    public function Add_non_string_type_param() {
+
+        // arrange
+        $plug = new HttpPlug(XUri::tryParse('http://foo.com'));
+
+        // act
+        $plug = $plug
+            ->with('bar', true)
+            ->with('fred', false)
+            ->with('baz', 0)
+            ->with('qux', -10)
+            ->with('bazz', new class {
+                public function __toString() : string {
+                    return 'zzz';
+                }
+            })
+            ->with('fredd', ['qux', true, -10, 5])
+            ->with('barr', function() { return 'bazzzzz'; });
+
+        // assert
+        $this->assertEquals('http://foo.com?bar=true&fred=false&baz=0&qux=-10&bazz=zzz&fredd=qux%2C1%2C-10%2C5&barr=bazzzzz', $plug->getUri());
+    }
+}

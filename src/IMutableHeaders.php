@@ -37,19 +37,19 @@ interface IMutableHeaders extends IHeaders {
      * Set or add value to an HTTP header
      *
      * @param string $name
-     * @param string|null $value
+     * @param mixed $value
      * @return void
      */
-    function addHeader(string $name, ?string $value) : void;
+    function addHeader(string $name, $value) : void;
 
     /**
      * Set or replace value on an HTTP header
      *
      * @param string $name
-     * @param string|null $value
+     * @param mixed $value
      * @return void
      */
-    function setHeader(string $name, ?string $value) : void;
+    function setHeader(string $name, $value) : void;
 
     /**
      * Set or add header value(s) with a raw HTTP header

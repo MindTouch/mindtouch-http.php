@@ -26,7 +26,7 @@ class addHeader_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_set_multiple_values() {
+    public function Can_add_multiple_values() {
 
         // arrange
         $headers = new Headers();
@@ -43,7 +43,7 @@ class addHeader_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_set_empty_value() {
+    public function Can_add_empty_value() {
 
         // arrange
         $headers = new Headers();
@@ -58,7 +58,7 @@ class addHeader_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_only_set_a_single_empty_value() {
+    public function Can_only_add_a_single_empty_value() {
 
         // arrange
         $headers = new Headers();
@@ -75,7 +75,7 @@ class addHeader_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_set_single_value_only_header_values() {
+    public function Can_add_single_value_only_header_values() {
 
         // arrange
         $headers = new Headers();
@@ -89,5 +89,37 @@ class addHeader_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertArrayHasKeyValue('Content-Type', ['application/json'], $headers->toArray());
         $this->assertArrayHasKeyValue('Location', ['http://bar.example.com'], $headers->toArray());
+    }
+
+    /**
+     * @test
+     */
+    public function Can_add_non_string_type_header() {
+
+        // arrange
+        $headers = new Headers();
+        $headers->addHeader('fredd', 'card');
+
+        // act
+        $headers->addHeader('bar', true);
+        $headers->addHeader('fred', false);
+        $headers->addHeader('baz', 0);
+        $headers->addHeader('qux', -10);
+        $headers->addHeader('bazz', new class {
+            public function __toString() : string {
+                return 'zzz';
+            }
+        });
+        $headers->addHeader('fredd', ['qux', true, -10, 5]);
+        $headers->addHeader('barr', function() { return 'bazzzzz'; });
+
+        // assert
+        $this->assertArrayHasKeyValue('Bar', ['true'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Fred', ['false'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Baz', ['0'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Qux', ['-10'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Bazz', ['zzz'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Fredd', ['card', 'qux', 'true', '-10', '5'], $headers->toArray());
+        $this->assertArrayHasKeyValue('Barr', 'bazzzzz', $headers->toArray());
     }
 }

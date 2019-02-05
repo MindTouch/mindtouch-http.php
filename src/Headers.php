@@ -160,16 +160,14 @@ class Headers implements IMutableHeaders {
         }
     }
 
-    public function addHeader(string $name, ?string $value) : void {
-        $values = !is_string($value) ? [] : [trim($value)];
+    public function addHeader(string $name, $value) : void {
         $name = self::getFormattedHeaderName($name);
-        $this->set($name, $values, false);
+        $this->set($name, $this->getValuesHelper($value), false);
     }
 
-    public function setHeader(string $name, ?string $value) : void {
-        $values = !is_string($value) ? [] : [trim($value)];
+    public function setHeader(string $name, $value) : void {
         $name = self::getFormattedHeaderName($name);
-        $this->set($name, $values, true);
+        $this->set($name, $this->getValuesHelper($value), true);
     }
 
     public function addRawHeader(string $header) : void { $this->setRawHeaderHelper($header, false); }
@@ -226,6 +224,24 @@ class Headers implements IMutableHeaders {
         $instance = clone $this;
         $instance->addHeaders($headers);
         return $instance;
+    }
+
+    /**
+     * Build a header values array
+     *
+     * @param mixed $value
+     * @return array
+     */
+    protected function getValuesHelper($value) : array {
+        if(is_string($value)) {
+            return [trim($value)];
+        }
+        if(is_array($value)) {
+            return array_map(function($value) {
+                return trim(StringUtil::stringify($value));
+            }, $value);
+        }
+        return [trim(StringUtil::stringify($value))];
     }
 
     /**

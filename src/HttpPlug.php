@@ -173,7 +173,7 @@ class HttpPlug {
      */
     public function withAddedHeader(string $name, $value) : object {
         $plug = clone $this;
-        $plug->headers->addHeader($name, StringUtil::stringify($value));
+        $plug->headers->addHeader($name, $value);
         return $plug;
     }
 
@@ -186,7 +186,7 @@ class HttpPlug {
      */
     public function withHeader(string $name, $value) : object {
         $plug = clone $this;
-        $plug->headers->setHeader($name, StringUtil::stringify($value));
+        $plug->headers->setHeader($name, $value);
         return $plug;
     }
 
@@ -247,7 +247,7 @@ class HttpPlug {
     public function with(string $name, $value) : object {
         $plug = clone $this;
         $plug->uri = $value !== null
-            ? $plug->uri->withQueryParam($name, StringUtil::stringify($value))
+            ? $plug->uri->withQueryParam($name, $value)
             : $plug->uri->withoutQueryParam($name);
         return $plug;
     }
