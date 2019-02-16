@@ -96,13 +96,14 @@ class ApiPlug extends HttpPlug {
      * The api requires double urlencoded titles. This method will do it automatically for you.
      * @see #AtRaw() for creating unencoded path components
      *
-     * @param string ...$segments - path segments to add to the request (ex: $this->at('foo', 'bar', 'baz'))
+     * @param mixed ...$segments - path segments to add to the request (ex: $this->at('foo', 'bar', 'baz'))
      * @return static
      */
     public function at(...$segments) : object {
         $plug = clone $this;
         $path = $plug->uri->getPath();
         foreach($segments as $segment) {
+            $segment = StringUtil::stringify($segment);
             if(!in_array($segment, self::$rawUriPathSegments)) {
 
                 // auto-double encode, check for '=' sign

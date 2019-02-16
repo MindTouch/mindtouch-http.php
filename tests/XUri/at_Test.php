@@ -30,12 +30,20 @@ class at_Test extends MindTouchHttpUnitTestCase {
 
         // arrange
         $uriStr = 'http://user:password@test.mindtouch.dev/?a=b&c=d#fragment';
+        $object = new class {
+            public function __toString() {
+                return 'xyz';
+            }
+        };
+        $func = function() {
+            return 'asdf';
+        };
 
-         // act
-        $result = XUri::tryParse($uriStr)->at('foo', 'bar', 'baz');
+        // act
+        $result = XUri::tryParse($uriStr)->at('foo', 'bar', 'baz', true, 123, $object, $func);
 
         // assert
-        $this->assertEquals('http://user:password@test.mindtouch.dev/foo/bar/baz?a=b&c=d#fragment', $result);
+        $this->assertEquals('http://user:password@test.mindtouch.dev/foo/bar/baz/true/123/xyz/asdf?a=b&c=d#fragment', $result);
     }
 
     /**

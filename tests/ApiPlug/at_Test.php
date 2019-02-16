@@ -46,12 +46,20 @@ class at_Test extends MindTouchHttpUnitTestCase  {
 
         // arrange
         $plug = new ApiPlug(XUri::tryParse('http://foo.com'));
+        $object = new class {
+            public function __toString() {
+                return 'xyz';
+            }
+        };
+        $func = function() {
+            return 'asdf';
+        };
 
         // act
-        $plug = $plug->at('bar', 'qux', 'baz');
+        $plug = $plug->at('bar', 'qux', 'baz', false, 321, $object, $func);
 
         // assert
-        $this->assertEquals('http://foo.com/bar/qux/baz?dream.out.format=php', $plug->getUri());
+        $this->assertEquals('http://foo.com/bar/qux/baz/false/321/xyz/asdf?dream.out.format=php', $plug->getUri());
     }
 
     /**

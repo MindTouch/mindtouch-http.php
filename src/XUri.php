@@ -523,7 +523,7 @@ class XUri {
     /**
      * Return an instance with a path segment appended
      *
-     * @param string ...$segments,... - path segments to append
+     * @param mixed ...$segments,... - path segments to append
      * @return static
      */
     public function at(...$segments) : object {
@@ -533,7 +533,7 @@ class XUri {
         $data = $this->data;
         $path = $this->getInternalPath($data);
         foreach($segments as $segment) {
-            $path .= $this->normalize($segment);
+            $path .= $this->normalize(StringUtil::stringify($segment));
         }
         $data['path'] = $path;
         return static::newFromUriData($data);

@@ -223,7 +223,7 @@ class HttpPlug {
     /**
      * Return an instance with appended path segments
      *
-     * @param string ...$segments - path segments to add to the request (ex: $this->at('foo', 'bar', 'baz'))
+     * @param mixed ...$segments - path segments to add to the request (ex: $this->at('foo', 'bar', 'baz'))
      * @return static
      * @throws MalformedPathQueryFragmentException
      */
@@ -231,7 +231,7 @@ class HttpPlug {
         $plug = clone $this;
         $path = '';
         foreach($segments as $segment) {
-            $path .= '/' . ltrim($segment, '/');
+            $path .= '/' . ltrim(StringUtil::stringify($segment), '/');
         }
         $plug->uri = $plug->uri->atPath($path);
         return $plug;
