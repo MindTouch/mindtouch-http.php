@@ -75,6 +75,11 @@ class StringUtil {
      * @return string
      */
     public static function stringify($value) : string {
+        if(is_string($value)) {
+
+            // that was easy...
+            return $value;
+        }
         if(is_bool($value)) {
             return $value ? 'true' : 'false';
         }
