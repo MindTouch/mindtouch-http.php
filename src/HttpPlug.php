@@ -256,10 +256,10 @@ class HttpPlug {
      * Return an instance with standard HTTP auth credentials for the request
      *
      * @param string $user - user name to use for authorization
-     * @param string $password
+     * @param string|null $password - optional password
      * @return static
      */
-    public function withCredentials(string $user, string $password) : object {
+    public function withCredentials(string $user, ?string $password) : object {
         $plug = clone $this;
         $plug->user = $user;
         $plug->password = $password;

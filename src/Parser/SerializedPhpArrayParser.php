@@ -42,7 +42,7 @@ class SerializedPhpArrayParser extends HttpResultParserBase implements IHttpResu
             /** @noinspection PhpUnhandledExceptionInspection */
             $this->validateContentLength($result);
             $body = $result->getVal('body', '');
-            if(is_string($body)) {
+            if(is_string($body) && $body !== '') {
                 $result->setVal('body', unserialize($body));
             }
         }
