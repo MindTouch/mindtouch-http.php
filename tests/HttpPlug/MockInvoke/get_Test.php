@@ -165,4 +165,32 @@ class get_Test extends MindTouchHttpUnitTestCase  {
         $this->assertEquals(200, $maxContentLength);
         $this->assertTrue($exceptionThrown);
     }
+
+    /**
+     * @test
+     */
+    public function Can_unserialize_empty_php_body() {
+
+        // arrange
+        $uri = XUri::tryParse('test://example.com/foo');
+        MockPlug::register(
+            $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_GET, $uri),
+            (new HttpResult())
+                ->withStatus(200)
+                ->withHeaders(Headers::newFromHeaderNameValuePairs([
+                    [Headers::HEADER_CONTENT_TYPE, ContentType::PHP],
+                    [Headers::HEADER_CONTENT_LENGTH, '0']
+                ]))
+                ->withBody('')
+        );
+        $plug = new HttpPlug($uri);
+
+         // act
+        $parser = (new SerializedPhpArrayParser())->withMaxContentLength(50000);
+        $result = $plug->withHttpResultParser($parser)->get();
+
+        // assert
+        $this->assertEquals(200, $result->getStatus());
+        $this->assertEquals('', $result->getBody()->getVal('body'));
+    }
 }

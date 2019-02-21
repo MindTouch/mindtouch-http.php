@@ -43,6 +43,22 @@ class getUri_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
+    public function Can_get_uri_with_username_credential() {
+
+        // arrange
+        $plug = (new HttpPlug(XUri::tryParse('http://foo.com/bar/baz?a=b&c=d')))
+            ->withCredentials('aaa', null);
+
+        // act
+        $result = $plug->getUri(true);
+
+        // assert
+        $this->assertEquals('http://aaa:@foo.com/bar/baz?a=b&c=d', $result->toString());
+    }
+
+    /**
+     * @test
+     */
     public function Can_get_uri_without_credentials() {
 
         // arrange

@@ -68,9 +68,9 @@ class HttpPlug {
     protected $user;
 
     /**
-     * @var string - password for basic auth credentials
+     * @var string|null - password for basic auth credentials
      */
-    protected $password;
+    protected $password = null;
 
     /**
      * @var IMutableHeaders - stores the headers for the request
