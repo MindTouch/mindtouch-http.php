@@ -98,7 +98,7 @@ class XUri {
      * Return an array with key/value pairs of query params
      *
      * @param string $query
-     * @return string[]
+     * @return array<string, string>
      */
     public static function parseQuery(string $query) : array {
         $params = [];
@@ -200,7 +200,7 @@ class XUri {
     /**
      * Retrieve the query parameters of the URI
      *
-     * @return string[] - name/value array of query params
+     * @return array<string, string> - name/value array of query params
      */
     public function getQueryParams() : array {
         $query = $this->getQuery();
