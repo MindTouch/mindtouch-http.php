@@ -52,4 +52,19 @@ class getQueryParam_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertEquals('', $result);
     }
+
+    /**
+     * @test
+     */
+    public function Can_get_numeric_param() {
+
+        // arrange
+        $uriStr = 'http://user:password@test.mindtouch.dev/foo/bar?a=b&123=d&c=#fragment';
+
+        // act
+        $result = XUri::tryParse($uriStr)->getQueryParam('123');
+
+        // assert
+        $this->assertEquals('d', $result);
+    }
 }

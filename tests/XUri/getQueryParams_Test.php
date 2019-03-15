@@ -18,6 +18,7 @@
  */
 namespace MindTouch\Http\tests\XUri;
 
+use MindTouch\Http\IQueryParams;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 use MindTouch\Http\XUri;
 
@@ -35,7 +36,8 @@ class getQueryParams_Test extends MindTouchHttpUnitTestCase {
         $result = XUri::tryParse($uriStr)->getQueryParams();
 
         // assert
-        $this->assertEquals(['a' => 'b', 'c' => 'd'], $result);
+        $this->assertInstanceOf(IQueryParams::class, $result);
+        $this->assertEquals(['a' => 'b', 'c' => 'd'], $result->toArray());
     }
 
     /**
@@ -50,6 +52,23 @@ class getQueryParams_Test extends MindTouchHttpUnitTestCase {
         $result = XUri::tryParse($uriStr)->getQueryParams();
 
         // assert
-        $this->assertEquals([], $result);
+        $this->assertEquals([], $result->toArray());
+    }
+
+    /**
+     * @test
+     */
+    public function Can_iterate_param_values_as_string() {
+
+        // arrange
+        $uriStr = 'http://user:password@test.mindtouch.dev/foo/bar?a=b&123=d&c=#fragment';
+
+        // act
+        $params = XUri::tryParse($uriStr)->getQueryParams();
+
+        // assert
+        foreach($params as $param => $value) {
+            $this->assertInternalType('string', $param);
+        }
     }
 }

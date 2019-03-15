@@ -21,6 +21,7 @@ namespace MindTouch\Http;
 use InvalidArgumentException;
 use MindTouch\Http\Exception\MalformedPathQueryFragmentException;
 use MindTouch\Http\Exception\MalformedUriException;
+use stdClass;
 
 /**
  * Class XUri
@@ -193,18 +194,22 @@ class XUri {
      * @return string|null - parameter value
      */
     public function getQueryParam(string $param) : ?string {
-        $params = $this->getQueryParams();
-        return isset($params[$param]) ? $params[$param] : null;
+        return $this->getQueryParams()->get($param);
     }
 
     /**
      * Retrieve the query parameters of the URI
      *
-     * @return array<string, string> - name/value array of query params
+     * @return IQueryParams - name/value collection of query params
      */
-    public function getQueryParams() : array {
+    public function getQueryParams() : IQueryParams {
         $query = $this->getQuery();
-        return $query !== null ? self::parseQuery($query) : [];
+        $params = $query !== null ? self::parseQuery($query) : [];
+        $collection = new QueryParams();
+        foreach($params as $param => $value) {
+            $collection->set(StringUtil::stringify($param), $value);
+        }
+        return $collection;
     }
 
     /**
@@ -459,7 +464,7 @@ class XUri {
         }
         $value = StringUtil::stringify($value);
         $data = $this->data;
-        $params = self::parseQuery($data['query']);
+        $params = isset($data['query']) ? self::parseQuery($data['query']) : [];
         if(!isset($params[$param])) {
 
             // key not found, nothing to do
@@ -498,7 +503,7 @@ class XUri {
      */
     public function withoutQueryParams(array $params) : object {
         $data = $this->data;
-        $currentParams = self::parseQuery($data['query']);
+        $currentParams = isset($data['query']) ? self::parseQuery($data['query']) : [];
         foreach($params as $param) {
             if(isset($currentParams[$param])) {
                 unset($currentParams[$param]);

@@ -41,6 +41,21 @@ class withoutQueryParams_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
+    public function Can_remove_query_parameters_if_no_query_parameters_exist() {
+
+        // arrange
+        $uriStr = 'http://user:password@test.mindtouch.dev/#fragment';
+
+         // act
+        $result = XUri::tryParse($uriStr)->withoutQueryParams(['a', 'c']);
+
+        // assert
+        $this->assertEquals('http://user:password@test.mindtouch.dev/#fragment', $result);
+    }
+
+    /**
+     * @test
+     */
     public function Can_return_extended_instance() {
 
         // act
