@@ -18,7 +18,32 @@
  */
 namespace MindTouch\Http;
 
-class QueryParams implements IQueryParams {
+class QueryParams implements IMutableQueryParams {
+
+    /**
+     * Return an instance with key/value pairs of query params
+     *
+     * @param string $query
+     * @return IQueryParams
+     */
+    public static function newFromQuery(string $query) : IQueryParams {
+        $params = new QueryParams();
+        if($query !== null) {
+            $pairs = explode('&', $query);
+            foreach($pairs as $pair) {
+                if(!StringUtil::isNullOrEmpty($pair)) {
+                    if(strpos($pair, '=') === false) {
+                        $k = $pair;
+                        $v = null;
+                    } else {
+                        list($k, $v) = array_map('urldecode', explode('=', $pair));
+                    }
+                    $params->set($k, $v === null ? '' : $v);
+                }
+            }
+        }
+        return $params;
+    }
 
     /**
      * @var string[]
@@ -39,8 +64,18 @@ class QueryParams implements IQueryParams {
         return $this->toString();
     }
 
+    public function addQueryParams(IQueryParams $params) : void {
+        foreach($params as $param => $value) {
+            $this->set($param, $value);
+        }
+    }
+
     public function current() : string {
         return $this->params[$this->key];
+    }
+
+    public function isSet(string $param) : bool {
+        return isset($this->params[$param]);
     }
 
     public function key() : string {
@@ -59,15 +94,15 @@ class QueryParams implements IQueryParams {
         return $this->key !== false;
     }
 
-    public function get(string $key) : ?string {
-        return isset($this->params[$key]) ? $this->params[$key] : null;
+    public function get(string $param) : ?string {
+        return isset($this->params[$param]) ? $this->params[$param] : null;
     }
 
-    public function set(string $key, ?string $value) : void {
+    public function set(string $param, $value) : void {
         if($value === null) {
-            unset($this->params[$key]);
+            unset($this->params[$param]);
         } else {
-            $this->params[$key] = $value;
+            $this->params[$param] = StringUtil::stringify($value);
         }
         $this->keys = array_keys($this->params);
         $this->rewind();
@@ -75,6 +110,10 @@ class QueryParams implements IQueryParams {
 
     public function toArray() : array {
         return $this->params;
+    }
+
+    public function toMutableQueryParams(): IMutableQueryParams {
+        return $this;
     }
 
     public function toString() : string {

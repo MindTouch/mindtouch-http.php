@@ -18,6 +18,7 @@
  */
 namespace MindTouch\Http\tests\XUri;
 
+use MindTouch\Http\QueryParams;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 use MindTouch\Http\XUri;
 
@@ -30,7 +31,8 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
 
         // arrange
         $uriStr = 'http://user:password@test.mindtouch.dev/#fragment';
-        $params = [
+        $params = new QueryParams();
+        foreach([
             'foo' => '!@%$',
             'sherlock' => 'holmes',
             'baz' => true,
@@ -44,7 +46,9 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
             },
             'd' => ['qux', true, -10, 5],
             'e' => function() { return 'bazz'; }
-        ];
+        ] as $param => $value) {
+            $params->set($param, $value);
+        }
 
         // act
         $result = XUri::tryParse($uriStr)->withQueryParams($params);
@@ -63,7 +67,8 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
 
         // arrange
         $uriStr = 'http://user:password@test.mindtouch.dev/?z=b&x=d#fragment';
-        $params = [
+        $params = new QueryParams();
+        foreach([
             'foo' => '!@%$',
             'sherlock' => 'holmes',
             'baz' => true,
@@ -77,7 +82,9 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
             },
             'd' => ['qux', true, -10, 5],
             'e' => function() { return 'bazz'; }
-        ];
+        ] as $param => $value) {
+            $params->set($param, $value);
+        }
 
         // act
         $result = XUri::tryParse($uriStr)->withQueryParams($params);
@@ -94,8 +101,13 @@ class withQueryParams_Test extends MindTouchHttpUnitTestCase {
      */
     public function Can_return_extended_instance() {
 
+        // arrange
+        $params = new QueryParams();
+        $params->set('foo', 'bar');
+        $params->set('baz', 'qux');
+
         // act
-        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev:80/somepath?a=b&c=d&e=f#foo')->withQueryParams(['foo' => 'bar', 'baz' => 'qux']);
+        $result = TestXUri::tryParse('http://user:password@test.mindtouch.dev:80/somepath?a=b&c=d&e=f#foo')->withQueryParams($params);
 
         // assert
         $this->assertInstanceOf(TestXUri::class, $result);

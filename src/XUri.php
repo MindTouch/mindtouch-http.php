@@ -21,7 +21,6 @@ namespace MindTouch\Http;
 use InvalidArgumentException;
 use MindTouch\Http\Exception\MalformedPathQueryFragmentException;
 use MindTouch\Http\Exception\MalformedUriException;
-use stdClass;
 
 /**
  * Class XUri
@@ -93,31 +92,6 @@ class XUri {
     public static function isAbsoluteUrl(string $string) : bool {
         $filtered = filter_var($string, FILTER_VALIDATE_URL);
         return ($filtered !== false);
-    }
-
-    /**
-     * Return an array with key/value pairs of query params
-     *
-     * @param string $query
-     * @return array<string, string>
-     */
-    public static function parseQuery(string $query) : array {
-        $params = [];
-        if($query !== null) {
-            $pairs = explode('&', $query);
-            foreach($pairs as $pair) {
-                if(!StringUtil::isNullOrEmpty($pair)) {
-                    if(strpos($pair, '=') === false) {
-                        $k = $pair;
-                        $v = null;
-                    } else {
-                        list($k, $v) = array_map('urldecode', explode('=', $pair));
-                    }
-                    $params[$k] = $v === null ? '' : $v;
-                }
-            }
-        }
-        return $params;
     }
 
     /**
@@ -200,16 +174,11 @@ class XUri {
     /**
      * Retrieve the query parameters of the URI
      *
-     * @return IQueryParams - name/value collection of query params
+     * @return IQueryParams - query params instance
      */
     public function getQueryParams() : IQueryParams {
         $query = $this->getQuery();
-        $params = $query !== null ? self::parseQuery($query) : [];
-        $collection = new QueryParams();
-        foreach($params as $param => $value) {
-            $collection->set(StringUtil::stringify($param), $value);
-        }
-        return $collection;
+        return $query !== null ? QueryParams::newFromQuery($query) : new QueryParams();
     }
 
     /**
@@ -412,13 +381,10 @@ class XUri {
             return $this;
         }
         $data = $this->data;
-        $value = StringUtil::stringify($value);
-        if(isset($data['query'])) {
-            $params = array_merge(self::parseQuery($data['query']), [$param => $value]);
-            $data['query'] = http_build_query($params);
-        } else {
-            $data['query'] = http_build_query([$param => $value]);
-        }
+        $params = (isset($data['query']) ? QueryParams::newFromQuery($data['query']) : new QueryParams())
+            ->toMutableQueryParams();
+        $params->set($param, $value);
+        $data['query'] = $params->toString();
         return static::newFromUriData($data);
     }
 
@@ -440,14 +406,15 @@ class XUri {
      */
     public function withoutQueryParam(string $param) : object {
         $data = $this->data;
-        $params = isset($data['query']) ? self::parseQuery($data['query']) : [];
-        if(!isset($params[$param])) {
+        $params = (isset($data['query']) ? QueryParams::newFromQuery($data['query']) : new QueryParams())
+            ->toMutableQueryParams();
+        if(!$params->isSet($param)) {
 
             // key not found, nothing to do
             return $this;
         }
-        unset($params[$param]);
-        $data['query'] = http_build_query($params);
+        $params->set($param, null);
+        $data['query'] = $params->toString();
         return static::newFromUriData($data);
     }
 
@@ -462,36 +429,31 @@ class XUri {
         if($value === null) {
             return $this->withoutQueryParam($param);
         }
-        $value = StringUtil::stringify($value);
         $data = $this->data;
-        $params = isset($data['query']) ? self::parseQuery($data['query']) : [];
-        if(!isset($params[$param])) {
+        $params = (isset($data['query']) ? QueryParams::newFromQuery($data['query']) : new QueryParams())
+            ->toMutableQueryParams();
+        if(!$params->isSet($param)) {
 
             // key not found, nothing to do
             return $this;
         }
-        $params[$param] = $value;
-        $data['query'] = http_build_query($params);
+        $params->set($param, StringUtil::stringify($value));
+        $data['query'] = $params->toString();
         return static::newFromUriData($data);
     }
 
     /**
      * Return an instance with the specified query params appended
      *
-     * @param array $params - param/value pairs of query params
+     * @param IQueryParams $params - query params
      * @return static
      */
-    public function withQueryParams(array $params) : object {
+    public function withQueryParams(IQueryParams $params) : object {
         $data = $this->data;
-        $params = array_map(function($value) : string {
-            return StringUtil::stringify($value);
-        }, $params);
-        if(isset($data['query'])) {
-            $currentParams = array_merge(self::parseQuery($data['query']), $params);
-            $data['query'] = http_build_query($currentParams);
-        } else {
-            $data['query'] = http_build_query($params);
-        }
+        $currentParams = (isset($data['query']) ? QueryParams::newFromQuery($data['query']) : new QueryParams())
+            ->toMutableQueryParams();
+        $currentParams->addQueryParams($params);
+        $data['query'] = $currentParams->toString();
         return static::newFromUriData($data);
     }
 
@@ -503,13 +465,12 @@ class XUri {
      */
     public function withoutQueryParams(array $params) : object {
         $data = $this->data;
-        $currentParams = isset($data['query']) ? self::parseQuery($data['query']) : [];
+        $currentParams = (isset($data['query']) ? QueryParams::newFromQuery($data['query']) : new QueryParams())
+            ->toMutableQueryParams();
         foreach($params as $param) {
-            if(isset($currentParams[$param])) {
-                unset($currentParams[$param]);
-            }
+            $currentParams->set($param, null);
         }
-        $data['query'] = http_build_query($currentParams);
+        $data['query'] = $currentParams->toString();
         return static::newFromUriData($data);
     }
 
@@ -563,8 +524,10 @@ class XUri {
         }
         if(isset($newUriData['query'])) {
             if(isset($data['query'])) {
-                $currentParams = array_merge(self::parseQuery($data['query']), self::parseQuery($newUriData['query']));
-                $data['query'] = http_build_query($currentParams);
+                $currentParams = QueryParams::newFromQuery($data['query'])
+                    ->toMutableQueryParams();
+                $currentParams->addQueryParams(QueryParams::newFromQuery($newUriData['query']));
+                $data['query'] = $currentParams->toString();
             } else {
                 $data['query'] = $newUriData['query'];
             }
@@ -602,14 +565,15 @@ class XUri {
         if($scrubBasicAuthPassword && isset($data['pass'])) {
             $data['pass'] = self::SENSITIVE_DATA_REPLACEMENT;
         }
-        if(!empty($scrubQueryParams)) {
-            $params = self::parseQuery($data['query']);
-            foreach($scrubQueryParams as $key) {
-                if(isset($params[$key])) {
-                    $params[$key] = self::SENSITIVE_DATA_REPLACEMENT;
+        if(!empty($scrubQueryParams) && isset($data['query'])) {
+            $params = QueryParams::newFromQuery($data['query'])
+                ->toMutableQueryParams();
+            foreach($scrubQueryParams as $param) {
+                if($params->isSet($param)) {
+                    $params->set($param, self::SENSITIVE_DATA_REPLACEMENT);
                 }
             }
-            $data['query'] = http_build_query($params);
+            $data['query'] = $params->toString();
         }
         return static::newFromUriData($data);
     }

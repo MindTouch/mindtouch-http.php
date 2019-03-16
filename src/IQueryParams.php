@@ -31,9 +31,20 @@ interface IQueryParams extends Iterator {
     function get(string $param) : ?string;
 
     /**
+     * @param string $param
+     * @return bool
+     */
+    function isSet(string $param) : bool;
+
+    /**
      * @return array
      */
     function toArray() : array;
+
+    /**
+     * @return IMutableQueryParams
+     */
+    function toMutableQueryParams() : IMutableQueryParams;
 
     /**
      * @return string

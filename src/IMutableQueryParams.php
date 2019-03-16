@@ -21,10 +21,17 @@ namespace MindTouch\Http;
 interface IMutableQueryParams extends IQueryParams {
 
     /**
+     * Add or set query parameters from an instance
+     *
+     * @param IQueryParams $params
+     */
+    function addQueryParams(IQueryParams $params) : void;
+
+    /**
      * Set a query parameter value in the collection
      *
      * @param string $param
-     * @param null|string $value - null will remove param from collection
+     * @param string|null $value - null will remove param from collection
      */
-    function set(string $param, ?string $value) : void;
+    function set(string $param, $value) : void;
 }
