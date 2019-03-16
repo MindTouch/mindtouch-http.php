@@ -21,8 +21,18 @@ namespace MindTouch\Http;
 class QueryParams implements IMutableQueryParams {
 
     /**
-     * Return an instance with key/value pairs of query params
-     *
+     * @param array $array
+     * @return IQueryParams
+     */
+    public static function newFromArray(array $array) : IQueryParams {
+        $params = new QueryParams();
+        foreach($array as $param => $value) {
+            $params->set($param, $value);
+        }
+        return $params;
+    }
+
+    /**
      * @param string $query
      * @return IQueryParams
      */
