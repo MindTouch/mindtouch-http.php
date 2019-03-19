@@ -22,6 +22,7 @@ use Closure;
 use InvalidArgumentException;
 use MindTouch\Http\Content\FileContent;
 use MindTouch\Http\Content\IContent;
+use MindTouch\Http\Exception\HttpPlugUriHostRequiredException;
 use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
 use MindTouch\Http\Exception\MalformedPathQueryFragmentException;
 use MindTouch\Http\Exception\NotImplementedException;
@@ -89,9 +90,13 @@ class HttpPlug {
 
     /**
      * @param XUri $uri - target uri
+     * @throws HttpPlugUriHostRequiredException
      */
     public function __construct(XUri $uri) {
         $this->headers = new Headers();
+        if(StringUtil::isNullOrEmpty($uri->getHost())) {
+            throw new HttpPlugUriHostRequiredException($uri);
+        }
         $this->uri = $uri;
     }
 
@@ -212,7 +217,7 @@ class HttpPlug {
      */
     public function withUri(XUri $uri, bool $preserveHost = false) : object {
         $plug = clone $this;
-        $host = $plug->uri->getHost();
+        $host = StringUtil::stringify($plug->uri->getHost());
         $plug->uri = $uri;
         if($preserveHost) {
             $plug->uri = $plug->uri->withHost($host);

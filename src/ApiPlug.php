@@ -22,6 +22,7 @@ use Closure;
 use Exception;
 use MindTouch\Http\Content\IContent;
 use MindTouch\Http\Exception\ApiResultException;
+use MindTouch\Http\Exception\HttpPlugUriHostRequiredException;
 use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
 use MindTouch\Http\Parser\SerializedPhpArrayParser;
 
@@ -85,6 +86,7 @@ class ApiPlug extends HttpPlug {
     /**
      * @param XUri $uri - target uri
      * @param string $format
+     * @throws HttpPlugUriHostRequiredException
      */
     public function __construct(XUri $uri, string $format = self::DREAM_FORMAT_PHP) {
         parent::__construct($uri);
