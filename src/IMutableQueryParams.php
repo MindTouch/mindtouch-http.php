@@ -31,7 +31,7 @@ interface IMutableQueryParams extends IQueryParams {
      * Set a query parameter value in the collection
      *
      * @param string $param
-     * @param string|null $value - null will remove param from collection
+     * @param mixed|null $value - null will remove param from collection
      */
     function set(string $param, $value) : void;
 }

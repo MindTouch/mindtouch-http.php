@@ -22,9 +22,9 @@ class QueryParams implements IMutableQueryParams {
 
     /**
      * @param array $array
-     * @return IQueryParams
+     * @return QueryParams
      */
-    public static function newFromArray(array $array) : IQueryParams {
+    public static function newFromArray(array $array) : QueryParams {
         $params = new QueryParams();
         foreach($array as $param => $value) {
             $params->set($param, $value);
@@ -34,9 +34,9 @@ class QueryParams implements IMutableQueryParams {
 
     /**
      * @param string $query
-     * @return IQueryParams
+     * @return QueryParams
      */
-    public static function newFromQuery(string $query) : IQueryParams {
+    public static function newFromQuery(string $query) : QueryParams {
         $params = new QueryParams();
         if($query !== null) {
             $pairs = explode('&', $query);

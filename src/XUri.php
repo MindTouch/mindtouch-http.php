@@ -194,9 +194,9 @@ class XUri {
      * Retrieve the host component of the URI
      *
      * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
-     * @return string
+     * @return string|null
      */
-    public function getHost() : string { return $this->data['host']; }
+    public function getHost() : ?string { return isset($this->data['host']) ? $this->data['host'] : null; }
 
     /**
      * Retrieve the authority component of the URI, in "[user-info@]host[:port]" format

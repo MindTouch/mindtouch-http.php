@@ -37,4 +37,19 @@ class getHost_Test extends MindTouchHttpUnitTestCase {
         // assert
         $this->assertEquals('test.mindtouch.dev', $result);
     }
+
+    /**
+     * @test
+     */
+    public function Can_get_file_uri_null_host() {
+
+        // arrange
+        $uriStr = 'file:///etc/passwd';
+
+        // act
+        $result = XUri::tryParse($uriStr)->getHost();
+
+        // assert
+        $this->assertNull($result);
+    }
 }
