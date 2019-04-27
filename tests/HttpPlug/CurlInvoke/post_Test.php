@@ -20,9 +20,10 @@ namespace MindTouch\Http\tests\HttpPlug\CurlInvoke;
 
 use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\Content\FileContent;
-use MindTouch\Http\Content\FormDataContent;
+use MindTouch\Http\Content\MultiPartFormDataContent;
 use MindTouch\Http\Content\JsonContent;
 use MindTouch\Http\Content\TextContent;
+use MindTouch\Http\Content\UrlEncodedFormDataContent;
 use MindTouch\Http\Content\XmlContent;
 use MindTouch\Http\HttpPlug;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
@@ -110,13 +111,13 @@ TEXT
     /**
      * @test
      */
-    public function Can_invoke_post_with_form_data_content() {
+    public function Can_invoke_post_with_urlencoded_form_data_content() {
 
         // arrange
         $plug = $this->newHttpBinPlug()->at('anything');
 
         // act
-        $result = $plug->post(new FormDataContent([
+        $result = $plug->post(new UrlEncodedFormDataContent([
             'foo' => 'bar',
             'baz' => 'qux'
         ]));
@@ -124,7 +125,29 @@ TEXT
         // assert
         $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
-        $this->assertStringStartsWith('multipart/form-data', $body->getVal('headers/Content-Type'));
+        $this->assertStringStartsWith('application/x-www-form-urlencoded', $body->getString('headers/Content-Type'));
+        $this->assertEquals('15', $body->getVal('headers/Content-Length'));
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'qux'], $body->getVal('form'));
+    }
+
+    /**
+     * @test
+     */
+    public function Can_invoke_post_with_multipart_form_data_content() {
+
+        // arrange
+        $plug = $this->newHttpBinPlug()->at('anything');
+
+        // act
+        $result = $plug->post(new MultiPartFormDataContent([
+            'foo' => 'bar',
+            'baz' => 'qux'
+        ]));
+
+        // assert
+        $this->assertEquals(200, $result->getStatus());
+        $body = $result->getBody();
+        $this->assertStringStartsWith('multipart/form-data', $body->getString('headers/Content-Type'));
         $this->assertEquals('236', $body->getVal('headers/Content-Length'));
         $this->assertEquals('100-continue', $body->getVal('headers/Expect'));
         $this->assertEquals(['foo' => 'bar', 'baz' => 'qux'], $body->getVal('form'));
@@ -133,7 +156,7 @@ TEXT
     /**
      * @test
      */
-    public function Can_invoke_post_with_form_data_content_with_file_content() {
+    public function Can_invoke_post_with_multipart_form_data_content_with_file_content() {
 
         // arrange
         $plug = $this->newHttpBinPlug()->at('anything');
@@ -141,7 +164,7 @@ TEXT
         $filePath2 = dirname(__FILE__) . '/file.txt';
 
         // act
-        $content = new FormDataContent([
+        $content = new MultiPartFormDataContent([
             'foo' => 'bar',
             'baz' => 'qux'
         ]);
@@ -153,10 +176,10 @@ TEXT
         // assert
         $this->assertEquals(200, $result->getStatus());
         $body = $result->getBody();
-        $this->assertStringStartsWith('multipart/form-data', $body->getVal('headers/Content-Type'));
+        $this->assertStringStartsWith('multipart/form-data', $body->getString('headers/Content-Type'));
         $this->assertEquals('100-continue', $body->getVal('headers/Expect'));
         $this->assertEquals(['foo' => 'bar', 'baz' => 'qux'], $body->getVal('form'));
-        $this->assertStringStartsWith('data:image/png; charset=binary;base64,', $body->getVal('files/file[0]'));
+        $this->assertStringStartsWith('data:image/png; charset=binary;base64,', $body->getString('files/file[0]'));
         $this->assertEquals('foo bar baz', $body->getVal('files/file[1]'));
     }
 

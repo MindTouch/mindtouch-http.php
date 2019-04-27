@@ -24,7 +24,7 @@ use CURLFile;
  *
  * @package MindTouch\Http\Content
  */
-class FormDataContent implements IContent {
+class UrlEncodedFormDataContent implements IContent {
 
     /**
      * @var ContentType|null
@@ -37,15 +37,10 @@ class FormDataContent implements IContent {
     private $data;
 
     /**
-     * @var FileContent[]
-     */
-    private $files = [];
-
-    /**
      * @param string[] $data - name/value pairs of form data
      */
     public function __construct(array $data) {
-        $this->contentType = ContentType::newFromString(ContentType::FORM);
+        $this->contentType = ContentType::newFromString(ContentType::FORM_URLENCODED);
         $this->data = $data;
     }
 
@@ -54,38 +49,15 @@ class FormDataContent implements IContent {
         // deep copy internal data objects and arrays
         $this->contentType = unserialize(serialize($this->contentType));
         $this->data = unserialize(serialize($this->data));
-        $this->files = unserialize(serialize($this->files));
     }
 
     public function getContentType() : ?ContentType { return $this->contentType; }
 
-    public function toRaw() : array {
-        $data = [];
-        foreach($this->files as $key => $file) {
-            $contentType = $file->getContentType();
-            if($contentType === null) {
-
-                // skip invalid file content types
-                continue;
-            }
-            $data["file[{$key}]"] = new CURLFile($file->toString(), $contentType->toString());
-        }
-        return array_merge($this->data, $data);
+    public function toRaw() : string {
+        return $this->toString();
     }
 
     public function toString() : string { return http_build_query($this->data); }
 
     public function __toString() : string { return $this->toString(); }
-
-    /**
-     * Return an instance with a new CurlFile as part of the form body data
-     *
-     * @param FileContent $content
-     * @return FormDataContent
-     */
-    public function withFileContent(FileContent $content) : FormDataContent {
-        $instance = clone $this;
-        $instance->files[] = $content;
-        return $instance;
-    }
 }

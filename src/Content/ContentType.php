@@ -33,7 +33,8 @@ class ContentType {
     const XML = 'application/xml; charset=utf-8';
     const TEXT = 'text/plain; charset=utf-8';
     const STREAM = 'application/octet-stream';
-    const FORM = 'multipart/form-data';
+    const FORM_MULTIPART = 'multipart/form-data';
+    const FORM_URLENCODED = 'application/x-www-form-urlencoded';
     const PHP = 'application/php; charset=utf-8';
 
     /**

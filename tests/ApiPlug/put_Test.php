@@ -21,7 +21,7 @@ namespace MindTouch\Http\tests\ApiPlug;
 use MindTouch\Http\ApiPlug;
 use MindTouch\Http\ApiResult;
 use MindTouch\Http\Content\ContentType;
-use MindTouch\Http\Content\FormDataContent;
+use MindTouch\Http\Content\MultiPartFormDataContent;
 use MindTouch\Http\Content\TextContent;
 use MindTouch\Http\Headers;
 use MindTouch\Http\Mock\MockPlug;
@@ -98,7 +98,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(ApiPlug::METHOD_POST, $uri->with('dream.in.verb', ApiPlug::METHOD_PUT))
                 ->withHeaders(Headers::newFromHeaderNameValuePairs([
-                    [Headers::HEADER_CONTENT_TYPE, ContentType::FORM]
+                    [Headers::HEADER_CONTENT_TYPE, ContentType::FORM_MULTIPART]
                 ]))
                 ->withBody([
                     'foo' => 'bar',
@@ -115,7 +115,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
         $plug = new ApiPlug($uri);
 
         // act
-        $result = $plug->put(new FormDataContent([
+        $result = $plug->put(new MultiPartFormDataContent([
             'foo' => 'bar',
             'baz' => 'qux'
         ]));

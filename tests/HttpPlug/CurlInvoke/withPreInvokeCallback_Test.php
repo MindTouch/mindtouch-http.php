@@ -63,7 +63,11 @@ class withPreInvokeCallback_Test extends MindTouchHttpUnitTestCase {
 
         // act
         $result = $plug
-            ->withPreInvokeCallback(function($method, XUri $uri, IMutableHeaders $headers) use (&$preInvokeAuthorizationHeaderValue) {
+            ->withPreInvokeCallback(function(
+
+                /** @noinspection PhpUnusedParameterInspection */
+                $method, XUri $uri, IMutableHeaders $headers
+            ) use (&$preInvokeAuthorizationHeaderValue) {
                 $preInvokeAuthorizationHeaderValue = $headers->getHeaderLine(Headers::HEADER_AUTHORIZATION);
                 $headers->setHeader(Headers::HEADER_AUTHORIZATION, 'Basic ' . base64_encode('foo:fred'));
             })
