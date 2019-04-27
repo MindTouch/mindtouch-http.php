@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 namespace MindTouch\Http\Content;
-use CURLFile;
 
 /**
- * Class FormDataContent
+ * Class UrlEncodedFormDataContent
  *
  * @package MindTouch\Http\Content
  */

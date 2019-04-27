@@ -20,7 +20,7 @@ namespace MindTouch\Http\Content;
 use CURLFile;
 
 /**
- * Class FormDataContent
+ * Class MultiPartFormDataContent
  *
  * @package MindTouch\Http\Content
  */
