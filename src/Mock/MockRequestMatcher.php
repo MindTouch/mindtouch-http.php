@@ -150,6 +150,18 @@ class MockRequestMatcher {
     }
 
     /**
+     * Return an instance with the specified HTTP headers added to existing mocked HTTP headers.
+     *
+     * @param IHeaders $headers
+     * @return MockRequestMatcher
+     */
+    public function withAddedHeaders(IHeaders $headers) : MockRequestMatcher {
+        $request = clone $this;
+        $request->headers->addHeaders($headers);
+        return $request;
+    }
+
+    /**
      * Return an instance with the specified body string
      *
      * @param string|string[]|null $body - array body is assumed to be form fields and will be encoded to a string
