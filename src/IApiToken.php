@@ -43,6 +43,15 @@ interface IApiToken {
     function withUserId(int $userId) : IApiToken;
 
     /**
+     * Pass through to IApiToken::toSignature
+     *
+     * @deprecated
+     * @param int|null $timestamp - unix timestamp (default: epoch)
+     * @return string
+     */
+    function toHash(int $timestamp = null) : string;
+
+    /**
      * Convert token to signature for use with "X-Deki-Token" header
      *
      * @param int|null $timestamp - unix timestamp (default: epoch)
