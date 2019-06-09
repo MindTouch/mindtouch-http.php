@@ -138,4 +138,4 @@ foreach($result->getAll('body/tags/tag') as $tag) {
 
 ## Further Documentation
 
-* [MindTouch RESTful API](https://success.mindtouch.com/Support/Extend/API_Documentation)
+* [MindTouch RESTful API](https://success.mindtouch.com/Integrations/API)
