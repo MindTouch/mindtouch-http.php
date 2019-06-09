@@ -37,7 +37,7 @@ class withApiToken_Test extends MindTouchHttpUnitTestCase  {
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
         $token = $this->newMock(IApiToken::class);
         $token->expects($this->once())
-            ->method('toHash')
+            ->method('toSignature')
             ->will($this->returnValue('foo'));
         MockPlug::register(
             $this->newDefaultMockRequestMatcher(ApiPlug::METHOD_GET, $uri)

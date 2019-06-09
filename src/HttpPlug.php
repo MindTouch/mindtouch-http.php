@@ -414,17 +414,11 @@ class HttpPlug {
     /**
      * Return the formatted invocation result
      *
-     * @param string $method
-     * @param XUri $uri
-     * @param IHeaders $headers
-     * @param float $start
-     * @param float $end
      * @param HttpResult $result
      * @return HttpResult
      * @throws HttpResultParserContentExceedsMaxContentLengthException
      */
-    protected function invokeComplete(string $method, XUri $uri, IHeaders $headers, float $start, float $end, HttpResult $result) : object {
-        $result = $result->withRequestInfo($method, $uri, $headers, $start, $end);
+    protected function invokeComplete(HttpResult $result) : object {
         foreach($this->parsers as $parser) {
             $result = $parser->toParsedResult($result);
         }
@@ -479,7 +473,7 @@ class HttpPlug {
                 ->withBody($body);
             $result = MockPlug::getHttpResult($matcher);
             if($result !== null) {
-                return $this->invokeComplete($method, $requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
+                return $this->invokeComplete($result->withRequestInfo($method, $requestUri, $requestHeaders, $requestStart, $requestEnd));
             }
         }
 
@@ -583,12 +577,13 @@ class HttpPlug {
         ];
         $result = (new HttpResult($data))
             ->withStatus(curl_getinfo($curl, CURLINFO_HTTP_CODE))
-            ->withHeaders($responseHeaders);
+            ->withHeaders($responseHeaders)
+            ->withRequestInfo($method, $requestUri, $requestHeaders, $requestStart, $requestEnd);
         if(!is_bool($httpMessage) && !StringUtil::isNullOrEmpty($httpMessage)) {
             $result = $result->withBody($httpMessage);
         }
         curl_close($curl);
-        return $this->invokeComplete($method, $requestUri, $requestHeaders, $requestStart, $requestEnd, $result);
+        return $this->invokeComplete($result);
     }
 
     /**

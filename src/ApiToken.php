@@ -21,7 +21,7 @@ namespace MindTouch\Http;
 /**
  * Class ApiToken - MindTouch API server token
  *
- * @link https://success.mindtouch.com/Support/Extend/API_Documentation/API_Tokens
+ * @link https://success.mindtouch.com/Integrations/API/API_Tokens
  * @package MindTouch\Http
  */
 class ApiToken implements IApiToken {
@@ -64,7 +64,7 @@ class ApiToken implements IApiToken {
         return $token;
     }
 
-    public function toHash(int $timestamp = null) : string {
+    public function toSignature(int $timestamp = null) : string {
         if($timestamp === null) {
             $timestamp = time();
         }

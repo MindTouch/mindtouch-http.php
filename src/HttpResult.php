@@ -35,7 +35,6 @@ class HttpResult extends XArray {
         $this->array = unserialize(serialize($this->array));
     }
 
-
     /**
      * Return an instance with the added request information
      *

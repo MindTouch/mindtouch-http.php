@@ -139,7 +139,7 @@ class ApiPlug extends HttpPlug {
     /**
      * Return an instance with  a server API token to the request
      *
-     * @link https://success.mindtouch.com/Support/Extend/API_Documentation/API_Tokens/Use_a_server_API_token_with_an_integration
+     * @link https://success.mindtouch.com/Integrations/API/API_Tokens/Use_a_server_API_token_with_an_integration
      * @param IApiToken $token
      * @return static
      */
@@ -193,26 +193,21 @@ class ApiPlug extends HttpPlug {
     protected function invokeApplyCredentials(IMutableHeaders $headers) : void {
         parent::invokeApplyCredentials($headers);
         if($this->token !== null) {
-            $headers->setHeader('X-Deki-Token', $this->token->toHash());
+            $headers->setHeader('X-Deki-Token', $this->token->toSignature());
         }
     }
 
     /**
      * Return the formatted invocation result
      *
-     * @param string $method
-     * @param XUri $uri
-     * @param IHeaders $headers
-     * @param float $start
-     * @param float $end
      * @param HttpResult $result
      * @return ApiResult
      * @throws ApiResultException
      */
-    protected function invokeComplete(string $method, XUri $uri, IHeaders $headers, float $start, float $end, HttpResult $result) : object {
+    protected function invokeComplete($result) : object {
         $exception = null;
         try {
-            $result = parent::invokeComplete($method, $uri, $headers, $start, $end, $result);
+            $result = parent::invokeComplete($result);
         } catch(Exception $e) {
             $exception = $e;
         }

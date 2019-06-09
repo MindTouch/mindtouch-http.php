@@ -21,7 +21,7 @@ namespace MindTouch\Http;
 /**
  * Interface ApiToken - MindTouch API server token interface
  *
- * @link https://success.mindtouch.com/Support/Extend/API_Documentation/API_Tokens
+ * @link https://success.mindtouch.com/Integrations/API/API_Tokens
  * @package MindTouch\Http
  */
 interface IApiToken {
@@ -43,10 +43,10 @@ interface IApiToken {
     function withUserId(int $userId) : IApiToken;
 
     /**
-     * Convert token to hash for use with "X-Deki-Token" header
+     * Convert token to signature for use with "X-Deki-Token" header
      *
      * @param int|null $timestamp - unix timestamp (default: epoch)
      * @return string
      */
-    function toHash(int $timestamp = null) : string;
+    function toSignature(int $timestamp = null) : string;
 }

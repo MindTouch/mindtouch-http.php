@@ -39,7 +39,7 @@ class HttpPlugUriHostRequiredException extends Exception {
     /**
      * @return XUri
      */
-    private function getUri() : XUri {
+    public function getUri() : XUri {
         return $this->uri;
     }
 }

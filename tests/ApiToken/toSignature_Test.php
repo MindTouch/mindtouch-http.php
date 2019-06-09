@@ -21,35 +21,35 @@ namespace MindTouch\Http\tests\ApiToken;
 use MindTouch\Http\ApiToken;
 use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
 
-class toHash_Test extends MindTouchHttpUnitTestCase {
+class toSignature_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @test
      */
-    public function Can_convert_to_hash() {
+    public function Can_convert_to_signature() {
 
         // arrange
         $token = new ApiToken('foo', 'bar');
 
         // act
-        $hash = $token->toHash();
+        $signature = $token->toSignature();
 
         // assert
-        $this->assertNotEmpty($hash);
+        $this->assertNotEmpty($signature);
     }
 
     /**
      * @test
      */
-    public function Can_convert_to_hash_by_timestamp() {
+    public function Can_convert_to_signature_by_timestamp() {
 
         // arrange
         $token = new ApiToken('foo', 'bar');
 
         // act
-        $hash = $token->toHash(strtotime(' 2014-10-12T00:20:49.766Z'));
+        $signature = $token->toSignature(strtotime(' 2014-10-12T00:20:49.766Z'));
 
         // assert
-        $this->assertEquals('foo_1413073249_2_8e158d680647ce83fef7c05fd189b537f9834e298734efe2c6b383540c1a67b7', $hash);
+        $this->assertEquals('foo_1413073249_2_8e158d680647ce83fef7c05fd189b537f9834e298734efe2c6b383540c1a67b7', $signature);
     }
 }

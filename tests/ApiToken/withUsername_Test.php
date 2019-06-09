@@ -35,6 +35,6 @@ class withUsername_Test extends MindTouchHttpUnitTestCase {
         $token = $token->withUsername('andyv');
 
         // assert
-        $this->assertEquals('foo_1413073249_=andyv_1b4845fe082c17fc82c0f59f0e568b619cf83aed716e7320d3c843b259defff5', $token->toHash(strtotime(' 2014-10-12T00:20:49.766Z')));
+        $this->assertEquals('foo_1413073249_=andyv_1b4845fe082c17fc82c0f59f0e568b619cf83aed716e7320d3c843b259defff5', $token->toSignature(strtotime(' 2014-10-12T00:20:49.766Z')));
     }
 }
