@@ -66,6 +66,35 @@ class get_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
+    public function Can_unserialize_json_with_custom_media_type_when_max_content_length_is_not_reached() {
+
+        // arrange
+        $uri = XUri::tryParse('test://example.com/foo');
+        $body = json_encode(['foo' => ['bar', 'baz']]);
+        MockPlug::register(
+            $this->newDefaultMockRequestMatcher(HttpPlug::METHOD_GET, $uri),
+            (new HttpResult())
+                ->withStatus(200)
+                ->withHeaders(Headers::newFromHeaderNameValuePairs([
+                    [Headers::HEADER_CONTENT_TYPE, 'application/jwk-set+json; charset=UTF-8'],
+                    [Headers::HEADER_CONTENT_LENGTH, strval(strlen($body))]
+                ]))
+                ->withBody($body)
+        );
+        $plug = new HttpPlug($uri);
+
+        // act
+        $parser = (new JsonParser())->withMaxContentLength(50000);
+        $result = $plug->withHttpResultParser($parser)->get();
+
+        // assert
+        $this->assertEquals(200, $result->getStatus());
+        $this->assertEquals(['foo' => ['bar', 'baz']], $result->getBody()->toArray());
+    }
+
+    /**
+     * @test
+     */
     public function Will_throw_if_cannot_unserialize_json() {
 
         // arrange

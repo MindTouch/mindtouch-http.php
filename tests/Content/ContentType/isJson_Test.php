@@ -42,7 +42,9 @@ class isJson_Test extends MindTouchHttpUnitTestCase {
             ['application/octet-stream', false],
             ['text/json', true],
             ['application/xml', false],
-            ['text/plain', false]
+            ['text/plain', false],
+            ['application/jwk-set+json; charset=UTF-8', true],
+            ['application/jwk+json; charset=UTF-8', true]
         ];
     }
 

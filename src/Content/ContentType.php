@@ -117,7 +117,7 @@ class ContentType {
     /**
      * @return bool
      */
-    public function isJson() : bool { return $this->subType === 'json'; }
+    public function isJson() : bool { return $this->subType === 'json' || StringUtil::endsWith($this->subType, '+json'); }
 
     /**
      * @return bool
