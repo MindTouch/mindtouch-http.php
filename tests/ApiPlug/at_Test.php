@@ -243,4 +243,19 @@ class at_Test extends MindTouchHttpUnitTestCase  {
         // assert
         $this->assertEquals('http://foo.com/@api/deki/pages/=some%252Fpage/files,subpages/123/children,siblings?strict=true&dream.out.format=php', $plug->getUri());
     }
+
+    /**
+     * @test
+     */
+    public function Can_add_guid_segment() {
+
+        // arrange
+        $plug = new ApiPlug(XUri::tryParse('http://foo.com/@api/deki?strict=true'));
+
+        // act
+        $plug = $plug->at('pages', ':123', 'info');
+
+        // assert
+        $this->assertEquals('http://foo.com/@api/deki/pages/:123/info?strict=true&dream.out.format=php', $plug->getUri());
+    }
 }

@@ -108,9 +108,9 @@ class ApiPlug extends HttpPlug {
             $segment = StringUtil::stringify($segment);
             if(!in_array($segment, self::$rawUriPathSegments)) {
 
-                // auto-double encode, check for '=' sign
-                $segment = (strncmp($segment, '=', 1) === 0)
-                    ? '=' . self::urlEncode(substr($segment, 1), true)
+                // auto-double encode, check for '=' or ':' sign
+                $segment = StringUtil::startsWith($segment, '=') || StringUtil::startsWith($segment, ':')
+                    ? substr($segment, 0, 1) . self::urlEncode(substr($segment, 1), true)
                     : self::urlEncode($segment, true);
             }
             $path .= '/' . ltrim($segment, '/');
