@@ -1,6 +1,6 @@
 # MindTouch HTTP
 
-A PHP library for interacting with the [MindTouch REST API](http://success.mindtouch.com/Documentation/Integration/API).
+A PHP library for interacting with the [MindTouch REST API](https://success.mindtouch.com/Integrations/API).
 
 [![travis-ci.org](https://travis-ci.org/MindTouch/mindtouch-http.php.svg?branch=master)](https://travis-ci.org/MindTouch/mindtouch-http.php)
 [![codecov.io](https://codecov.io/github/MindTouch/mindtouch-http.php/coverage.svg?branch=master)](https://codecov.io/github/MindTouch/mindtouch-http.php?branch=master)
