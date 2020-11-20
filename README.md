@@ -9,7 +9,7 @@ A PHP library for interacting with the [MindTouch API](https://success.mindtouch
 
 ## Support
 
-This library is provided for and supported by the open source community. Supported MindTouch site owners may file bug reports via [GitHub](https://github.com/MindTouch/mindtouch-http.php/issues), but support plans do not cover the usage of this library.
+This library is provided for and supported by the open source community. Supported [MindTouch](https://mindtouch.com) site owners may file bug reports via [GitHub](https://github.com/MindTouch/mindtouch-http.php/issues), but support plans do not cover the usage of this library.
 
 ## Requirements
 
@@ -299,6 +299,29 @@ $plug = $plug->withResultErrorHandler(function(ApiResultException $e) : bool {
 ```
 
 You are encouraged to explore the library [classes](src) and [tests](tests) to learn more about the capabilities not listed here.
+
+## Development and Testing
+
+Though the library is sponsored by [MindTouch, Inc.](https://mindtouch.com), contributions are always welcome from the community ([there are defects and enhancements to address](https://github.com/MindTouch/mindtouch-http.php/issues)).
+
+The library is tested through a combination of [PHPUnit](https://github.com/sebastianbergmann/phpunit), [`MockPlug`](src/Mock) (an interceptor that matches `ApiPlug` and `HttpPlug` invocations and returns mocked responses), and actual [cURL](https://www.php.net/manual/en/book.curl.php)-driven HTTP requests to a locally hosted [httpbin](https://httpbin.org) server. Further code quality is checked using [PHPStan](https://github.com/phpstan/phpstan) (PHP Static Analysis Tool).
+
+```sh
+# fork and clone the mindtouch-http.php repository
+git clone git@github.com:{username}/mindtouch-http.php.git
+
+# install dependencies
+composer install
+
+# start the httpbin container 
+docker-compose up -d
+
+# run static analysis checks
+vendor/bin/phpstan analyse --level 7 src
+
+# run tests
+vendor/bin/phpunit --configuration phpunit.xml.dist
+```
 
 ## Learn More
 
