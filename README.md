@@ -172,17 +172,21 @@ $plug = new HttpPlug($uri);
 
 // HttpPlug holds the main HTTP client functionality which can technically be used with any HTTP server
 // ...however ApiPlug provides a layer of MindTouch API-specific request formatting and response handling
-// ...and is highly-recommended when connecting to the MindTouch API
+// ...and is highly recommended when connecting to the MindTouch API
 $plug = new ApiPlug($uri);
 
 // like every object in this library, attaching new values or behaviors to plugs is by default immutable
 // ...and returns a new object reference
 
-// add a Server API Token for administrator authorization (calculates Server API Token hash at HTTP request invocation)
+// add a Server API Token for administrator authorization
+// ... which calculates Server API Token hash at HTTP request invocation
 $plug->withApiToken((new ApiToken('rabbits', 'hasen'))->withUsername('admin'));
 
 // we can add some additional URL path segements and query parameters that weren't part of the constructing URL
 $plug = $plug->at('another', 'additional', 'endpoint', 'segment')->with('more', 'params');
+
+// how many redirects will we follow?
+$plug = $plug->withAutoRedirects(2);
 
 // HTTP requests often need HTTP headers
 $plug = $plug->withHeader('X-FcStPauli', 'hells')
@@ -220,7 +224,9 @@ $mergedHeaders = $headers->toMergedHeaders($mutableHeaders);
 $alternateApiPlug = $plug->withUri(XUri::newFromString('https://deki.example.com/@api/deki'));
 
 // we are going to invoke an HTTP request
-// ...maybe there is some logic we want to perform at the moment the HTTP request is about to be sent?
+// ...pre and post invocation callbacks can attach special logic and handlers
+// ...intended to be executed whenever or wherever this HTTP client is used
+// ...maybe there is some logic we want to always perform at the moment the HTTP request is about to be sent?
 $plug = $plug->withPreInvokeCallback(function(XUri $uri, IHeaders $headers) {
 
     // last chance to change the URL or HTTP headers before the request is made
@@ -233,13 +239,11 @@ $plug = $plug->withPreInvokeCallback(function(XUri $uri, IHeaders $headers) {
 $plug = $plug->withPreInvokeCallback(function(XUri $uri, IHeaders $headers) {
 });
 
-// maybe we want to attach some special handling for the HTTP response
+// maybe we want to attach some special handlin that always executes when we receive an HTTP response?
 $plug = $plug->withPostInvokeCallback(function(HttpResult $result) {
 
-    // maybe there is special behavior based on the HTTP response status code
+    // perhaps there is special behavior to always trigger based on the HTTP response status code?
     if($result->is(403)) {
-
-        // forbidden!
     }
 });
 
@@ -281,9 +285,20 @@ $result = $plug->post(XmlContent::newFromArray([
     ]
 ]));
 $result = $plug->put(new TextContent('good old text!'));
+
+// during the invocation process, an ApiResultException may be raised
+// ...such as a max HTTP response content length exceeded or an HTTP response parser failure
+// ...exceptions can bubble up to the HTTP client callsite, or handled in the HTTP client internally
+$plug = $plug->withResultErrorHandler(function(ApiResultException $e) : bool {
+    if($e instanceof HttpResultParserException) {
+        
+        // always suppress this exception
+        return false;
+    }
+});
 ```
 
-You are encouraged to explore the library classes and tests to learn more about the capabilities not listed here.
+You are encouraged to explore the library [classes](src) and [tests](tests) to learn more about the capabilities not listed here.
 
 ## Learn More
 
