@@ -170,10 +170,13 @@ $result = $uri->toString(); // https://mindtouch.example.com/@api/scim/v2/users?
 // we can give our XUri object to a HttpPlug or an ApiPlug to create a client
 $plug = new HttpPlug($uri);
 
-// HttpPlug holds the main HTTP client functionality which can technically be used with any HTTP server, however ApiPlug provides a layer of MindTouch API-specific request formatting and response handling, and is highly-recommended when connecting to the MindTouch API
+// HttpPlug holds the main HTTP client functionality which can technically be used with any HTTP server
+// ...however ApiPlug provides a layer of MindTouch API-specific request formatting and response handling
+// ...and is highly-recommended when connecting to the MindTouch API
 $plug = new ApiPlug($uri);
 
-// ...like every object in this library, attaching new values or behaviors to plugs is by default immutable, and returns a new object reference
+// like every object in this library, attaching new values or behaviors to plugs is by default immutable
+// ...and returns a new object reference
 
 // add a Server API Token for administrator authorization (calculates Server API Token hash at HTTP request invocation)
 $plug->withApiToken((new ApiToken('rabbits', 'hasen'))->withUsername('admin'));
@@ -202,21 +205,27 @@ $mutableHeaders->set('X-HSV', 'keiner mag den hsv')
 foreach($mutableHeaders as $header => $values) {
     foreach($values as $value) {
 
-        // HTTP headers can have multiple stored values (though normally sent via an HTTP client as comma separated on a single HTTP header line)
+        // HTTP headers can have multiple stored values
+        // ...though normally sent via an HTTP client as comma separated on a single HTTP header line
         echo "{$header}: {$value}";
     }
 }
 
-// also we can merge the two sets of Headers (the original and the mutated one) to create a brand new object containing the values of both
+// also we can merge the two sets of Headers (the original and the mutated one)
+// ...to create a brand new object containing the values of both
 $mergedHeaders = $headers->toMergedHeaders($mutableHeaders);
 
-// we've built out a pretty complex HTTP client now, but what if we want a client with a different URL but everything else the same?
+// we've built out a pretty complex HTTP client now
+// ...but what if we want a client with a different URL but everything else the same?
 $alternateApiPlug = $plug->withUri(XUri::newFromString('https://deki.example.com/@api/deki'));
 
-// we are going to invoke an HTTP request, maybe there is some logic we want to perform at the moment the HTTP request is about to be sent?
+// we are going to invoke an HTTP request
+// ...maybe there is some logic we want to perform at the moment the HTTP request is about to be sent?
 $plug = $plug->withPreInvokeCallback(function(XUri $uri, IHeaders $headers) {
 
-    // last chance to change the URL or HTTP headers before the request is made (URL and HTTP headers for the single request invocation can be mutated, this will not affect the URL or HTTP headers configured in the plug)
+    // last chance to change the URL or HTTP headers before the request is made
+    // ...URL and HTTP headers for the single request invocation can be mutated
+    // ...this will not affect the URL or HTTP headers configured in the plug
     $headers->toMutableHeaders()->addHeader('something', 'contextual');
 });
 
@@ -234,7 +243,8 @@ $plug = $plug->withPostInvokeCallback(function(HttpResult $result) {
     }
 });
 
-// HTTP responses can be parsed from text into traversable data structures by attaching one or more HttpResultParser objects. Parsing can be possibly memory intensive, so limits can be put on the allowed size of a response to parse
+// HTTP responses can be parsed from text into traversable data structures by attaching one or more HttpResultParser objects
+// ...parsing can be possibly memory intensive, so limits can be put on the allowed size of a response to parse
 $plug = $plug->withHttpResultParser((new JsonParser())->withMaxContentLength(640000));
 
 // fetching HTTP data is handled via HTTP GET
