@@ -20,11 +20,16 @@ namespace MindTouch\Http;
 
 use Closure;
 use Exception;
-use MindTouch\Http\Content\IContent;
 use MindTouch\Http\Exception\ApiResultException;
-use MindTouch\Http\Exception\HttpPlugUriHostRequiredException;
-use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
-use MindTouch\Http\Parser\SerializedPhpArrayParser;
+use modethirteen\Http\Content\IContent;
+use modethirteen\Http\Exception\HttpPlugUriHostRequiredException;
+use modethirteen\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
+use modethirteen\Http\HttpPlug;
+use modethirteen\Http\HttpResult;
+use modethirteen\Http\IMutableHeaders;
+use modethirteen\Http\Parser\SerializedPhpArrayParser;
+use modethirteen\Http\StringUtil;
+use modethirteen\Http\XUri;
 
 /**
  * Class ApiPlug - builder and invocation for MindTouch API requests
@@ -204,7 +209,7 @@ class ApiPlug extends HttpPlug {
      * @return ApiResult
      * @throws ApiResultException
      */
-    protected function invokeComplete($result) : object {
+    protected function invokeComplete(HttpResult $result) : object {
         $exception = null;
         try {
             $result = parent::invokeComplete($result);

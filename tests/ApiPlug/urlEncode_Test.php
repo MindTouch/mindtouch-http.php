@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\ApiPlug;
+namespace MindTouch\Http\Tests\ApiPlug;
 
 use MindTouch\Http\ApiPlug;
-use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\Tests\MindTouchHttpUnitTestCase;
 
 class urlEncode_Test extends MindTouchHttpUnitTestCase  {
 

@@ -14,7 +14,7 @@ This library is provided for and supported by the open source community. Support
 ## Requirements
 
 * PHP 5.5, 5.6 (php5, 1.x)
-* PHP 7.2+ (master, 2.x)
+* PHP 7.2+ (master, 2.x, 3.x)
 
 ## Installation
 
@@ -138,6 +138,8 @@ foreach($result->getAll('body/tags/tag') as $tag) {
 
 ## Advanced Usage
 
+This library is an extension of [modethirteen/HttpPlug](https://github.com/modethirteen/HttpPlug) and derives most if it's capabilities from it. However, this library's `ApiPlug` class provides specialized behavior for interacting with the MindTouch API.
+
 ```php
 // the library allows for programmatic URL construction and parsing
 $uri = XUri::newFromString('http://mindtouch.example.com/@api')
@@ -239,7 +241,7 @@ $plug = $plug->withPreInvokeCallback(function(XUri $uri, IHeaders $headers) {
 $plug = $plug->withPreInvokeCallback(function(XUri $uri, IHeaders $headers) {
 });
 
-// maybe we want to attach some special handlin that always executes when we receive an HTTP response?
+// maybe we want to attach some special handling that always executes when we receive an HTTP response?
 $plug = $plug->withPostInvokeCallback(function(HttpResult $result) {
 
     // perhaps there is special behavior to always trigger based on the HTTP response status code?
@@ -291,7 +293,7 @@ $result = $plug->put(new TextContent('good old text!'));
 // ...exceptions can bubble up to the HTTP client callsite, or handled in the HTTP client internally
 $plug = $plug->withResultErrorHandler(function(ApiResultException $e) : bool {
     if($e instanceof HttpResultParserException) {
-        
+
         // always suppress this exception
         return false;
     }
@@ -304,7 +306,7 @@ You are encouraged to explore the library [classes](src) and [tests](tests) to l
 
 Though the library is sponsored by [MindTouch, Inc.](https://mindtouch.com), contributions are always welcome from the community ([there are defects and enhancements to address](https://github.com/MindTouch/mindtouch-http.php/issues)).
 
-The library is tested through a combination of [PHPUnit](https://github.com/sebastianbergmann/phpunit), [`MockPlug`](src/Mock) (an interceptor that matches `ApiPlug` and `HttpPlug` invocations and returns mocked responses), and actual [cURL](https://www.php.net/manual/en/book.curl.php)-driven HTTP requests to a locally hosted [httpbin](https://httpbin.org) server. Further code quality is checked using [PHPStan](https://github.com/phpstan/phpstan) (PHP Static Analysis Tool).
+The library is tested through a combination of [PHPUnit](https://github.com/sebastianbergmann/phpunit), [`MockPlug`](src/Mock) (an interceptor that matches `ApiPlug` and [`HttpPlug`](https://github.com/modethirteen/HttpPlug) invocations and returns mocked responses), and actual [cURL](https://www.php.net/manual/en/book.curl.php)-driven HTTP requests to a locally hosted [httpbin](https://httpbin.org) server. Further code quality is checked using [PHPStan](https://github.com/phpstan/phpstan) (PHP Static Analysis Tool).
 
 ```sh
 # fork and clone the mindtouch-http.php repository
@@ -313,7 +315,7 @@ git clone git@github.com:{username}/mindtouch-http.php.git
 # install dependencies
 composer install
 
-# start the httpbin container 
+# start the httpbin container
 docker-compose up -d
 
 # run static analysis checks

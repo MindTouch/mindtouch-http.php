@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\ApiToken;
+namespace MindTouch\Http\Tests\ApiToken;
 
 use MindTouch\Http\ApiToken;
-use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\Tests\MindTouchHttpUnitTestCase;
 
 class toSignature_Test extends MindTouchHttpUnitTestCase {
 

@@ -18,6 +18,9 @@
  */
 namespace MindTouch\Http;
 
+use modethirteen\Http\HttpResult;
+use modethirteen\Http\StringUtil;
+
 /**
  * Class ApiResult - wraps http result with MindTouch API specific accessors
  *

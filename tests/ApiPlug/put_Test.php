@@ -16,17 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\ApiPlug;
+namespace MindTouch\Http\Tests\ApiPlug;
 
 use MindTouch\Http\ApiPlug;
 use MindTouch\Http\ApiResult;
-use MindTouch\Http\Content\ContentType;
-use MindTouch\Http\Content\MultiPartFormDataContent;
-use MindTouch\Http\Content\TextContent;
-use MindTouch\Http\Headers;
-use MindTouch\Http\Mock\MockPlug;
-use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
-use MindTouch\Http\XUri;
+use MindTouch\Http\Tests\MindTouchHttpUnitTestCase;
+use modethirteen\Http\Content\ContentType;
+use modethirteen\Http\Content\MultiPartFormDataContent;
+use modethirteen\Http\Content\TextContent;
+use modethirteen\Http\Headers;
+use modethirteen\Http\Mock\MockPlug;
+use modethirteen\Http\XUri;
 
 class put_Test extends MindTouchHttpUnitTestCase {
 

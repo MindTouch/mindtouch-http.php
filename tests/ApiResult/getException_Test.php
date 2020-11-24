@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\ApiResult;
+namespace MindTouch\Http\Tests\ApiResult;
 
 use MindTouch\Http\ApiResult;
-use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
+use MindTouch\Http\Tests\MindTouchHttpUnitTestCase;
 
 class getException_Test extends MindTouchHttpUnitTestCase {
 

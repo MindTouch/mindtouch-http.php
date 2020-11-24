@@ -16,20 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace MindTouch\Http\tests\ApiPlug;
+namespace MindTouch\Http\Tests\ApiPlug;
 
 use MindTouch\Http\ApiPlug;
 use MindTouch\Http\ApiResult;
-use MindTouch\Http\Content\ContentType;
 use MindTouch\Http\Exception\ApiResultException;
-use MindTouch\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
-use MindTouch\Http\Exception\HttpResultParserException;
-use MindTouch\Http\Headers;
-use MindTouch\Http\HttpResult;
-use MindTouch\Http\Mock\MockPlug;
-use MindTouch\Http\Parser\SerializedPhpArrayParser;
-use MindTouch\Http\tests\MindTouchHttpUnitTestCase;
-use MindTouch\Http\XUri;
+use MindTouch\Http\Tests\MindTouchHttpUnitTestCase;
+use modethirteen\Http\Content\ContentType;
+use modethirteen\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
+use modethirteen\Http\Exception\HttpResultParserException;
+use modethirteen\Http\Headers;
+use modethirteen\Http\HttpResult;
+use modethirteen\Http\Mock\MockPlug;
+use modethirteen\Http\Parser\SerializedPhpArrayParser;
+use modethirteen\Http\XUri;
 
 class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
 

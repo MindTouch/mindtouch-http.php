@@ -15,7 +15,8 @@
   },
   "require": {
     "php": ">=7.2.0",
-    "mindtouch/xarray": "1.0.1",
+    "modethirteen/httpplug": "1.0.0",
+    "modethirteen/xarray": "1.1.0",
     "ext-fileinfo": "*",
     "ext-json": "*",
     "ext-curl": "*"
@@ -25,9 +26,14 @@
     "phpunit/phpunit": "7.4.3"
   },
   "autoload": {
-    "psr-4": { "MindTouch\\Http\\": ["src/"] }
+    "psr-4": {
+      "MindTouch\\Http\\": ["src/"]
+    }
   },
   "autoload-dev": {
-    "psr-4": { "MindTouch\\Http\\tests\\": ["tests/"] }
+    "psr-4": {
+      "MindTouch\\Http\\Tests\\": ["tests/"],
+      "modethirteen\\Http\\Tests\\": ["vendor/modethirteen/httpplug/tests"]
+    }
   }
 }
