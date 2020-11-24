@@ -18,16 +18,42 @@
  */
 namespace MindTouch\Http\Tests;
 
+use modethirteen\Http\Headers;
 use modethirteen\Http\Mock\MockRequestMatcher;
-use modethirteen\Http\Tests\HttpPlugTestCase;
+use modethirteen\Http\XUri;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class MindTouchHttpUnitTestCase extends HttpPlugTestCase {
+class MindTouchHttpUnitTestCase extends TestCase {
 
     public function setUp() {
         parent::setUp();
+        MockRequestMatcher::setIgnoredHeaderNames([
+            Headers::HEADER_CONTENT_LENGTH
+        ]);
         MockRequestMatcher::setIgnoredQueryParamNames([
             'dream.out.format',
             'dream_out_format'
         ]);
+    }
+
+    /**
+     * @param string $class
+     * @return MockObject
+     */
+    protected function newMock(string $class) : MockObject {
+        return $this->getMockBuilder($class)
+            ->setMethods(get_class_methods($class))
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * @param string $method
+     * @param XUri $uri
+     * @return MockRequestMatcher
+     */
+    protected function newDefaultMockRequestMatcher(string $method, XUri $uri) : MockRequestMatcher {
+        return new MockRequestMatcher($method, $uri);
     }
 }

@@ -32,8 +32,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "MindTouch\\Http\\Tests\\": ["tests/"],
-      "modethirteen\\Http\\Tests\\": ["vendor/modethirteen/httpplug/tests"]
+      "MindTouch\\Http\\Tests\\": ["tests/"]
     }
   }
 }
