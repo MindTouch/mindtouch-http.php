@@ -2,7 +2,7 @@
 
 A PHP library for interacting with the [MindTouch API](https://success.mindtouch.com/Integrations/API).
 
-[![travis-ci.org](https://travis-ci.com/MindTouch/mindtouch-http.php.svg?branch=master)](https://travis-ci.com/MindTouch/mindtouch-http.php)
+[![travis-ci.com](https://travis-ci.com/MindTouch/mindtouch-http.php.svg?branch=master)](https://travis-ci.com/MindTouch/mindtouch-http.php)
 [![codecov.io](https://codecov.io/github/MindTouch/mindtouch-http.php/coverage.svg?branch=master)](https://codecov.io/github/MindTouch/mindtouch-http.php?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/mindtouch/mindtouch-http/version.svg)](https://packagist.org/packages/mindtouch/mindtouch-http)
 [![Latest Unstable Version](https://poser.pugx.org/mindtouch/mindtouch-http/v/unstable)](https://packagist.org/packages/mindtouch/mindtouch-http)
