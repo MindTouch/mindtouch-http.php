@@ -23,10 +23,10 @@ use MindTouch\Http\ApiResult;
 use MindTouch\Http\Exception\ApiResultException;
 use MindTouch\Http\Tests\MindTouchHttpUnitTestCase;
 use modethirteen\Http\Content\ContentType;
-use modethirteen\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
-use modethirteen\Http\Exception\HttpResultParserException;
+use modethirteen\Http\Exception\ResultParserContentExceedsMaxContentLengthException;
+use modethirteen\Http\Exception\ResultParserException;
 use modethirteen\Http\Headers;
-use modethirteen\Http\HttpResult;
+use modethirteen\Http\Result;
 use modethirteen\Http\Mock\MockPlug;
 use modethirteen\Http\Parser\SerializedPhpArrayParser;
 use modethirteen\Http\XUri;
@@ -88,17 +88,17 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
                     ]
                 ]))
         );
-        $plug = (new ApiPlug($uri))->withHttpResultParser((new SerializedPhpArrayParser())->withMaxContentLength(500));
+        $plug = (new ApiPlug($uri))->withResultParser((new SerializedPhpArrayParser())->withMaxContentLength(500));
         $result = null;
 
         // act
-        $plug->withResultErrorHandler(function(HttpResultParserException $e) use (&$result) {
+        $plug->withResultErrorHandler(function(ResultParserException $e) use (&$result) {
             $result = $e->getResult();
             return true;
         })->get();
 
         // assert
-        $this->assertInstanceOf(HttpResult::class, $result);
+        $this->assertInstanceOf(Result::class, $result);
     }
 
     /**
@@ -122,16 +122,16 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
                     ]
                 ]))
         );
-        $plug = (new ApiPlug($uri))->withHttpResultParser((new SerializedPhpArrayParser())->withMaxContentLength(500));
+        $plug = (new ApiPlug($uri))->withResultParser((new SerializedPhpArrayParser())->withMaxContentLength(500));
         $result = null;
 
         // act
-        $plug->withResultErrorHandler(function(HttpResultParserContentExceedsMaxContentLengthException $e) use (&$result) {
+        $plug->withResultErrorHandler(function(ResultParserContentExceedsMaxContentLengthException $e) use (&$result) {
             $result = $e->getResult();
             return true;
         })->get();
 
         // assert
-        $this->assertInstanceOf(HttpResult::class, $result);
+        $this->assertInstanceOf(Result::class, $result);
     }
 }

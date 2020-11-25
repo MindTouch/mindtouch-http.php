@@ -18,7 +18,7 @@
  */
 namespace MindTouch\Http;
 
-use modethirteen\Http\HttpResult;
+use modethirteen\Http\Result;
 use modethirteen\Http\StringUtil;
 
 /**
@@ -26,7 +26,7 @@ use modethirteen\Http\StringUtil;
  *
  * @package MindTouch\Http
  */
-class ApiResult extends HttpResult {
+class ApiResult extends Result {
 
     /**
      * Return an error message, or an xml representation of the HTTP response body.

@@ -22,10 +22,10 @@ use Closure;
 use Exception;
 use MindTouch\Http\Exception\ApiResultException;
 use modethirteen\Http\Content\IContent;
-use modethirteen\Http\Exception\HttpPlugUriHostRequiredException;
-use modethirteen\Http\Exception\HttpResultParserContentExceedsMaxContentLengthException;
-use modethirteen\Http\HttpPlug;
-use modethirteen\Http\HttpResult;
+use modethirteen\Http\Exception\PlugUriHostRequiredException;
+use modethirteen\Http\Exception\ResultParserContentExceedsMaxContentLengthException;
+use modethirteen\Http\Plug;
+use modethirteen\Http\Result;
 use modethirteen\Http\IMutableHeaders;
 use modethirteen\Http\Parser\SerializedPhpArrayParser;
 use modethirteen\Http\StringUtil;
@@ -41,7 +41,7 @@ use modethirteen\Http\XUri;
  * @method ApiResult delete()
  * @method ApiResult invoke(string $method, IContent|null $content = null)
  */
-class ApiPlug extends HttpPlug {
+class ApiPlug extends Plug {
     const DREAM_FORMAT_PHP = 'php';
     const DREAM_FORMAT_JSON = 'json';
     const DREAM_FORMAT_XML = 'xml';
@@ -91,12 +91,12 @@ class ApiPlug extends HttpPlug {
     /**
      * @param XUri $uri - target uri
      * @param string $format
-     * @throws HttpPlugUriHostRequiredException
+     * @throws PlugUriHostRequiredException
      */
     public function __construct(XUri $uri, string $format = self::DREAM_FORMAT_PHP) {
         parent::__construct($uri);
         $this->uri = $this->uri->withQueryParam('dream.out.format', $format);
-        $this->setHttpResultParser(new SerializedPhpArrayParser());
+        $this->setResultParser(new SerializedPhpArrayParser());
     }
 
     /**
@@ -184,7 +184,7 @@ class ApiPlug extends HttpPlug {
      *
      * @param IContent|null $content - optionally send a content body with the request
      * @return ApiResult
-     * @throws HttpResultParserContentExceedsMaxContentLengthException
+     * @throws ResultParserContentExceedsMaxContentLengthException
      */
     public function put(IContent $content = null) : object {
         $plug = $this->with('dream.in.verb', 'PUT');
@@ -205,11 +205,11 @@ class ApiPlug extends HttpPlug {
     /**
      * Return the formatted invocation result
      *
-     * @param HttpResult $result
+     * @param Result $result
      * @return ApiResult
      * @throws ApiResultException
      */
-    protected function invokeComplete(HttpResult $result) : object {
+    protected function invokeComplete(Result $result) : object {
         $exception = null;
         try {
             $result = parent::invokeComplete($result);

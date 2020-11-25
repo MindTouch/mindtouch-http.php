@@ -138,7 +138,7 @@ foreach($result->getAll('body/tags/tag') as $tag) {
 
 ## Advanced Usage
 
-This library is an extension of [modethirteen/HttpPlug](https://github.com/modethirteen/HttpPlug) and derives most if it's capabilities from it. However, this library's `ApiPlug` class provides specialized behavior for interacting with the MindTouch API.
+This library is an extension of [modethirteen/HyperPlug](https://github.com/modethirteen/HyperPlug) and derives most if it's capabilities from it. However, this library's `ApiPlug` class provides specialized behavior for interacting with the MindTouch API.
 
 ```php
 // the library allows for programmatic URL construction and parsing
@@ -147,18 +147,18 @@ $uri = XUri::newFromString('http://mindtouch.example.com/@api')
     // every step in a URL builder returns an immutable XUri object
     ->withScheme('https')
     ->at('scim', 'v2', 'users')
-    ->withQueryParam('xyzzy', 'plugh');
+    ->withQueryParam('xyzzy', 'plugh')
     ->withQueryParams(QueryParams::newFromArray([
         'bar' => 'qux',
         'baz' => 'fred'
     ]))
-    ->withoutQueryParam('bar')
+    ->withoutQueryParam('bar');
 
 // QueryParams objects are normally immutable
 $params = $uri->getQueryParams();
 
 // we can change the data structure of a QueryParams object if we must
-$params = $params->toMutableQueryParams()
+$params = $params->toMutableQueryParams();
 $params->set('baz', 'abc');
 
 // QueryParams are also iterable
@@ -169,10 +169,10 @@ foreach($params as $param => $value) {
 // what does our URL look like now?
 $result = $uri->toString(); // https://mindtouch.example.com/@api/scim/v2/users?xyzzy=plugh&baz=abc
 
-// we can give our XUri object to a HttpPlug or an ApiPlug to create a client
-$plug = new HttpPlug($uri);
+// we can give our XUri object to a Plug or an ApiPlug to create a client
+$plug = new \modethirteen\Http\Plug($uri);
 
-// HttpPlug holds the main HTTP client functionality which can technically be used with any HTTP server
+// Plug holds the main HTTP client functionality which can technically be used with any HTTP server
 // ...however ApiPlug provides a layer of MindTouch API-specific request formatting and response handling
 // ...and is highly recommended when connecting to the MindTouch API
 $plug = new ApiPlug($uri);
@@ -193,19 +193,19 @@ $plug = $plug->withAutoRedirects(2);
 // HTTP requests often need HTTP headers
 $plug = $plug->withHeader('X-FcStPauli', 'hells')
     ->withAddedHeader('X-FcStPauli', 'bells')
-    ->withHeader('X-HSV', 'you\'ll never walk again')
+    ->withHeader('X-HSV', 'you\'ll never walk again');
 
 // ...or not
 $plug = $plug->withoutHeader('X-HSV');
 
 // the Headers object, like XUri and QueryParams, is normally immutable
 $headers = $plug->getHeaders();
-$result = $headers->getHeader('X-FcStPauli') // ['hells', 'bells']
-$result = $headers->getHeaderLine('X-FcStPauli') // X-HSV: hells, bells
+$result = $headers->getHeader('X-FcStPauli'); // ['hells', 'bells']
+$result = $headers->getHeaderLine('X-FcStPauli'); // X-HSV: hells, bells
 
 // but if you really want to...
 $mutableHeaders = $headers->toMutableHeaders();
-$mutableHeaders->set('X-HSV', 'keiner mag den hsv')
+$mutableHeaders->set('X-HSV', 'keiner mag den hsv');
 
 // a Headers object is iterable
 foreach($mutableHeaders as $header => $values) {
@@ -268,7 +268,7 @@ $result = $plug->put(new FileContent('/path/to/file'));
 $result = $plug->post(new UrlEncodedFormDataContent([
     'e' => 'f',
     'g' => 'h'
-]);
+]));
 $result = $plug->post(JsonContent::newFromArray([
     'a' => [
         'multi-dimensional' => [
@@ -297,6 +297,7 @@ $plug = $plug->withResultErrorHandler(function(ApiResultException $e) : bool {
         // always suppress this exception
         return false;
     }
+    return true;
 });
 ```
 
