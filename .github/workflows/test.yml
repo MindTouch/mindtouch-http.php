@@ -1,0 +1,41 @@
+name: Analyze and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [7.2, 7.3]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Validate Composer
+      run: composer validate
+
+    - name: Cache Dependencies
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.json') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install Dependencies
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run Static Analysis
+      run: vendor/bin/phpstan analyse --level 7 src
+
+    - name: Run Test Suite
+      run: vendor/bin/phpunit --configuration phpunit.xml.dist --coverage-clover=coverage.xml
+
+    - uses: codecov/codecov-action@v1
