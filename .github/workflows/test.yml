@@ -1,4 +1,4 @@
-name: Analyze and Test
+name: Continuous Integration
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  install:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -16,10 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Validate Composer
+    - name: Validate dependencies
       run: composer validate
 
-    - name: Cache Dependencies
+    - name: Cache dependencies
       id: composer-cache
       uses: actions/cache@v2
       with:
@@ -28,14 +28,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
-    - name: Install Dependencies
+    - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Run Static Analysis
+    - name: Run static analysis
       run: vendor/bin/phpstan analyse --level 7 src
 
-    - name: Run Test Suite
+    - name: Run test suite
       run: vendor/bin/phpunit --configuration phpunit.xml.dist --coverage-clover=coverage.xml
 
     - uses: codecov/codecov-action@v1
