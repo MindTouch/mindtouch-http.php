@@ -2,8 +2,9 @@
 
 A PHP library for interacting with the [MindTouch API](https://success.mindtouch.com/Integrations/API).
 
-[![travis-ci.com](https://travis-ci.com/MindTouch/mindtouch-http.php.svg?branch=master)](https://travis-ci.com/MindTouch/mindtouch-http.php)
-[![codecov.io](https://codecov.io/github/MindTouch/mindtouch-http.php/coverage.svg?branch=master)](https://codecov.io/github/MindTouch/mindtouch-http.php?branch=master)
+
+[![github.com](https://github.com/MindTouch/mindtouch-http.php/workflows/build/badge.svg)](https://github.com/MindTouch/mindtouch-http.php/actions?query=workflow%3Abuild)
+[![codecov.io](https://codecov.io/github/MindTouch/mindtouch-http.php/coverage.svg?branch=main)](https://codecov.io/github/MindTouch/mindtouch-http.php?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/mindtouch/mindtouch-http/version.svg)](https://packagist.org/packages/mindtouch/mindtouch-http)
 [![Latest Unstable Version](https://poser.pugx.org/mindtouch/mindtouch-http/v/unstable)](https://packagist.org/packages/mindtouch/mindtouch-http)
 [![Total Downloads](https://poser.pugx.org/mindtouch/mindtouch-http/downloads)](//packagist.org/packages/mindtouch/mindtouch-http)
