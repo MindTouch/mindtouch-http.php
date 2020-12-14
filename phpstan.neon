@@ -1,0 +1,7 @@
+parameters:
+    bootstrapFiles:
+        - %currentWorkingDirectory%/_bootstrap.php
+    checkMissingIterableValueType: false
+    level: 7
+    paths:
+        - src
