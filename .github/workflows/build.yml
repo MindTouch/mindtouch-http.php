@@ -19,17 +19,19 @@ jobs:
     - name: Validate dependencies
       run: composer validate
 
-    - name: Cache dependencies
+    - name: Get dependency cache directory
       id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+    - name: Cache dependencies
       uses: actions/cache@v2
       with:
-        path: vendor
+        path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Run static analysis
