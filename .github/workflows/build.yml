@@ -41,12 +41,7 @@ jobs:
       - name: Run static analysis
         run: vendor/bin/phpstan analyse
 
-      - name: Start http server
-        run: docker-compose up -d
-
       - name: Run test suite
         run: phpdbg -qrr vendor/bin/phpunit --configuration phpunit.xml.dist --coverage-clover=coverage.xml
-        env:
-          HTTPBIN_BASEURI: http://localhost:8080
 
       - uses: codecov/codecov-action@v1
