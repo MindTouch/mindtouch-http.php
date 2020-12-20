@@ -26,7 +26,7 @@ class getException_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_get_exception_type() {
+    public function Can_get_exception_type() : void {
 
         // arrange
         $data = [
@@ -50,7 +50,7 @@ class getException_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Will_get_null_if_no_exception_type() {
+    public function Will_get_null_if_no_exception_type() : void {
 
         // arrange
         $data = [

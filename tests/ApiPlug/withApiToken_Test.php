@@ -31,7 +31,7 @@ class withApiToken_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Can_invoke_with_api_token() {
+    public function Can_invoke_with_api_token() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');

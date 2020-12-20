@@ -62,7 +62,7 @@ class getError_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_get_curl_error() {
+    public function Can_get_curl_error() : void {
 
         // arrange
         $data = [
@@ -82,7 +82,7 @@ class getError_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Will_get_null_if_no_error() {
+    public function Will_get_null_if_no_error() : void {
 
         // arrange
         $result = new ApiResult([]);

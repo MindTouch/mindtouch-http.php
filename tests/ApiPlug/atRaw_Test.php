@@ -27,7 +27,7 @@ class atRaw_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Can_add_non_urlencoded_segments() {
+    public function Can_add_non_urlencoded_segments() : void {
 
         // arrange
         $plug = new ApiPlug(XUri::tryParse('http://foo.com'));

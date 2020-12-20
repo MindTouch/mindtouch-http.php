@@ -26,7 +26,7 @@ class toSignature_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_convert_to_signature() {
+    public function Can_convert_to_signature() : void {
 
         // arrange
         $token = new ApiToken('foo', 'bar');
@@ -41,7 +41,7 @@ class toSignature_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_convert_to_signature_by_timestamp() {
+    public function Can_convert_to_signature_by_timestamp() : void {
 
         // arrange
         $token = new ApiToken('foo', 'bar');

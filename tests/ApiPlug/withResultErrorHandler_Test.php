@@ -36,7 +36,7 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Can_invoke_with_result_error_handler_exception_supression() {
+    public function Can_invoke_with_result_error_handler_exception_supression() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
@@ -70,7 +70,7 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Result_error_handler_can_handle_parser_error() {
+    public function Result_error_handler_can_handle_parser_error() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
@@ -104,7 +104,7 @@ class withResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Result_error_handler_can_handle_content_length_parser_error() {
+    public function Result_error_handler_can_handle_content_length_parser_error() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');

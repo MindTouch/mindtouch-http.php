@@ -26,7 +26,7 @@ class withUsername_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_update_user() {
+    public function Can_update_user() : void {
 
         // arrange
         $token = new ApiToken('foo', 'bar');

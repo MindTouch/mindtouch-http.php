@@ -33,7 +33,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_invoke_put() {
+    public function Can_invoke_put() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo/tags');
@@ -61,7 +61,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_invoke_put_with_text_content() {
+    public function Can_invoke_put_with_text_content() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo/tags');
@@ -91,7 +91,7 @@ class put_Test extends MindTouchHttpUnitTestCase {
     /**
      * @test
      */
-    public function Can_invoke_put_with_form_data_content() {
+    public function Can_invoke_put_with_form_data_content() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo/tags');

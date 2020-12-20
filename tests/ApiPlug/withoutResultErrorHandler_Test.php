@@ -32,7 +32,7 @@ class withoutResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Can_remove_result_error_handler_exception_supression_before_invocation() {
+    public function Can_remove_result_error_handler_exception_supression_before_invocation() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');
@@ -54,7 +54,7 @@ class withoutResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
         // act
         $exceptionThrown = false;
         try {
-            $plug->withResultErrorHandler(function () {
+            $plug->withResultErrorHandler(function () : bool {
                 return true;
             })->withoutResultErrorHandler()->get();
 

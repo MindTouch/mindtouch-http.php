@@ -19,7 +19,7 @@
 namespace MindTouch\Http;
 
 use modethirteen\Http\Result;
-use modethirteen\Http\StringUtil;
+use modethirteen\TypeEx\StringEx;
 
 /**
  * Class ApiResult - wraps http result with MindTouch API specific accessors
@@ -49,7 +49,7 @@ class ApiResult extends Result {
 
         // curl error
         $error = $this->getCurlError();
-        if(!StringUtil::isNullOrEmpty($error)) {
+        if(!StringEx::isNullOrEmpty($error)) {
             return $error;
         }
 

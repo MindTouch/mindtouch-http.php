@@ -28,8 +28,8 @@ use modethirteen\Http\Plug;
 use modethirteen\Http\Result;
 use modethirteen\Http\IMutableHeaders;
 use modethirteen\Http\Parser\SerializedPhpArrayParser;
-use modethirteen\Http\StringUtil;
 use modethirteen\Http\XUri;
+use modethirteen\TypeEx\StringEx;
 
 /**
  * Class ApiPlug - builder and invocation for MindTouch API requests
@@ -110,11 +110,12 @@ class ApiPlug extends Plug {
         $plug = clone $this;
         $path = $plug->uri->getPath();
         foreach($segments as $segment) {
-            $segment = StringUtil::stringify($segment);
+            $segment = StringEx::stringify($segment);
             if(!in_array($segment, self::$rawUriPathSegments)) {
+                $string = new StringEx($segment);
 
                 // auto-double encode, check for '=' or ':' sign
-                $segment = StringUtil::startsWith($segment, '=') || StringUtil::startsWith($segment, ':')
+                $segment = $string->startsWith('=') || $string->startsWith(':')
                     ? substr($segment, 0, 1) . self::urlEncode(substr($segment, 1), true)
                     : self::urlEncode($segment, true);
             }

@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 
 class MindTouchHttpUnitTestCase extends TestCase {
 
-    public function setUp() {
+    public function setUp() : void {
         parent::setUp();
         MockRequestMatcher::setIgnoredHeaderNames([
             Headers::HEADER_CONTENT_LENGTH

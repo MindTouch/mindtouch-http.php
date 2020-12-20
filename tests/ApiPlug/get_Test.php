@@ -29,7 +29,7 @@ class get_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Can_invoke_get() {
+    public function Can_invoke_get() : void {
 
         // arrange
         $uri = XUri::tryParse('test://example.com/@api/deki/pages/=foo');

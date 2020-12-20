@@ -27,7 +27,7 @@ class urlEncode_Test extends MindTouchHttpUnitTestCase  {
      * @see ApiPlug::urlEncode()
      * @test
      */
-    public function Can_url_encode_with_special_trailing_dot_handling() {
+    public function Can_url_encode_with_special_trailing_dot_handling() : void {
 
         // act
         $result = ApiPlug::urlEncode('abc/123/765?!/.');
@@ -39,7 +39,7 @@ class urlEncode_Test extends MindTouchHttpUnitTestCase  {
     /**
      * @test
      */
-    public function Can_double_url_encode() {
+    public function Can_double_url_encode() : void {
 
         // act
         $result = ApiPlug::urlEncode('abc/123/765?!/.', true);
