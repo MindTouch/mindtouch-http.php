@@ -15,7 +15,7 @@
   },
   "require": {
     "php": "^7.2.0",
-    "modethirteen/hyperplug": "^1.1.2",
+    "modethirteen/hyperplug": "^1.1.3",
     "modethirteen/type-ex": "^1.0.0",
     "modethirteen/xarray": "^1.2.2",
     "ext-fileinfo": "*",
