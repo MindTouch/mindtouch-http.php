@@ -38,7 +38,6 @@ class MindTouchHttpUnitTestCase extends TestCase {
     }
 
     /**
-     * @param string $class
      * @return MockObject
      */
     protected function newMock(string $class) : MockObject {
@@ -49,8 +48,6 @@ class MindTouchHttpUnitTestCase extends TestCase {
     }
 
     /**
-     * @param string $method
-     * @param XUri $uri
      * @return MockRequestMatcher
      */
     protected function newDefaultMockRequestMatcher(string $method, XUri $uri) : MockRequestMatcher {

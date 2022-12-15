@@ -33,9 +33,6 @@ class ApiResultException extends Exception {
      */
     protected $result;
 
-    /**
-     * @param ApiResult $result
-     */
     public function __construct(ApiResult $result) {
         $this->result = $result;
         $error = $result->getError();
@@ -44,8 +41,6 @@ class ApiResultException extends Exception {
 
     /**
      * Retrieve the ApiResult instance.
-     *
-     * @return ApiResult
      */
     public function getResult() : ApiResult { return $this->result; }
 }

@@ -29,27 +29,13 @@ class ApiToken implements IApiToken {
     /**
      * @var string
      */
-    private $key;
-
-    /**
-     * @var string
-     */
-    private $secret;
-
-    /**
-     * @var string
-     */
     private $user = '2';
 
     /**
      * Returns an instance with the anonymous user context
-     *
-     * @param string $key
-     * @param string $secret
      */
-    public function __construct(string $key, string $secret) {
-        $this->key = $key;
-        $this->secret = $secret;
+    public function __construct(private readonly string $key, private readonly string $secret)
+    {
     }
 
     public function withUsername(string $username) : IApiToken {

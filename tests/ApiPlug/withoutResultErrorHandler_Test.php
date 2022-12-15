@@ -54,9 +54,7 @@ class withoutResultErrorHandler_Test extends MindTouchHttpUnitTestCase  {
         // act
         $exceptionThrown = false;
         try {
-            $plug->withResultErrorHandler(function () : bool {
-                return true;
-            })->withoutResultErrorHandler()->get();
+            $plug->withResultErrorHandler(fn(): bool => true)->withoutResultErrorHandler()->get();
 
         } /** @noinspection PhpRedundantCatchClauseInspection */
         catch(ApiResultException $e) {

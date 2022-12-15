@@ -30,8 +30,6 @@ class ApiResult extends Result {
 
     /**
      * Return an error message, or an xml representation of the HTTP response body.
-     *
-     * @return string|null
      */
     public function getError() : ?string {
 
@@ -66,11 +64,9 @@ class ApiResult extends Result {
 
     /**
      * Return the API exception type name.
-     *
-     * @return string|null
      */
     public function getException() : ?string {
         $exception = $this->getVal('body/error/exception');
-        return $exception !== null ? $exception : null;
+        return $exception ?? null;
     }
 }
