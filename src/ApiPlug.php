@@ -42,16 +42,16 @@ use modethirteen\TypeEx\StringEx;
  * @method ApiResult invoke(string $method, IContent|null $content = null)
  */
 class ApiPlug extends Plug {
-    const DREAM_FORMAT_PHP = 'php';
-    const DREAM_FORMAT_JSON = 'json';
-    const DREAM_FORMAT_XML = 'xml';
+    public const DREAM_FORMAT_PHP = 'php';
+    public const DREAM_FORMAT_JSON = 'json';
+    public const DREAM_FORMAT_XML = 'xml';
 
     /**
      * Path segments that should not be url encoded
      *
      * @var string[]
      */
-    private static $rawUriPathSegments = [
+    private static array $rawUriPathSegments = [
         'files,subpages',
         'children,siblings'
     ];
@@ -59,7 +59,6 @@ class ApiPlug extends Plug {
     /**
      * @param string $string - string to url encode
      * @param bool $doubleEncode - if true, the string will be urlencoded twice
-     * @return string
      */
     public static function urlEncode(string $string, bool $doubleEncode = false) : string {
 
@@ -133,7 +132,6 @@ class ApiPlug extends Plug {
      * unencoded "@api" is required.
      *
      * @see #At() for creating urlencoded paths
-     * @param string $segment
      * @return static
      */
     public function atRaw(string $segment) : object {
@@ -146,7 +144,6 @@ class ApiPlug extends Plug {
      * Return an instance with  a server API token to the request
      *
      * @link https://success.mindtouch.com/Integrations/API/API_Tokens/Use_a_server_API_token_with_an_integration
-     * @param IApiToken $token
      * @return static
      */
     public function withApiToken(IApiToken $token) : object {
@@ -192,10 +189,6 @@ class ApiPlug extends Plug {
         return $plug->invoke(self::METHOD_POST, $content);
     }
 
-    /**
-     * @param IMutableHeaders $headers
-     * @return void
-     */
     protected function invokeApplyCredentials(IMutableHeaders $headers) : void {
         parent::invokeApplyCredentials($headers);
         if($this->token !== null) {
@@ -206,7 +199,6 @@ class ApiPlug extends Plug {
     /**
      * Return the formatted invocation result
      *
-     * @param Result $result
      * @return ApiResult
      * @throws ApiResultException
      */

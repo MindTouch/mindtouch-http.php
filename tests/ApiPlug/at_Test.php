@@ -51,9 +51,7 @@ class at_Test extends MindTouchHttpUnitTestCase  {
                 return 'xyz';
             }
         };
-        $func = function() : string {
-            return 'asdf';
-        };
+        $func = fn(): string => 'asdf';
 
         // act
         $plug = $plug->at('bar', 'qux', 'baz', false, 321, $object, $func);

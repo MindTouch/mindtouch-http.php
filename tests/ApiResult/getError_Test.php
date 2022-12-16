@@ -23,9 +23,6 @@ use MindTouch\Http\Tests\MindTouchHttpUnitTestCase;
 
 class getError_Test extends MindTouchHttpUnitTestCase {
 
-    /**
-     * @return array
-     */
     public static function body_expected_dataProvider() : array {
         return [
             [['error' => ['message' => 'foo']], 'foo'],
@@ -37,11 +34,9 @@ class getError_Test extends MindTouchHttpUnitTestCase {
 
     /**
      * @dataProvider body_expected_dataProvider
-     * @param string|array $body
-     * @param string $expected
      * @test
      */
-    public function Can_get_error_from_body($body, string $expected) {
+    public function Can_get_error_from_body(string|array $body, string $expected) {
 
         // arrange
         $data = [
