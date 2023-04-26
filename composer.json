@@ -14,10 +14,10 @@
     "issues": "https://github.com/mindtouch/mindtouch-http.php/issues"
   },
   "require": {
-    "php": "~8.0.0",
-    "modethirteen/hyperplug": "dev-main-php8",
-    "modethirteen/type-ex": "dev-main-php8",
-    "modethirteen/xarray": "dev-main-php8",
+    "php": "~8.2.0",
+    "modethirteen/hyperplug": "dev-main-php82",
+    "modethirteen/type-ex": "dev-main-php82",
+    "modethirteen/xarray": "dev-main-php82",
     "ext-fileinfo": "*",
     "ext-json": "*",
     "ext-curl": "*"
