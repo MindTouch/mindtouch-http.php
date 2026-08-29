@@ -28,7 +28,14 @@ class getError_Test extends MindTouchHttpUnitTestCase {
             [['error' => ['message' => 'foo']], 'foo'],
             [['exception' => ['message' => 'bar']], 'bar'],
             [['foo' => ['qux' => ['@id' => '123']]], '<foo><qux id="123"></qux></foo>'],
-            ['<error>qux</error>', '<error>qux</error>']
+            ['<error>qux</error>', '<error>qux</error>'],
+
+            // non-string scalars deserialized from the API response body must be coerced to
+            // string, not returned as-is: getError() is declared ": ?string" and under
+            // strict_types this throws a TypeError instead of returning a value
+            [['error' => ['message' => true]], '1'],
+            [['exception' => ['message' => 42]], '42'],
+            [3.14, '3.14']
         ];
     }
 
@@ -36,7 +43,7 @@ class getError_Test extends MindTouchHttpUnitTestCase {
      * @dataProvider body_expected_dataProvider
      * @test
      */
-    public function Can_get_error_from_body(string|array $body, string $expected) {
+    public function Can_get_error_from_body(string|array|bool|int|float $body, string $expected) {
 
         // arrange
         $data = [
