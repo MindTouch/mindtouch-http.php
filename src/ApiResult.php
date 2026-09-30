@@ -36,13 +36,13 @@ class ApiResult extends Result {
         // formatted API error
         $error = $this->getVal('body/error/message');
         if($error !== null) {
-            return $error;
+            return StringEx::stringify($error);
         }
 
         // exception API error
         $error = $this->getVal('body/exception/message');
         if($error !== null) {
-            return $error;
+            return StringEx::stringify($error);
         }
 
         // curl error
@@ -57,7 +57,7 @@ class ApiResult extends Result {
             if(is_array($error)) {
                 return $this->getXml('body');
             }
-            return $error;
+            return StringEx::stringify($error);
         }
         return null;
     }
