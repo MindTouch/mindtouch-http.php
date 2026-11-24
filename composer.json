@@ -14,7 +14,7 @@
     "issues": "https://github.com/mindtouch/mindtouch-http.php/issues"
   },
   "require": {
-    "php": "~8.2.0",
+    "php": "^8.2 || ^8.3 || ^8.4 || ^8.5",
     "modethirteen/hyperplug": "dev-main-php82",
     "modethirteen/type-ex": "dev-main-php82",
     "modethirteen/xarray": "dev-main-php82",
